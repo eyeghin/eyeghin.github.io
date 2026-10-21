@@ -46,6 +46,20 @@
 <section class="closeout" id="contact"><div class="wrap"><span class="eyebrow" style="color:#afb7d2">READY FOR THE NEXT CHALLENGE</span><h2>Great support isn't a script.<br><span>It's a standard.</span></h2><p>Customer service is about more than finishing the interaction. I bring judgment, warmth, calm under pressure, and reliable results to the people on the other side of the screen.</p><div class="closeout-actions"><a class="pill pill-light" href="mailto:eyeghinyane@gmail.com">Email Erik <span class="arrow">↗</span></a><a class="pill pill-outline-on-dark" href="https://linkedin.com/in/erik-yeghinyan" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span class="arrow">↗</span></a></div><footer class="site-foot"><span>© 2026 ERIK YEGHINYAN</span><span>Independent professional portfolio · No employer endorsement implied</span><a href="#top">Back to top ↑</a></footer></div></section>
 </main><script>
 (()=>{'use strict';
+/* Remove chat referral tracking and the purely decorative top fragment from the displayed URL. */
+try{
+  const u=new URL(window.location.href);
+  let changed=false;
+  if(u.searchParams.get('utm_source')==='chatgpt.com'){u.searchParams.delete('utm_source');changed=true;}
+  if(u.hash==='#top'){u.hash='';changed=true;}
+  if(changed)window.history.replaceState(window.history.state,'',u.pathname+u.search+u.hash);
+}catch(_){}
+document.querySelectorAll('a[href="#top"]').forEach(a=>a.addEventListener('click',e=>{
+  e.preventDefault();
+  window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  if(window.location.hash==='#top')window.history.replaceState(window.history.state,'',window.location.pathname+window.location.search);
+}));
+
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 const menu=$('#menu-toggle'),nav=$('#nav'); menu.addEventListener('click',()=>{let open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation');menu.textContent=open?'×':'☰'});$$('.navlinks a').forEach(x=>x.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.textContent='☰'}));
 $$('.qa-btn').forEach(btn=>btn.addEventListener('click',()=>{const score=Number(btn.dataset.score),i=Number(btn.dataset.result);$('#qa-value').textContent=score===100?'100':score.toFixed(2);$('#qa-result-label').textContent=`ASSESSMENT 0${i} OF 03`;$('#qa-gap').textContent=`+${(score-95).toFixed(2)} percentage points above target`;$('#qa-fill').style.width=score+'%';$('#qa-track').setAttribute('aria-label',`QA score ${score} percent, benchmark 95 percent`);$$('.qa-btn').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));}));
