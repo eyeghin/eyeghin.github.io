@@ -77,7 +77,7 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(overflow.scroll<=overflow.viewport+4,'Unexpected horizontal mobile overflow');
   await mobile.locator('.nav-toggle').click();assert.ok(await mobile.locator('.top-links').isVisible());
   console.log('MOBILE_NAV_OK');
-  for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','.qa-list','08-qa-mobile.jpg']]){
+  for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg']]){
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
    const dim=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
