@@ -3,7 +3,9 @@
 (()=>{'use strict';
 const MODELS=[
 {id:'Qwen2.5-0.5B-Instruct-q4f16_1-MLC',name:'Light / ≈1 GB GPU',desc:'Compact model for quick concepts; judgment can be limited.'},
-{id:'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',name:'Advanced / ≈1.7 GB GPU',desc:'A more capable local model requiring additional GPU memory.'}
+{id:'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',name:'Everyday / ~1.6 GB GPU',desc:'General questions and AML learning. Recommended for most compatible devices.'},
+{id:'Qwen2.5-3B-Instruct-q4f16_1-MLC',name:'Research / ~2.5 GB GPU',desc:'Stronger local reasoning. Requires sufficient GPU memory; not suitable for many phones.'},
+{id:'Qwen3-8B-q4f16_1-MLC',name:'Expert / ~5.5 GB GPU',desc:'Large model for powerful desktops. Requires substantial RAM/VRAM and a long model download.'}
 ];
 const topics=[
 ['Investigate an alert','How do I work an AML monitoring alert from intake through evidence review and disposition?'],
@@ -14,12 +16,12 @@ const topics=[
 ['Explain red flags','Teach me the difference between an alert, unusual activity, suspicious activity and an institution’s filing decision.']
 ];
 const SYS=[
-'You are Analyst, a helpful financial-crime education AI within The Alert Room.',
+'You are Analyst, a capable, approachable AI assistant on The Alert Room. Answer general knowledge, practical, writing and financial-crime questions. If current information is needed and no live sources are available, acknowledge that limitation.',
 'Coach learners on AML, KYC, CDD/EDD, fraud, transaction monitoring, evidence selection and QA.',
 'Challenge assumptions, look for reasonable explanations and missing corroboration.',
 'Never invent transaction IDs, customer documents, dates, findings or legal conclusions.',
 'Never claim an alert proves wrongdoing or that a SAR is legally required without institutional review.',
-'Do not generate a complete submitted SAR on behalf of a learner; suggest outlines, critiques and revisions.',
+'For fictional training, you may draft illustrative narratives and examples if requested; label examples clearly, encourage the learner to verify their own evidence, and never represent the text as a real filing.',
 'Do not provide legal advice, do not claim access to bank records, and never pretend to submit a report.',
 'Ask useful questions. Be concrete, clear and skeptical; distinguish facts from inference.',
 'Use only fictional synthetic context explicitly shared. Never ask for private customer information.',
@@ -166,7 +168,7 @@ async function ask(question){
   const prompt=[{role:'system',content:SYS}];const shared=context();
   if(shared)prompt.push({role:'system',content:shared});
   prompt.push(...history.filter(x=>!x.pending).slice(-10).map(x=>({role:x.role,content:x.content.slice(0,3500)})));
-  const stream=await engine.chat.completions.create({messages:prompt,max_tokens:560,temperature:.3,stream:true});
+  const stream=await engine.chat.completions.create({messages:prompt,max_tokens:900,temperature:.35,stream:true});
   for await(const part of stream){const delta=part?.choices?.[0]?.delta?.content;if(delta){reply.content=(reply.content+delta).slice(0,6500);reply.pending=false;messages();}}
   if(!reply.content)reply.content='No response was returned. Try rephrasing your question.';
   status('AI ready. Responses are generated on your device.',100);
