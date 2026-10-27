@@ -51,7 +51,7 @@ function syncNavigation(){
  const r=pageRoute(),parent=parentRoute(r),back=$('#site-back');
  if(back){back.hidden=!parent;if(parent){back.href=parent.href;back.setAttribute('aria-label','Back to '+parent.label);const t=back.querySelector('.site-back-label');if(t)t.textContent=parent.label;}}
  const section=({case:'workspace',course:'learn',lesson:'learn',quiz:'learn',reviewer:'qa',feedback:'story',privacy:'story',coach:'workspace',analyst:'workspace'})[r.name]||r.name;
- $('.top-links a[data-nav-link]').forEach(el=>{const active=el.dataset.navLink===section;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
+ $$('.top-links a[data-nav-link]').forEach(el=>{const active=el.dataset.navLink===section;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
  closeMenu();
 }
 function makePage(html,title){root.innerHTML=html;if(pageRoute().name==='workspace')queueRefresh();document.title=title+' | The Alert Room';syncNavigation();window.scrollTo({top:0,behavior:'instant'});reveal();}
