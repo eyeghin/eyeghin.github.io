@@ -54,8 +54,8 @@ return '<div class="ar-site">'
 +' <div class="ar-work-head"><h2>The work is<br><span>in the details.</span></h2><p>The Alert Room is not a quiz pretending to be a bank. The training workspace gives you an account, a ledger and the responsibility to explain your decision.</p></div>'
 +' <div class="ar-work-rows">'
 +   row("01","Learn the context","Read the customer profile. Understand what normal activity should look like.","#learn","Study the foundations")
-+   +row("02","Investigate the activity","Search transactions, examine counterparties, build the chronology and select IDs as evidence.","#workspace","Open the investigations")
-+   +row("03","Write. Submit. Improve.","Document the conclusion yourself. Receive a transparent training QA report and revise.","#qa","Explore training QA")
++   row("02","Investigate the activity","Search transactions, examine counterparties, build the chronology and select IDs as evidence.","#workspace","Open the investigations")
++   row("03","Write. Submit. Improve.","Document the conclusion yourself. Receive a transparent training QA report and revise.","#qa","Explore training QA")
 +' </div></div></section>'
 +'<section class="ar-qa-spot"><div class="ar-container ar-qa-inner"><div><div class="ar-overline light">04 / THE SECOND LOOK</div>'
 +' <h2>A decision is only as good as the evidence behind it.</h2><p>When you submit a training case, the QA rubric examines your disposition, transaction citations, customer context, chronology and reasoning. A weak narrative comes back for improvement.</p>'
