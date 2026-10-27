@@ -241,3 +241,5 @@ input,select,textarea{accent-color:#bacbdd}
 @media(max-width:950px){.cin-track-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.cin-track-grid{grid-template-columns:1fr}.cin-course{min-height:195px}}
 @media(prefers-reduced-motion:reduce){.cin-section.has-motion,.cin-section.has-motion.cin-visible{opacity:1;transform:none;transition:none}.ops-panel{animation:none}}
+
+.ops-note-box input[type=number]{display:block;background:#0f161e;border:1px solid #445364;color:#f2f4f7;border-radius:7px;padding:11px}.ops-note-box input[type=number]:focus{border-color:#a9bdd2}.ops-note-box select{background:#10161e}
