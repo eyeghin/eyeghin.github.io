@@ -316,3 +316,19 @@ body.route-home .analyst-launch{display:none!important}
  #queue-body tr.clickable td:nth-child(7){color:#bdb5ff!important}
  .analyst-shell{border-radius:16px!important}
 }
+
+/* Final global finishing / all routes */
+.footer{background:#08080d!important;border-top:1px solid #292837!important;color:#e9e9f4!important;font-family:'DM Sans',sans-serif!important}
+.footer .brand{font-family:'Inter Tight',sans-serif!important;color:#f5f5ff!important;font-weight:720!important;letter-spacing:-.065em!important}
+.footer .brand i{background:#eeeaff!important;color:#191621!important;border:1px solid #eeeaff!important;border-radius:9px!important;transform:none!important;font-family:'Inter Tight',sans-serif!important}
+.footer-summary{color:#aaa9ba!important;font-size:13px!important;line-height:1.75!important}
+.footer-col b{color:#e8e7f4!important;font-family:'DM Sans',sans-serif!important;font-size:11px!important;letter-spacing:.085em!important}
+.footer-col a{color:#aaaabf!important;font-size:13px!important}
+.footer-col a:hover{color:#fff!important}
+.footer-bottom{border-color:#252532!important;color:#8e8da3!important;font-size:11px!important}
+body.route-home .footer{background:#08080d!important}
+body.route-home .footer-main{border-top:0}
+.nova-home .nova-hero-ctas .nova-cta:focus-visible,
+.nova-home .nova-phase:focus-visible,
+.nova-home .nova-toggle:focus-visible,
+.nova-home [data-nova-decision]:focus-visible{outline:2px solid #d0caff;outline-offset:4px}
