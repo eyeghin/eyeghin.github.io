@@ -301,3 +301,11 @@ textarea.field-control{line-height:1.7;resize:vertical;min-height:130px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 
 @media(max-width:640px){.nav-cta{display:none}.nav-toggle{margin-left:auto}.nav-inner{gap:14px}.brand{font-size:16px}.brand i{width:28px;height:28px}.p-hero .wrap{gap:15px}.footer-main{gap:35px}}
+
+/* Browser-verified finishing corrections: button contrast and score alignment. */
+.btn{background:transparent;color:#EDF0F4}
+.btn-primary{background:#ECEFEE;color:#101419}
+.btn-dark{background:#15191D;color:#FFFFFF}
+.btn-stroke{background:transparent;color:#EDF0F4}
+.qa-score{display:flex;align-items:baseline;gap:13px;letter-spacing:-.075em}
+.qa-score small{letter-spacing:0;display:inline-block;margin:0;color:#A3B4C6;white-space:nowrap;font-weight:450;line-height:1.2}
