@@ -47,8 +47,8 @@ function visual(){
 }
 function refresh(){
  const r=route();
- document.body.classList.remove('route-home','route-story','route-product');
- document.body.classList.add(r==='home'?'route-home':r==='story'?'route-story':'route-product');
+ document.body.classList.remove('route-home','route-story','route-product','route-analyst');
+ document.body.classList.add(r==='home'?'route-home':r==='story'?'route-story':r==='analyst'||r==='coach'?'route-analyst':'route-product');
  document.documentElement.dataset.page=r;
  const h=document.querySelector('.p-hero h1');
  if(r==='home'&&h){
