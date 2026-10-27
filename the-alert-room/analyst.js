@@ -2,8 +2,8 @@
 /* Analyst — optional, real local generative AI. No proxy, no API key. */
 (()=>{'use strict';
 const MODELS=[
-{id:'Qwen2.5-0.5B-Instruct-q4f16_1-MLC',name:'Essential / ~280 MB',desc:'Compact model for quick concepts; judgment can be limited.'},
-{id:'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',name:'Extended / ~900 MB',desc:'A more capable local model requiring additional GPU memory.'}
+{id:'Qwen2.5-0.5B-Instruct-q4f16_1-MLC',name:'Essential / ~945 MB',desc:'Compact model for quick concepts; judgment can be limited.'},
+{id:'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',name:'Extended / ~1.6 GB',desc:'A more capable local model requiring additional GPU memory.'}
 ];
 const topics=[
 ['Investigate an alert','How do I work an AML monitoring alert from intake through evidence review and disposition?'],
@@ -44,7 +44,7 @@ function markup(){
  +'<div class="analyst-controls"><label for="analyst-model">RUN ANALYST LOCALLY</label><select id="analyst-model">'+MODELS.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>').join('')+'</select>'
  +'<p class="analyst-small" id="analyst-model-description">'+esc(MODELS[0].desc)+'</p><button type="button" class="analyst-start" id="analyst-model-button">Start Analyst</button><div class="analyst-meter"><i id="analyst-load-progress"></i></div><p id="analyst-load-status" class="analyst-statusline" role="status">Model not loaded</p></div>'
  +'<div class="analyst-sideheading">02 / INVESTIGATION QUESTIONS</div><div class="analyst-promptlist">'+topics.map((t,i)=>'<button type="button" data-analyst-topic="'+i+'">'+esc(t[0])+'<span>↗</span></button>').join('')+'</div>'
- +'<p class="analyst-sidefooter">GENERATIVE AI ON YOUR DEVICE · WEBGPU REQUIRED · INITIAL DOWNLOAD ~280–900 MB · ANSWERS MAY BE WRONG</p></aside>'
+ +'<p class="analyst-sidefooter">GENERATIVE AI ON YOUR DEVICE · WEBGPU REQUIRED · INITIAL DOWNLOAD ~945 MB–1.6 GB · ANSWERS MAY BE WRONG</p></aside>'
  +'<div class="analyst-main"><div class="analyst-top"><div class="analyst-name">Analyst<small>FINANCIAL-CRIME LEARNING PARTNER</small></div><div class="analyst-badge"><i></i><span id="analyst-current-status">ON-DEVICE AI</span></div></div>'
  +'<div class="analyst-messages" id="analyst-messages" role="log" aria-live="polite" aria-label="Analyst conversation"></div>'
  +'<div class="analyst-compose"><div class="analyst-context"><label id="analyst-context-label" hidden><input id="analyst-attach" type="checkbox"> Include fictional case <strong id="analyst-case-id"></strong></label><button id="analyst-clear" type="button" class="btn btn-stroke btn-small">Clear conversation</button></div>'
