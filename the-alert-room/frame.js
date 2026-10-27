@@ -23,7 +23,7 @@ if(!Object.keys(state.casework||{}).length){
  }catch(e){}
  try{const o=JSON.parse(localStorage.getItem('the-alert-room-v1')||'null');if(o?.lessons)state.lessons=o.lessons;if(o?.notes)state.notes=o.notes;if(o?.quizHistory)state.quizHistory=o.quizHistory}catch(e){}
 }
-const ui={caseTab:'overview',queueQuery:'',queuePriority:'all',queueStatus:'all',queueType:'all',txQuery:'',txDirection:'all',quizIndex:0,quizTrack:'all',quizAnswered:false,quizChoice:-1,quizCorrect:0,quizItems:[],qaFilter:'all'};
+const ui={caseTab:'overview',queueQuery:'',queuePriority:'all',queueStatus:'all',queueType:'all',queuePage:0,txQuery:'',txDirection:'all',quizIndex:0,quizTrack:'all',quizAnswered:false,quizChoice:-1,quizCorrect:0,quizItems:[],qaFilter:'all'};
 const root=$('#view');
 function save(){try{localStorage.setItem(SK,JSON.stringify(state))}catch(e){notify('Browser storage unavailable. Your progress may not persist.')}}
 function notify(t){const e=$('#toast');if(!e)return;e.textContent=t;e.hidden=false;clearTimeout(notify.handle);notify.handle=setTimeout(()=>e.hidden=true,3700)}
@@ -31,7 +31,7 @@ function pageRoute(){const p=decodeURIComponent(location.hash.replace(/^#/,'')||
 const link=(href,text,variant='stroke')=>'<a href="'+safe(href)+'" class="btn btn-'+variant+'">'+safe(text)+' <span class="arrow" aria-hidden="true">↗</span></a>';
 const eyebrow=t=>'<div class="eyebrow section-kicker">'+safe(t)+'</div>';
 const copyText=t=>'<p class="body-copy">'+safe(t)+'</p>';
-function makePage(html,title){root.innerHTML=html;document.title=title+' | The Alert Room';const route=pageRoute();$$('.top-links a').forEach(x=>x.classList.toggle('active',x.getAttribute('href')==='#'+route.name));$('.nav-shell')?.classList.remove('open');$('.nav-toggle')?.setAttribute('aria-expanded','false');window.scrollTo({top:0,behavior:'instant'});reveal();}
+function makePage(html,title){root.innerHTML=html;if(pageRoute().name==='workspace')queueRefresh();document.title=title+' | The Alert Room';const route=pageRoute();$$('.top-links a').forEach(x=>x.classList.toggle('active',x.getAttribute('href')==='#'+route.name));$('.nav-shell')?.classList.remove('open');$('.nav-toggle')?.setAttribute('aria-expanded','false');window.scrollTo({top:0,behavior:'instant'});reveal();}
 function reveal(){if(!('IntersectionObserver'in window)||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){$$('.reveal').forEach(x=>x.classList.add('is-visible'));return}const observer=new IntersectionObserver(entries=>entries.forEach(x=>{if(x.isIntersecting){x.target.classList.add('is-visible');observer.unobserve(x.target)}}),{threshold:.07});$$('.reveal').forEach(x=>observer.observe(x))}
 function publicIntro(kicker,title,desc){return '<section class="wrap inner-hero enter">'+eyebrow(kicker)+'<h1>'+title+'</h1><p class="body-copy">'+desc+'</p></section>'}
 function warnings(){return '<div class="notice"><b>Training data only.</b> Every customer, account, payment and document in this exercise is fictional. Do not enter real customer records, employer-confidential information or SAR details. No regulatory filing takes place.</div>'}
@@ -94,7 +94,7 @@ function metricStrip(items){return '<div class="metric-strip">'+items.map(([labe
 function statsCase(c){let t=c.transactions||[],cr=t.filter(x=>x.direction==='Credit'),db=t.filter(x=>x.direction==='Debit');return {tx:t.length,credits:cr.reduce((n,x)=>n+Number(x.amount),0),debits:db.reduce((n,x)=>n+Number(x.amount),0),counterparties:new Set(t.map(x=>x.counterparty)).size,max:Math.max(0,...t.map(x=>x.amount))}}
 function caseStatusText(id){return ({new:'Unassigned',active:'In progress',passed:'Passed QA',returned:'Returned for revision'})[status(id)]||'Unassigned'}
 function filteredCases(){const q=ui.queueQuery.toLowerCase();return data.cases.filter(c=>!q||[c.id,c.title,c.reference,c.sector,c.trigger].join(' ').toLowerCase().includes(q)).filter(c=>ui.queuePriority==='all'||String(c.priority)===ui.queuePriority).filter(c=>ui.queueStatus==='all'||status(c.id)===ui.queueStatus).filter(c=>ui.queueType==='all'||c.title===ui.queueType).sort((a,b)=>a.priority-b.priority||a.id.localeCompare(b.id))}
-function queueRows(){const rows=filteredCases();return rows.length?rows.map(c=>'<tr class="clickable" tabindex="0" role="link" data-open-case="'+safe(c.id)+'"><td><span class="tag p'+c.priority+'">P'+c.priority+'</span></td><td><strong>'+safe(c.id)+'</strong><small>'+safe(c.opened)+'</small></td><td><strong>'+safe(c.title)+'</strong><small>'+safe(c.trigger)+'</small></td><td>'+safe(c.reference)+'<small>'+safe(c.sector)+'</small></td><td class="mono">'+usd(statsCase(c).max)+'</td><td><span class="tag '+(status(c.id)==='passed'?'good':status(c.id)==='returned'?'bad':'')+'">'+caseStatusText(c.id)+'</span></td><td style="text-align:right">↗</td></tr>').join(''):'<tr><td colspan="7" style="padding:65px;text-align:center;color:#9FB0C2">No alerts match the selected filters.</td></tr>'}
+function queueRows(){const all=filteredCases(),rows=all.slice(ui.queuePage*10,(ui.queuePage+1)*10);return rows.length?rows.map(c=>'<tr class="clickable" tabindex="0" role="link" data-open-case="'+safe(c.id)+'"><td><span class="tag p'+c.priority+'">P'+c.priority+'</span></td><td><strong>'+safe(c.id)+'</strong><small>'+safe(c.opened)+'</small></td><td><strong>'+safe(c.title)+'</strong><small>'+safe(c.trigger)+'</small></td><td>'+safe(c.reference)+'<small>'+safe(c.sector)+'</small></td><td class="mono">'+usd(statsCase(c).max)+'</td><td><span class="tag '+(status(c.id)==='passed'?'good':status(c.id)==='returned'?'bad':'')+'">'+caseStatusText(c.id)+'</span></td><td style="text-align:right">↗</td></tr>').join(''):'<tr><td colspan="7" style="padding:65px;text-align:center;color:#9FB0C2">No alerts match the selected filters.</td></tr>'}
 function queue(){
 const types=[...new Set(data.cases.map(x=>x.title))];
 makePage(desk(consoleTop('MONITORING / PRACTICE SHIFT '+String(state.session).padStart(2,'0'),'Alert queue','Start by assessing priority and customer exposure. A rule match is a prompt to investigate, not a conclusion.',link('#qa','Go to QA desk'))+
@@ -211,7 +211,28 @@ function privacy(){makePage(publicIntro('TRANSPARENCY / EDUCATIONAL USE','Know e
 function progress(){const reviewed=new Set(state.submissions.map(x=>x.caseId)).size,total=data.courses.reduce((n,c)=>n+c.lessons.length,0),last=state.quizHistory.slice(-1)[0];makePage(desk(consoleTop('YOUR LEARNING / LOCAL RECORD','Progress and practice','A private, same-browser summary of your learning. These numbers are not an employer KPI or a professional qualification.',link('#workspace','Review another account'))+metricStrip([['LESSONS COMPLETED',Object.values(state.lessons).filter(Boolean).length+'/'+total],['CASES REVIEWED',reviewed+'/'+data.cases.length],['QA SUBMISSIONS',state.submissions.length],['LAST QUIZ',last?last.correct+'/'+last.total:'—']])+'<div class="well"><div class="well-head"><h2>Your next practice cycle</h2></div><div class="context-card"><p class="body-copy">Read one lesson, investigate two different accounts, justify at least one closure or escalation, then compare your findings with a QA report. Repetition matters more than a decorative badge.</p><div class="tool-actions">'+link('#learn','Continue learning','primary')+link('#qa','Review previous QA')+'</div></div></div><div style="margin-top:30px"><button class="btn btn-stroke btn-small" data-reset>Erase local practice data</button><p class="private-note" style="margin-top:12px">This permanently clears locally saved learning and casework in this browser. No server account is involved.</p></div>','progress'),'Progress')}
 function notfound(){makePage('<section class="wrap inner-hero"><div class="eyebrow">NOT FOUND</div><h1>This file<br>is not in the queue.</h1>'+link('#home','Back to the homepage','primary')+'</section>','Not found')}
 function render(){const r=pageRoute();if(r.name==='home')publicHome();else if(r.name==='learn')academy();else if(r.name==='course')course(r.id);else if(r.name==='lesson')lesson(r.id);else if(r.name==='quiz')quizzes();else if(r.name==='workspace')queue();else if(r.name==='case')casePage(r.id);else if(r.name==='qa')r.id?qaReport(r.id):qaDesk();else if(r.name==='reviewer')r.id?reviewerForm(r.id):reviewer();else if(r.name==='story')founder();else if(r.name==='coach')coach();else if(r.name==='feedback')feedback();else if(r.name==='privacy')privacy();else if(r.name==='progress')progress();else notfound();}
-function queueRefresh(){if(!$('#queue-body'))return;$('#queue-body').innerHTML=queueRows();$('#queue-count').textContent=filteredCases().length+' records'}
+function queueRefresh(){
+ const body=$('#queue-body');if(!body)return;
+ const count=filteredCases().length,pages=Math.max(1,Math.ceil(count/10));
+ ui.queuePage=Math.max(0,Math.min(ui.queuePage,pages-1));
+ body.innerHTML=queueRows();
+ const tally=$('#queue-count');if(tally)tally.textContent=count+' matching / '+data.cases.length+' total';
+ let pager=$('#queue-pager');
+ if(!pager){
+  const holder=body.closest('.well');
+  const footer=holder?.querySelector('.table-foot');
+  if(!footer)return;
+  pager=document.createElement('nav');
+  pager.id='queue-pager';pager.className='queue-pagination';
+  pager.setAttribute('aria-label','Alert queue pages');
+  footer.insertAdjacentElement('afterend',pager);
+ }
+ const from=count?ui.queuePage*10+1:0,to=Math.min(count,(ui.queuePage+1)*10);
+ pager.innerHTML='<span>'+from+'–'+to+' of '+count+' alerts</span>'
+ +'<div><button type="button" data-queue-step="-1" '+(ui.queuePage===0?'disabled':'')+'>← Previous</button>'
+ +'<span class="queue-page-counter">'+(ui.queuePage+1)+' / '+pages+'</span>'
+ +'<button type="button" data-queue-step="1" '+(ui.queuePage>=pages-1?'disabled':'')+'>Next →</button></div>';
+}
 function txRefresh(){const r=pageRoute(),c=getCase(r.id);if(!c||!$('#tx-body'))return;$('#tx-body').innerHTML=transactionRows(c,work(r.id))}
 
 function refreshCaseIndicators(){
@@ -238,6 +259,7 @@ function manualSave(form){const r=state.submissions.find(x=>x.id===form.dataset.
 if(scores.some((n,i)=>!Number.isInteger(n)||n<0||n>maxDimension[i])||comments.length<25||comments.length>3500||!['return','approve'].includes(result)){notify('Use valid rubric scores and detailed comments of at least 25 characters.');return}
 r.manual={scores,total:scores.reduce((a,b)=>a+b,0),comments,result,date:Date.now(),method:'same-browser-reviewer-practice'};save();location.hash='#qa/'+r.id;notify('Reviewer practice saved locally.');}
 document.addEventListener('click',e=>{
+const pageControl=e.target.closest('[data-queue-step]');if(pageControl){ui.queuePage+=Number(pageControl.dataset.queueStep);queueRefresh();return}
 const nav=e.target.closest('.nav-toggle');if(nav){const open=$('.nav-shell').classList.toggle('open');nav.setAttribute('aria-expanded',String(open));return;}
 const teaser=e.target.closest('[data-teaser]');if(teaser){$$('[data-teaser]').forEach(x=>x.classList.toggle('selected',x===teaser));const value=teaser.dataset.teaser;$('#teaser-outcome').textContent=({close:'A documented closure can be defensible if the customer’s event activity and use of funds are supported. The alert alone isn’t enough.',rfi:'A focused request may be reasonable if the claimed event or venue payment cannot be corroborated.',escalate:'Escalation based on the number of incoming payments alone would be premature. Review the event purpose and supporting evidence first.'})[value];return;}
 const row=e.target.closest('[data-open-case],[data-open-qa],[data-open-reviewer]');if(row&&!e.target.closest('a,button,input')){location.hash=row.dataset.openCase?'#case/'+row.dataset.openCase:row.dataset.openQa?'#qa/'+row.dataset.openQa:'#reviewer/'+row.dataset.openReviewer;return;}
@@ -257,13 +279,13 @@ if(e.target.closest('[data-reset]')){if(confirm('Erase all lessons, quiz history
 });
 document.addEventListener('keydown',e=>{const row=e.target.closest?.('[data-open-case],[data-open-qa],[data-open-reviewer]');if(row&&(e.key==='Enter'||e.key===' ')){e.preventDefault();row.click();}});
 document.addEventListener('input',e=>{
-const t=e.target;if(t.id==='queue-search'){ui.queueQuery=t.value;queueRefresh();return}
+const t=e.target;if(t.id==='queue-search'){ui.queueQuery=t.value;ui.queuePage=0;queueRefresh();return}
 if(t.id==='tx-search'){ui.txQuery=t.value;txRefresh();return}
 if(t.matches('[data-case-field]')){const r=pageRoute();if(r.name!=='case')return;work(r.id)[t.dataset.caseField]=t.value.slice(0,7000);save();refreshCaseIndicators();}
 });
 document.addEventListener('change',e=>{
 const t=e.target;
-if(['queue-priority','queue-status','queue-type'].includes(t.id)){ui.queuePriority=$('#queue-priority').value;ui.queueStatus=$('#queue-status').value;ui.queueType=$('#queue-type').value;queueRefresh();return}
+if(['queue-priority','queue-status','queue-type'].includes(t.id)){ui.queuePriority=$('#queue-priority').value;ui.queueStatus=$('#queue-status').value;ui.queueType=$('#queue-type').value;ui.queuePage=0;queueRefresh();return}
 if(t.id==='tx-direction'){ui.txDirection=t.value;txRefresh();return}
 if(t.matches('[data-evidence]')){const id=pageRoute().id,d=work(id),n=t.dataset.evidence;if(t.checked){if(!d.evidence.includes(n))d.evidence.push(n)}else d.evidence=d.evidence.filter(x=>x!==n);save();refreshCaseIndicators();return}
 if(t.matches('[data-case-field]')){const id=pageRoute().id;work(id)[t.dataset.caseField]=t.value;save();return}
