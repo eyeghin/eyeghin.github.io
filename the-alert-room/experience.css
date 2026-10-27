@@ -62,3 +62,124 @@
 .case-elapsed{min-width:110px}
 }
 @media(prefers-reduced-motion:reduce){.vi-signal-burst,.vi-signal-dot{animation:none!important}.vi-hero .vi-hero-art-center .vi-graph{animation:none!important}}
+
+
+/* 2026-10-27 / Refined editorial typography and compact native-feeling Analyst.
+   One type family, generous leading, no negative-tracking collisions. */
+html,body{overflow-x:clip}
+.vi-site h1,.vi-site h2,.vi-site h3,.vi-site h4,
+.founder-hero h1,.inner-hero h1,.console-top h1{font-family:Manrope,system-ui,sans-serif; font-kerning:normal}
+.vi-hero .vi-hero-centered{min-height:min(910px,calc(100svh - 70px));padding-top:82px;padding-bottom:110px}
+.vi-hero .vi-hero-writing-center{max-width:990px}
+.vi-hero .vi-hero-writing-center h1{
+ font-family:Manrope,system-ui,sans-serif;
+ font-weight:750;
+ font-size:clamp(68px,9vw,138px);
+ line-height:1.015;
+ letter-spacing:-.058em;
+ word-spacing:normal;
+ margin:28px auto 32px;
+ padding:0 .055em .09em;
+ width:100%;
+ text-shadow:none;
+ text-wrap:balance;
+}
+.vi-hero .vi-hero-writing-center h1 em{font-style:normal;color:#b9d9ff}
+.vi-hero .vi-hero-writing-center>.vi-index{letter-spacing:.17em}
+.vi-signal-burst{margin-top:24px;font-weight:650;border-color:#49698b;background:#0a1522;letter-spacing:.055em}
+.vi-hero .vi-hero-lower{max-width:540px;border:0;padding-top:6px;gap:26px}
+.vi-hero .vi-hero-lower p{font-size:15px;line-height:1.75;color:#d1dbe5;max-width:455px}
+.vi-hero .vi-hero-lower>div{gap:18px}
+.vi-hero .vi-hero-art-center{opacity:.24}
+.vi-hero .vi-hero-art-center .vi-graph{opacity:.7;filter:blur(.2px);width:min(90vw,790px)}
+.vi-hero .vi-hero-art-center .vi-aura{opacity:.45}
+.vi-hero .vi-hero-art-center .vi-visual-note{display:none}
+.vi-site .vi-link{gap:22px;min-height:55px;font-size:13px;font-weight:700;transition:transform .25s ease,background-color .2s ease}
+.vi-hero-foot{border-top:1px solid #52607355}
+.vi-hero .vi-hero-foot{letter-spacing:.05em}
+.vi-story h2,.vi-walk h2,.vi-explore h2,.vi-founder h2,.vi-last h2{letter-spacing:-.055em;line-height:1.06}
+.founder-hero h1,.inner-hero h1{
+ font-weight:710!important;letter-spacing:-.052em!important;line-height:1.09!important;
+ font-size:clamp(46px,7.3vw,104px)!important;max-width:1050px
+}
+.founder-hero p{line-height:1.7}
+.eyebrow{letter-spacing:.11em}
+.nav-shell,.footer{background:#0b1118}
+.nav-shell .brand{font-weight:700;letter-spacing:-.046em}
+.ag-launcher[hidden]{display:none!important}
+.ag-launcher{
+ right:22px;bottom:22px;
+ min-height:52px;max-width:170px;padding:6px 16px 6px 7px;
+ background:#f5f7fb;color:#0c1622;
+ border:1px solid #d6dee6;border-radius:100px;
+ box-shadow:0 9px 25px #0003;
+ gap:9px;font-size:12px;letter-spacing:-.01em;
+}
+.ag-launcher .ag-avatar{width:35px;height:35px;flex-basis:35px;background:#0c243a;font-size:16px;font-weight:750}
+.ag-launcher small{font-size:9px;color:#64748b}
+.ag-unread{width:6px;height:6px;right:12px;top:5px;background:#2b75bf}
+.ag-greeting{border-radius:16px;box-shadow:0 12px 36px #0004}
+.ag-drawer{
+ background:#f7f9fc;color:#132234;border:1px solid #d9e2ed;
+ border-radius:18px;width:min(440px,calc(100vw - 28px));
+ height:min(680px,calc(100dvh - 38px));
+ box-shadow:0 22px 82px #030a1680;
+}
+.ag-drawer-header{background:#0c1928;color:#f9fafc;padding:17px 18px;gap:11px;min-height:77px}
+.ag-drawer-header .ag-avatar{background:#eaf3fc;color:#10223b;width:35px;height:35px;flex-basis:35px;font-size:15px}
+.ag-drawer-header-text h2{font-size:17px;line-height:1.25;font-weight:750;letter-spacing:-.03em}
+.ag-drawer-header-text p{font-size:10px;line-height:1.4;color:#b7c5d7}
+.ag-drawer-status{color:#c1d7ed;border-color:#41556e;font-size:9px;letter-spacing:.05em;font-weight:600;padding:6px 9px}
+.ag-drawer .ag-chat{min-height:0;height:100%;display:flex;flex-direction:column}
+.ag-drawer .ag-conversation{flex:1;min-height:0;overflow-y:auto;padding:20px 18px;background:#f7f9fc;gap:12px}
+.ag-drawer .analyst-intro{margin:auto 0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;padding:15px 3px 20px;color:#18283c}
+.ag-drawer .analyst-monogram{height:44px;width:44px;border-radius:13px;display:grid;place-items:center;background:#e5eef8;color:#163451;font-weight:800;font-size:21px;margin-bottom:21px}
+.ag-drawer .analyst-intro h3{font-size:clamp(21px,2vw,27px);font-weight:730;letter-spacing:-.045em;line-height:1.22;margin:0 0 11px;max-width:310px}
+.ag-drawer .analyst-intro p{font-size:12px;line-height:1.8;color:#64758a;max-width:330px;margin:0 0 23px}
+.ag-drawer .analyst-intro small{font-size:9px;font-weight:700;letter-spacing:.1em;color:#5e7898}
+.ag-drawer .analyst-turn{display:flex;flex-direction:column;align-items:flex-start;max-width:94%;gap:5px;line-height:1.65;margin:0 0 9px}
+.ag-drawer .analyst-turn.user{align-self:flex-end;align-items:flex-end}
+.ag-drawer .analyst-turn small{font-size:9px;color:#687a90;letter-spacing:.07em;font-weight:750}
+.ag-drawer .analyst-turn p{border:1px solid #e0e8f1;border-radius:14px 14px 14px 4px;background:#fff;color:#1c2e42;margin:0;padding:12px 14px;font-size:12px;line-height:1.72;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:0 2px 8px #1b31430a}
+.ag-drawer .analyst-turn.user p{border-radius:14px 14px 4px 14px;background:#183854;border-color:#183854;color:#fff}
+.ag-drawer .analyst-toolbar{flex:0 0 auto;padding:9px 16px 5px;display:flex;align-items:center;justify-content:space-between;gap:6px;border-top:1px solid #e0e7ef;background:#fff;font-size:10px}
+.ag-drawer .analyst-toolbar #analyst-context-label{display:flex;gap:6px;align-items:center;color:#52657b}
+.ag-drawer .analyst-toolbar #analyst-context-label[hidden]{display:none!important}
+.ag-drawer #analyst-attach{accent-color:#23496b}
+.ag-drawer .analyst-toolbar button{font-size:10px;color:#64758a;background:none;border:0;padding:5px;cursor:pointer}
+.ag-drawer .analyst-chips{flex:0 0 auto;padding:8px 16px;display:flex;gap:7px;overflow:auto;white-space:nowrap;min-height:47px;background:#fff;scrollbar-width:none}
+.ag-drawer .analyst-chips button{font-family:inherit;border:1px solid #d9e2ed;padding:7px 11px;background:#fff;color:#2c4d6b;border-radius:100px;font-size:10px;line-height:1.2;cursor:pointer;flex:none}
+.ag-drawer .analyst-chips button:focus-visible,.ag-drawer .analyst-chips button:hover{background:#e7f0fa;border-color:#7199c1}
+.ag-drawer .analyst-chat-form{padding:7px 12px;display:flex;align-items:center;gap:8px;margin:0 15px;background:#f5f8fc;border:1px solid #bacbdc;border-radius:15px;flex:0 0 auto}
+.ag-drawer .analyst-chat-form:focus-within{border-color:#345c85;box-shadow:0 0 0 2px #bed6ed}
+.ag-drawer #analyst-input{flex:1;min-width:0;max-height:98px;min-height:36px;background:transparent;resize:none;border:0;outline:none;color:#172a3e;font-size:13px;line-height:1.5;padding:8px 3px;font-family:inherit}
+.ag-drawer #analyst-input::placeholder{color:#8997a8}
+.ag-drawer #analyst-send{flex:0 0 35px;width:35px;height:35px;border:0;border-radius:11px;background:#173e62;color:white;font-size:19px;display:grid;place-items:center;cursor:pointer}
+.ag-drawer .analyst-privacy{padding:10px 17px 14px;color:#788a9d;font-size:9px;line-height:1.4;background:#fff}
+.ag-drawer #analyst-root{background:#fff;min-height:0}
+@media(max-width:640px){
+ .vi-hero .vi-hero-centered{min-height:calc(100svh - 74px);padding:72px 21px 68px;justify-content:center}
+ .vi-hero .vi-hero-writing-center{max-width:100%}
+ .vi-hero .vi-hero-writing-center h1{font-size:clamp(49px,11.45vw,65px);line-height:1.105;letter-spacing:-.052em;margin:24px 0 26px;padding:0 .04em .08em;overflow-wrap:normal}
+ .vi-hero .vi-hero-writing-center>.vi-index{font-size:9px;letter-spacing:.075em;gap:9px}
+ .vi-signal-burst{margin-top:23px;font-size:9px;letter-spacing:.03em}
+ .vi-hero .vi-hero-lower{padding-top:0;gap:21px;max-width:360px}
+ .vi-hero .vi-hero-lower p{font-size:13px;line-height:1.7}
+ .vi-hero .vi-hero-lower>div{gap:12px}
+ .vi-hero .vi-hero-art-center .vi-graph{width:145vw;opacity:.37}
+ .vi-hero .vi-hero-art-center .vi-aura{opacity:.25}
+ .vi-hero .vi-hero-foot{display:none}
+ .vi-story h2,.vi-walk h2,.vi-explore h2,.vi-founder h2,.vi-last h2{line-height:1.12!important;letter-spacing:-.045em!important}
+ .founder-hero h1,.inner-hero h1{font-size:clamp(40px,9.4vw,60px)!important;letter-spacing:-.043em!important;line-height:1.13!important;padding-bottom:.1em}
+ .founder-hero p{font-size:16px;line-height:1.8}
+ .ag-launcher{min-height:47px;max-width:152px;padding:5px 12px 5px 5px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+ .ag-launcher .ag-avatar{width:33px;height:33px;flex-basis:33px}
+ .ag-drawer{inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;border:0;border-radius:0}
+ .ag-drawer-header{padding:calc(14px + env(safe-area-inset-top,0px)) 15px 13px;min-height:72px}
+ .ag-drawer .ag-conversation{padding:19px 16px}
+ .ag-drawer .analyst-privacy{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+ .ag-drawer .analyst-chat-form{margin:0 12px}
+ .ag-drawer-status{display:none}
+ .ag-drawer .analyst-intro h3{font-size:25px}
+}
+@media(prefers-reduced-motion:reduce){.vi-site *, .ag-drawer *{animation-duration:.01ms!important;transition-duration:.01ms!important}}
