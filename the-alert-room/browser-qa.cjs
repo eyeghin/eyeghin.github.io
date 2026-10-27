@@ -36,7 +36,7 @@ fs.mkdirSync(OUT,{recursive:true});
    ['quiz','.quiz-card',1],
    ['workspace','#queue-body tr[data-open-case]',10],
    ['story','.founder-letter article',1],
-   ['feedback','#feedback-form',1],
+   ['feedback','.feedback-email[href^="mailto:"]',1],
    ['analyst','#analyst-root .ag-chat',1],
    ['privacy','.wrap',1]
   ];
@@ -47,6 +47,12 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.waitForSelector('#analyst-drawer.is-open',{timeout:10000});
   await page.waitForSelector('#analyst-input',{timeout:10000});
   assert.ok(await page.locator('#analyst-messages').isVisible(),'Interactive chat messages must be visible');
+  await page.locator('#analyst-input').fill('How do I review a transaction monitoring alert?');
+  await page.locator('#analyst-chat-form button[type="submit"]').click();
+  await page.waitForSelector('.analyst-turn.assistant');
+  assert.match(await page.locator('.analyst-turn.assistant').last().innerText(),/customer|review|ledger/i);
+  assert.equal(await page.locator('#analyst-model-button').count(),0,'Mobile-unsafe AI model download button must be gone');
+  console.log('INSTANT_ANALYST_OK');
   await page.locator('#ag-close').click();
   assert.equal(await page.locator('#analyst-drawer.is-open').count(),0,'Agent must close without route change');
   await page.locator('a[href="#analyst"]').first().click();
@@ -135,6 +141,11 @@ fs.mkdirSync(OUT,{recursive:true});
   await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
+  const heroType=await mobile.evaluate(()=>{const h=document.querySelector('.vi-hero h1');const st=getComputedStyle(h);return {fontSize:parseFloat(st.fontSize),lineHeight:parseFloat(st.lineHeight),spacing:parseFloat(st.letterSpacing)||0,width:h.getBoundingClientRect().width,scroll:h.scrollWidth}});
+  assert.ok(heroType.lineHeight>=heroType.fontSize*1.06,'Hero lettering too compressed on mobile');
+  assert.ok(heroType.fontSize<=55,'Hero lettering too large on mobile');
+  assert.ok(heroType.scroll<=heroType.width+4,'Hero overflows its mobile container');
+  console.log('MOBILE_HERO_TYPOGRAPHY',JSON.stringify(heroType));
   console.log('MOBILE_OVERFLOW',JSON.stringify(overflow));
   assert.ok(overflow.scroll<=overflow.viewport+4,'Unexpected horizontal mobile overflow');
   await mobile.locator('.nav-toggle').click();assert.ok(await mobile.locator('.top-links').isVisible());
@@ -142,6 +153,11 @@ fs.mkdirSync(OUT,{recursive:true});
   if(await mobile.locator('#analyst-drawer.is-open').count())await mobile.locator('#ag-close').click();
   await mobile.locator('#ag-launcher').click();
   await mobile.waitForSelector('#analyst-drawer.is-open');
+  await mobile.locator('#analyst-input').fill('What makes transaction evidence strong?');
+  await mobile.locator('#analyst-chat-form button[type="submit"]').click();
+  await mobile.waitForSelector('.analyst-turn.assistant');
+  assert.equal(await mobile.locator('text=Analyst needs to download').count(),0);
+  console.log('MOBILE_CHAT_NO_DOWNLOAD_OK');
   const agentMobile=await mobile.evaluate(()=>({width:document.querySelector('#analyst-drawer').getBoundingClientRect().width,viewport:innerWidth}));
   assert.ok(Math.abs(agentMobile.width-agentMobile.viewport)<=2,'Agent must fill mobile viewport without overflow');
   await mobile.screenshot({path:path.join(OUT,'11-analyst-agent-mobile.jpg'),type:'jpeg',quality:75,fullPage:false,animations:'disabled'});
