@@ -494,3 +494,13 @@ body.route-home .analyst-launch{display:none}
 
 /* Mobile product navigation must fit 390px without horizontal overflow. */
 @media(max-width:640px){.rail{gap:0;justify-content:space-between;padding:0 5px;width:100%;max-width:100vw;min-width:0;overflow:hidden}.rail a{flex:0 0 39px;margin:0;width:39px;min-width:0}.rail .rail-bottom{margin-top:0}.console{min-width:0}.console-main{max-width:100vw;min-width:0}}
+
+/* Responsive product queue paging and distraction-free story */
+body:has(.ar-site) .analyst-launch{display:none}
+.queue-pagination{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;border-top:1px solid #343643;background:#1a1b25;padding:17px 22px;color:#c5c7d2;font-size:12px}
+.queue-pagination>div{display:flex;align-items:center;gap:12px}
+.queue-pagination button{border:1px solid #626471;background:#242338;color:#f8f9fb;border-radius:7px;min-height:40px;padding:8px 14px;font-size:12px;font-weight:650}
+.queue-pagination button:hover:not(:disabled){background:#393456;border-color:#a8a1ff}
+.queue-pagination button:disabled{opacity:.4}
+.queue-page-counter{color:#c5c7d2;font-variant-numeric:tabular-nums}
+@media(max-width:640px){.queue-pagination>div{width:100%;justify-content:space-between}.queue-pagination{padding:15px}}
