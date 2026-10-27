@@ -1,10 +1,13 @@
 name: The Alert Room - Browser QA
 on:
   push:
-    branches: [main]
+    branches: [main, brand-story-reset]
     paths:
       - "the-alert-room/frame.js"
       - "the-alert-room/frame.css"
+      - "the-alert-room/brand.css"
+      - "the-alert-room/story.css"
+      - "the-alert-room/story-engine.js"
       - "the-alert-room/artdirection.css"
       - "the-alert-room/immersive.js"
       - "the-alert-room/cinema.js"
@@ -58,5 +61,5 @@ jobs:
           git add visual-qa/*.jpg
           if ! git diff --cached --quiet; then
             git commit -m "Update verified browser screenshots [skip ci]"
-            git push origin HEAD:main
+            git push origin HEAD:${{ github.ref_name }}
           fi
