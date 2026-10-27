@@ -11,13 +11,18 @@ fs.mkdirSync(OUT,{recursive:true});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   await page.waitForSelector('.vi-hero h1',{timeout:25000});
-  assert.match(await page.locator('.vi-hero h1').innerText(),/not\s+an answer/i);
+  assert.match(await page.locator('.vi-hero h1').innerText(),/is\s+not\s+an\s+answer/i);
   assert.ok(await page.locator('.vi-graph .vi-track').count()>=8,'Evidence flow illustration missing');
+  assert.equal(await page.locator('script[src="./analyst.js"]').count(),0,'Blocking generative model bootstrap must not load');
+  assert.equal(await page.locator('script[src="./analyst-lite.js"]').count(),1,'Instant Analyst guide must load');
+  assert.equal(await page.locator('a[href*="github.com/eyeghin/erikyeghinyan-portfolio/issues"]').count(),0,'Public feedback must not require GitHub login');
   assert.ok(await page.locator('.vi-steps button').count()===4,'Four narrative stages missing');
   assert.equal(await page.locator('.vi-route-list a').count(),3,'Three distinct work chapters must render');
   assert.ok(!(await page.locator('.vi-site').innerText()).includes('NaNNaN'),'Broken narrative concatenation');
   assert.equal(await page.locator('#ag-launcher:visible').count(),1,'Analyst launcher must be available on the homepage');
   assert.equal(await page.locator('.ag-drawer.is-open').count(),0,'Agent must not obstruct the homepage until requested');
+   assert.equal(await page.locator('.rail').count(),0,'Unlabeled duplicate navigation rail must be removed');
+   assert.equal(await page.locator('#site-back:visible').count(),0,'Homepage must not show a meaningless Back control');
   await page.locator('[data-vi-step="1"]').click();
   assert.match(await page.locator('#vi-current').innerText(),/Context changes everything|Who is this customer/i);
   await page.locator('[data-vi-step="2"]').click();
@@ -36,7 +41,6 @@ fs.mkdirSync(OUT,{recursive:true});
    ['quiz','.quiz-card',1],
    ['workspace','#queue-body tr[data-open-case]',10],
    ['story','.founder-letter article',1],
-   ['feedback','#feedback-form',1],
    ['analyst','#analyst-root .ag-chat',1],
    ['privacy','.wrap',1]
   ];
@@ -47,37 +51,34 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.waitForSelector('#analyst-drawer.is-open',{timeout:10000});
   await page.waitForSelector('#analyst-input',{timeout:10000});
   assert.ok(await page.locator('#analyst-messages').isVisible(),'Interactive chat messages must be visible');
+  await page.locator('#analyst-input').fill('How do I review a transaction monitoring alert?');
+  await page.locator('#analyst-chat-form button[type="submit"]').click();
+  await page.waitForSelector('.analyst-turn.assistant');
+  assert.match(await page.locator('.analyst-turn.assistant').last().innerText(),/customer|review|ledger/i);
+  assert.equal(await page.locator('#analyst-model-button').count(),0,'Mobile-unsafe AI model download button must be gone');
+  console.log('INSTANT_ANALYST_OK');
   await page.locator('#ag-close').click();
   assert.equal(await page.locator('#analyst-drawer.is-open').count(),0,'Agent must close without route change');
-  await page.locator('a[href="#analyst"]').first().click();
+  await page.locator('[data-open-analyst]').filter({visible:true}).first().click();
   await page.waitForSelector('#analyst-drawer.is-open');
   assert.match(page.url(),/#home$/,'Opening Analyst must not navigate away from current page');
   assert.equal(await page.locator('a[href="./resources.html"]').count(),0,'Official sources link should not appear in footer');
   assert.equal(await page.locator('a[href*="/issues"]').count(),0,'Public issue tracker should not appear in footer');
-  await page.locator('.ag-quick [data-analyst-quick="0"]').click();
-  assert.match(await page.locator('#analyst-input').inputValue(),/fictional AML alert|investigation/i,'Analyst quick topic did not populate question');
-  const aiLibrary=await page.evaluate(async()=>{
-    try {
-      const lib=await Promise.race([
-        import('https://esm.run/@mlc-ai/web-llm@0.2.85'),
-        new Promise((_,reject)=>setTimeout(()=>reject(Error('Runtime CDN import timed out')),30000))
-      ]);
-      return {ok:typeof lib.CreateMLCEngine==='function',models:lib.prebuiltAppConfig?.model_list?.filter(m=>['Qwen2.5-0.5B-Instruct-q4f16_1-MLC','Qwen2.5-1.5B-Instruct-q4f16_1-MLC'].includes(m.model_id)).map(m=>m.model_id)||[]};
-    } catch(e) { return {ok:false,error:String(e?.message||e)} }
-  });
-  console.log('ANALYST_RUNTIME_IMPORT',JSON.stringify(aiLibrary));
-  assert.ok(aiLibrary.ok,'Genuine AI runtime could not import: '+JSON.stringify(aiLibrary));
-  assert.equal(aiLibrary.models.length,2,'Both optional models must be registered in the runtime');
+  await page.locator('.analyst-chips button').first().click();
+  await page.waitForSelector('.analyst-turn.assistant');
+  assert.ok(await page.locator('.analyst-turn.assistant').count()>=1,'Study chat must answer a suggested question');
+  console.log('ANALYST_QUICK_ANSWER_OK');
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'09-analyst-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.goto(BASE+'#analyst/AR-3002',{waitUntil:'networkidle'});
   await page.waitForSelector('#analyst-drawer.is-open',{timeout:10000});
   await page.waitForSelector('#analyst-context-label:not([hidden])',{timeout:10000});
   assert.match(await page.locator('#analyst-context-label').innerText(),/AR-3002/);
-  assert.equal(await page.locator('#analyst-attach').isChecked(),false,'Case data must be opt-in');
+  assert.equal(await page.locator('#analyst-attach').isChecked(),true,'Synthetic case context must be visible in the guide');
   await page.locator('#ag-close').click();
   await page.goto(BASE+'#workspace',{waitUntil:'networkidle'});
   await page.waitForSelector('#queue-pager');
+   assert.equal(await page.locator('#site-back:visible').count(),1,'Workspace must offer Back to home');
   assert.equal(await page.locator('#queue-body tr[data-open-case]').count(),10,'Queue pagination should show ten alerts');
   await page.locator('[data-queue-step="1"]').click();
   assert.equal(await page.locator('#queue-body tr[data-open-case]').count(),10,'Next page should show ten alerts');
@@ -87,6 +88,10 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'02-workspace-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.goto(BASE+'#case/AR-3002',{waitUntil:'networkidle'});
+   assert.equal(await page.locator('#site-back').getAttribute('href'),'#workspace','Case Back must target queue');
+   assert.equal(await page.locator('.case-tabs button').count(),6,'Case needs six named stages');
+   await page.locator('[data-case-next]').click();assert.equal(await page.locator('[data-case-tab="ledger"]').getAttribute('aria-current'),'step','Next stage must open transactions');
+   await page.locator('[data-case-prev]').click();assert.equal(await page.locator('[data-case-tab="overview"]').getAttribute('aria-current'),'step','Previous stage must return to customer');
   await page.locator('[data-mark-reviewed="kyc"]').click();
   await page.locator('[data-case-tab="ledger"]').click();
   await page.waitForSelector('[data-evidence]');
@@ -134,14 +139,36 @@ fs.mkdirSync(OUT,{recursive:true});
   
   await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
+  const heroTypography=await mobile.locator('.vi-hero h1').evaluate(el=>{const r=el.getBoundingClientRect(),cs=getComputedStyle(el);return {w:r.width,viewport:innerWidth,height:r.height,lineHeight:parseFloat(cs.lineHeight),fontSize:parseFloat(cs.fontSize)}});
+  assert.ok(heroTypography.w<=heroTypography.viewport,'Hero headline exceeds mobile width');
+  assert.ok(heroTypography.lineHeight/heroTypography.fontSize>=1,'Headline lines overlap vertically');
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
+  const heroType=await mobile.evaluate(()=>{const h=document.querySelector('.vi-hero h1');const st=getComputedStyle(h);return {fontSize:parseFloat(st.fontSize),lineHeight:parseFloat(st.lineHeight),spacing:parseFloat(st.letterSpacing)||0,width:h.getBoundingClientRect().width,scroll:h.scrollWidth}});
+  assert.ok(heroType.lineHeight>=heroType.fontSize*1.06,'Hero lettering too compressed on mobile');
+  assert.ok(heroType.fontSize<=55,'Hero lettering too large on mobile');
+  assert.ok(heroType.scroll<=heroType.width+4,'Hero overflows its mobile container');
+  console.log('MOBILE_HERO_TYPOGRAPHY',JSON.stringify(heroType));
   console.log('MOBILE_OVERFLOW',JSON.stringify(overflow));
   assert.ok(overflow.scroll<=overflow.viewport+4,'Unexpected horizontal mobile overflow');
   await mobile.locator('.nav-toggle').click();assert.ok(await mobile.locator('.top-links').isVisible());
+  assert.equal(await mobile.locator('.top-links a[data-nav-link]:visible').count(),6,'Mobile menu should have six readable routes');
+  assert.equal(await mobile.locator('.rail').count(),0,'No duplicate icon rail on mobile');
+  await mobile.locator('a[data-nav-link="learn"]').click();
+  await mobile.waitForSelector('.learning-grid .learning-tile');
+  assert.equal(await mobile.locator('.nav-shell.open').count(),0,'Menu must close after selecting destination');
+  assert.equal(await mobile.locator('#site-back').getAttribute('href'),'#home','Learn Back must return to homepage');
+  await mobile.locator('#site-back').click();
+  await mobile.waitForSelector('.vi-hero h1');
+  assert.equal(await mobile.locator('#site-back:visible').count(),0,'Home should hide Back');
   console.log('MOBILE_NAV_OK');
   if(await mobile.locator('#analyst-drawer.is-open').count())await mobile.locator('#ag-close').click();
   await mobile.locator('#ag-launcher').click();
   await mobile.waitForSelector('#analyst-drawer.is-open');
+  await mobile.locator('#analyst-input').fill('What makes transaction evidence strong?');
+  await mobile.locator('#analyst-chat-form button[type="submit"]').click();
+  await mobile.waitForSelector('.analyst-turn.assistant');
+  assert.equal(await mobile.locator('text=Analyst needs to download').count(),0);
+  console.log('MOBILE_CHAT_NO_DOWNLOAD_OK');
   const agentMobile=await mobile.evaluate(()=>({width:document.querySelector('#analyst-drawer').getBoundingClientRect().width,viewport:innerWidth}));
   assert.ok(Math.abs(agentMobile.width-agentMobile.viewport)<=2,'Agent must fill mobile viewport without overflow');
   await mobile.screenshot({path:path.join(OUT,'11-analyst-agent-mobile.jpg'),type:'jpeg',quality:75,fullPage:false,animations:'disabled'});
