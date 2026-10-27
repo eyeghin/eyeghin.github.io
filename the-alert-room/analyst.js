@@ -27,15 +27,17 @@ const SYS=[
 ].join(' ');
 const $=(s,r=document)=>r.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hosted=window.AR_HOSTED_ANALYST||{},hostedEnabled=Boolean(hosted.endpoint&&hosted.siteKey);
+let turnstileToken="",turnstileWidget=null,turnstileLoading=null;
 let engine=null,engineModel='',chosen=MODELS[0].id,loading=null,busy=false,state='idle',progress='Model not loaded',progressPct=0;
 let history=[],rootNode=null,caseId='',allowContext=false;
 function status(text,pct){
  if(typeof text==='string')progress=text;if(Number.isFinite(pct))progressPct=Math.max(0,Math.min(100,pct));
- const label=$('#analyst-load-status');if(label)label.textContent=progress;
+ const label=$('#analyst-load-status');if(label)label.textContent=hostedEnabled?(progress==='Model not loaded'?'Hosted Analyst · Verify to begin.':progress):progress;
  const bar=$('#analyst-load-progress');if(bar)bar.style.width=progressPct+'%';
  const badge=$('#analyst-current-status');if(badge)badge.textContent=state==='ready'?'AI READY':state==='loading'?'MODEL LOADING':state==='error'?'MODEL UNAVAILABLE':'ON-DEVICE AI';
  const button=$('#analyst-model-button');if(button){button.disabled=state==='loading'||busy;button.textContent=state==='ready'?'✓ Analyst ready':state==='loading'?'Preparing local AI…':state==='error'?'Retry loading AI':'Start Analyst';}
- const send=$('#analyst-send');if(send)send.disabled=state==='loading'||busy;
+ const send=$('#analyst-send');if(send)send.disabled=busy||(!hostedEnabled&&state==='loading');
  const input=$('#analyst-input');if(input)input.disabled=busy;
 }
 
@@ -48,16 +50,16 @@ return '<div class="ag-chat">'
 'Challenge my decision'
 ].map((v,i)=>'<button type="button" data-analyst-quick="'+i+'">'+v+'</button>').join('')+'</div>'
 +'<div class="ag-options"><label id="analyst-context-label" hidden><input id="analyst-attach" type="checkbox"> Use fictional case <strong id="analyst-case-id"></strong></label>'
-+'<details class="ag-model-settings"><summary>AI model &amp; device setup <span aria-hidden="true">⌄</span></summary>'
++(hostedEnabled?'<div class="ag-hosted-status"><span>ADVANCED AI</span><div id="analyst-turnstile"></div></div>':'<details class="ag-model-settings"><summary>AI model &amp; device setup <span aria-hidden="true">⌄</span></summary>')
 +'<div class="ag-settings-inner"><label for="analyst-model">ON-DEVICE MODEL</label>'
 +'<select id="analyst-model">'+MODELS.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join('')+'</select>'
 +'<p id="analyst-model-description" class="analyst-small">'+esc(MODELS[0].desc)+'</p>'
 +'<button type="button" id="analyst-model-button" class="ag-start">Start Analyst</button>'
-+'<div class="analyst-meter"><i id="analyst-load-progress"></i></div></div></details></div>'
++'<div class="analyst-meter"><i id="analyst-load-progress"></i></div></div>'+(hostedEnabled?'':'</details>')+'</div>'
 +'<div class="ag-compose"><div class="ag-compose-surface"><form id="analyst-chat-form"><textarea id="analyst-input" rows="2" maxlength="3500" aria-label="Message Analyst" placeholder="Ask a question about AML or this case…"></textarea>'
 +'<button id="analyst-send" type="submit" aria-label="Send to Analyst">↗</button></form></div>'
 +'<div class="ag-composer-foot"><span id="analyst-load-status" role="status">Model not loaded</span><button id="analyst-clear" type="button">Clear chat</button></div>'
-+'<p class="ag-disclosure">Real on-device AI. First response requires downloading a large model and a WebGPU-compatible browser. No real customer data.</p></div>'
++'<p class="ag-disclosure">'+(hostedEnabled?'Hosted AI answers may be inaccurate. Questions are sent securely to the configured AI service after human verification. Do not enter real customer data.':'Real on-device AI. First response requires downloading a large model and a WebGPU-compatible browser. No real customer data.')+'</p></div>'
 +'</div>';
 }
 
@@ -123,7 +125,38 @@ async function load(){
  })();
  return loading;
 }
+
+async function initializeHosted(){
+ if(!hostedEnabled||document.querySelector('#analyst-turnstile')?.dataset.initialized)return;
+ const slot=$('#analyst-turnstile');if(!slot)return;
+ if(!/^https:\/\/[a-z0-9.-]+(?:\/chat)?$/i.test(hosted.endpoint)){status('Hosted endpoint address is invalid.',0);return;}
+ slot.dataset.initialized='1';
+ if(!turnstileLoading)turnstileLoading=new Promise((resolve,reject)=>{
+  if(window.turnstile?.render){resolve();return;}
+  const t=document.createElement('script');t.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';t.async=true;t.onload=resolve;t.onerror=()=>reject(Error('Verification widget could not load'));document.head.appendChild(t);
+ });
+ try{await turnstileLoading;turnstileWidget=window.turnstile.render(slot,{sitekey:hosted.siteKey,theme:'light',callback:token=>{turnstileToken=token;status('Advanced Analyst ready · Ask your question.',100)},'expired-callback':()=>{turnstileToken='';status('Verification expired; please verify again.',0)}});status('Complete the verification to chat with Analyst.',0);}
+ catch{status('Verification unavailable. Try again later.',0);}
+}
+async function askHosted(question){
+ const text=String(question||'').trim();if(!text||busy)return;
+ if(!turnstileToken){status('Complete the verification before sending.',0);return;}
+ const list=history.filter(v=>!v.pending).slice(-10).map(v=>({role:v.role,content:v.content.slice(0,3000)}));
+ list.push({role:'user',content:text});
+ history.push({role:'user',content:text});const reply={role:'assistant',content:'',pending:true};history.push(reply);
+ busy=true;messages();status('Analyst is preparing your response…',100);
+ try{
+  const response=await fetch(hosted.endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:list,turnstileToken,syntheticCase:context(),webSearch:false})});
+  const payload=await response.json().catch(()=>({}));
+  if(!response.ok)throw Error(payload.error||'Hosted AI service is unavailable');
+  reply.content=String(payload.answer||'No response provided').slice(0,10000);
+  status('Advanced Analyst ready · Verify again to ask a follow-up.',100);
+ }catch(e){reply.content='Analyst could not answer: '+String(e?.message||e).slice(0,200);status('Please try again with a new verification.',0);}
+ finally{reply.pending=false;busy=false;turnstileToken='';if(window.turnstile&&turnstileWidget!==null)window.turnstile.reset(turnstileWidget);messages();}
+}
+
 async function ask(question){
+ if(hostedEnabled)return askHosted(question);
  const text=String(question||'').trim();if(!text||busy)return;
  if(state!=='ready'||!engine){status('Start the AI model before sending your question.',progressPct);return;}
  history.push({role:'user',content:text});
@@ -147,7 +180,7 @@ function mount(){
  caseId=c?.id||'';allowContext=false;
  setCaseContext(caseId);
  $('#analyst-model').value=chosen;$('#analyst-model-description').textContent=MODELS.find(x=>x.id===chosen)?.desc||'';
- status(state==='ready'?'AI ready. Ask Analyst a question.':progress,progressPct);messages();
+ status(hostedEnabled?'Complete verification to start advanced Analyst.':state==='ready'?'AI ready. Ask Analyst a question.':progress,progressPct);messages();if(hostedEnabled)initializeHosted();
 }
 
 function setCaseContext(id){
@@ -185,6 +218,7 @@ document.addEventListener('change',e=>{
 document.addEventListener('submit',e=>{
  if(e.target.id!=='analyst-chat-form')return;e.preventDefault();
  const input=$('#analyst-input');if(!input||!input.value.trim())return;
+ if(hostedEnabled){const value=input.value.trim();if(!turnstileToken){status('Verify above before asking Analyst.',0);return;}input.value='';askHosted(value);return;}
  if(state!=='ready'){
   const saved=input.value.trim();
   if(state==='loading'){status('Analyst is loading the local language model. Your question will remain here.',progressPct);return;}
