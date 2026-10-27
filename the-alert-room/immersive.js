@@ -9,7 +9,7 @@ const reduce=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 const src=window.AR_CASES||[];
 let sceneNode=null, raf=0, mapMotion=null;
 const fmt=n=>'$'+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:0});
-const esc=x=>String(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[c]));
+const esc=x=>String(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const route=()=>decodeURIComponent((location.hash||'#home').slice(1)).split('/')[0]||'home';
 function visual(){
  const c=src.find(r=>r.id==='AR-3002')||src[0];
