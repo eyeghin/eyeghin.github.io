@@ -11,7 +11,10 @@ fs.mkdirSync(OUT,{recursive:true});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   await page.waitForSelector('.p-hero h1',{timeout:25000});
-  assert.match(await page.locator('.p-hero h1').innerText(),/answer key/i);
+  await page.waitForSelector('.investigation-visual .iv-map svg',{timeout:12000});
+  assert.match(await page.locator('.p-hero h1').innerText(),/beginning/i);
+  assert.ok(await page.locator('.iv-member').count()>=10,'Funds-flow graph missing');
+  assert.ok(await page.locator('body.route-home').count()>0,'Homepage route styling not active');
   await page.evaluate(()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible')));
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:72,fullPage:true,animations:'disabled'});
   const pages=[
@@ -69,7 +72,7 @@ fs.mkdirSync(OUT,{recursive:true});
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
   mobile.on('pageerror',e=>errors.push('MOBILE: '+e.message));
   await mobile.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await mobile.waitForSelector('.p-hero h1');
+  await mobile.waitForSelector('.investigation-visual .iv-map svg',{timeout:12000});
   await mobile.evaluate(()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible')));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
