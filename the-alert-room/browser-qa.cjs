@@ -42,6 +42,7 @@ fs.mkdirSync(OUT,{recursive:true});
   ];
   for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);}
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
+  if(await page.locator('#analyst-drawer.is-open').count())await page.locator('#ag-close').click();
   await page.locator('#ag-launcher').click();
   await page.waitForSelector('#analyst-drawer.is-open',{timeout:10000});
   await page.waitForSelector('#analyst-input',{timeout:10000});
@@ -138,6 +139,7 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(overflow.scroll<=overflow.viewport+4,'Unexpected horizontal mobile overflow');
   await mobile.locator('.nav-toggle').click();assert.ok(await mobile.locator('.top-links').isVisible());
   console.log('MOBILE_NAV_OK');
+  if(await mobile.locator('#analyst-drawer.is-open').count())await mobile.locator('#ag-close').click();
   await mobile.locator('#ag-launcher').click();
   await mobile.waitForSelector('#analyst-drawer.is-open');
   const agentMobile=await mobile.evaluate(()=>({width:document.querySelector('#analyst-drawer').getBoundingClientRect().width,viewport:innerWidth}));
