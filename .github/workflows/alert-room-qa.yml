@@ -1,7 +1,7 @@
 name: The Alert Room - Browser QA
 on:
   push:
-    branches: [main, brand-story-reset, floating-analyst-agent-ux, cinematic-studio-reset-2026]
+    branches: [main, brand-story-reset, floating-analyst-agent-ux, cinematic-studio-reset-2026, casework-quality-pass]
     paths:
       - "the-alert-room/frame.js"
       - "the-alert-room/frame.css"
@@ -10,6 +10,7 @@ on:
       - "the-alert-room/story-engine.js"
       - "the-alert-room/vision.js"
       - "the-alert-room/vision.css"
+      - "the-alert-room/experience.css"
       - "the-alert-room/artdirection.css"
       - "the-alert-room/immersive.js"
       - "the-alert-room/cinema.js"
