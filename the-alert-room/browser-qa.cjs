@@ -31,8 +31,12 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.locator('[data-case-tab="ledger"]').click();
   await page.waitForSelector('[data-evidence]');
   assert.equal(await page.locator('[data-evidence]').count(),24);
+  const exportBtn=await page.locator('[data-export-ledger]').evaluate(el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color}));
+  assert.notEqual(exportBtn.background,'rgb(255, 255, 255)','Export button has invisible white-on-white styling');
   const ids=[];
   for(let i=0;i<3;i++){const e=page.locator('[data-evidence]').nth(i);ids.push(await e.getAttribute('data-evidence'));await e.check();}
+  assert.match(await page.locator('[data-case-status]').innerText(),/In progress/);
+  assert.ok(await page.locator('[data-case-evidence-check].checked').count()>0,'Case controls did not update after evidence selection');
   await page.screenshot({path:path.join(OUT,'03-case-ledger.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.locator('[data-mark-reviewed="ledger"]').click();
   await page.locator('[data-case-tab="workpaper"]').click();
@@ -45,7 +49,10 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.locator('[data-submit-case]').click();
   await page.waitForURL(/#qa\/QA-/, {timeout:12000});
   await page.waitForSelector('.qa-score',{timeout:10000});assert.ok(await page.locator('.qa-score').count()>0,'QA score missing');
-  console.log('FULL_CASE_QA_OK',page.url());
+  const layout=await page.locator('.qa-score').evaluate(el=>{const ran=document.createRange();ran.selectNodeContents(el.firstChild);const score=ran.getBoundingClientRect(),tail=el.querySelector('small').getBoundingClientRect();return {scoreRight:score.right,tailLeft:tail.left}});
+  assert.ok(layout.tailLeft>=layout.scoreRight-2,'QA denominator overlaps numerical score');
+  assert.ok(await page.locator('[data-download-qa]').count()>0,'Exportable QA report missing');
+  console.log('FULL_CASE_QA_OK',page.url(),'layout',JSON.stringify(layout));
   await page.screenshot({path:path.join(OUT,'04-qa-report.jpg'),type:'jpeg',quality:76,fullPage:true,animations:'disabled'});
   const reportHash=page.url().split('#')[1];
   await page.goto(BASE+'#reviewer',{waitUntil:'networkidle'});
@@ -70,6 +77,15 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(overflow.scroll<=overflow.viewport+4,'Unexpected horizontal mobile overflow');
   await mobile.locator('.nav-toggle').click();assert.ok(await mobile.locator('.top-links').isVisible());
   console.log('MOBILE_NAV_OK');
+  for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','.qa-list','08-qa-mobile.jpg']]){
+   await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
+   await mobile.waitForSelector(selector,{timeout:10000});
+   const dim=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
+   assert.ok(dim.scroll<=dim.viewport+4,'Mobile horizontal overflow on '+route+': '+JSON.stringify(dim));
+   await mobile.screenshot({path:path.join(OUT,file),type:'jpeg',quality:72,fullPage:true,animations:'disabled'});
+   console.log('MOBILE_ROUTE_OK',route);
+  }
+
   assert.deepEqual(errors,[],'Browser errors: '+errors.join('; '));
   console.log('VISUAL_QA_PASS All routes, case submissions, QA, manual review and mobile navigation');
  }finally{await browser.close()}
