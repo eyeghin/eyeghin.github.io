@@ -13,6 +13,7 @@ on:
       - "the-alert-room/polish.css"
       - "the-alert-room/analyst-lite.js"
       - "the-alert-room/experience.css"
+      - "the-alert-room/navigation.css"
       - "the-alert-room/artdirection.css"
       - "the-alert-room/immersive.js"
       - "the-alert-room/cinema.js"
