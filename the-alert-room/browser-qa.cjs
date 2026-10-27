@@ -11,8 +11,11 @@ fs.mkdirSync(OUT,{recursive:true});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   await page.waitForSelector('.vi-hero h1',{timeout:25000});
-  assert.match(await page.locator('.vi-hero h1').innerText(),/not\s+an answer/i);
+  assert.match(await page.locator('.vi-hero h1').innerText(),/is\s+not\s+an\s+answer/i);
   assert.ok(await page.locator('.vi-graph .vi-track').count()>=8,'Evidence flow illustration missing');
+  assert.equal(await page.locator('script[src="./analyst.js"]').count(),0,'Blocking generative model bootstrap must not load');
+  assert.equal(await page.locator('script[src="./analyst-lite.js"]').count(),1,'Instant Analyst guide must load');
+  assert.equal(await page.locator('a[href*="github.com/eyeghin/erikyeghinyan-portfolio/issues"]').count(),0,'Public feedback must not require GitHub login');
   assert.ok(await page.locator('.vi-steps button').count()===4,'Four narrative stages missing');
   assert.equal(await page.locator('.vi-route-list a').count(),3,'Three distinct work chapters must render');
   assert.ok(!(await page.locator('.vi-site').innerText()).includes('NaNNaN'),'Broken narrative concatenation');
@@ -130,6 +133,9 @@ fs.mkdirSync(OUT,{recursive:true});
   
   await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
+  const heroTypography=await mobile.locator('.vi-hero h1').evaluate(el=>{const r=el.getBoundingClientRect(),cs=getComputedStyle(el);return {w:r.width,viewport:innerWidth,height:r.height,lineHeight:parseFloat(cs.lineHeight),fontSize:parseFloat(cs.fontSize)}});
+  assert.ok(heroTypography.w<=heroTypography.viewport,'Hero headline exceeds mobile width');
+  assert.ok(heroTypography.lineHeight/heroTypography.fontSize>=1,'Headline lines overlap vertically');
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
   const heroType=await mobile.evaluate(()=>{const h=document.querySelector('.vi-hero h1');const st=getComputedStyle(h);return {fontSize:parseFloat(st.fontSize),lineHeight:parseFloat(st.lineHeight),spacing:parseFloat(st.letterSpacing)||0,width:h.getBoundingClientRect().width,scroll:h.scrollWidth}});
   assert.ok(heroType.lineHeight>=heroType.fontSize*1.06,'Hero lettering too compressed on mobile');
