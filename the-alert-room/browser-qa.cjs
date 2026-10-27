@@ -20,7 +20,7 @@ fs.mkdirSync(OUT,{recursive:true});
   const pages=[
    ['learn','.learning-grid .learning-tile',6],
    ['quiz','.quiz-card',1],
-   ['workspace','#queue-body tr[data-open-case]',40],
+   ['workspace','#queue-body tr[data-open-case]',10],
    ['story','.founder-letter article',1],
    ['feedback','#feedback-form',1],
    ['coach','#coach-result',1],
@@ -28,6 +28,13 @@ fs.mkdirSync(OUT,{recursive:true});
   ];
   for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);}
   await page.goto(BASE+'#workspace',{waitUntil:'networkidle'});
+  await page.waitForSelector('#queue-pager');
+  assert.equal(await page.locator('#queue-body tr[data-open-case]').count(),10,'Queue pagination should show ten alerts');
+  await page.locator('[data-queue-step="1"]').click();
+  assert.equal(await page.locator('#queue-body tr[data-open-case]').count(),10,'Next page should show ten alerts');
+  await page.locator('#queue-search').fill('AR-3002');
+  assert.equal(await page.locator('#queue-body tr[data-open-case]').count(),1,'Queue search must apply across all forty alerts');
+  await page.locator('#queue-search').fill('');
   await page.screenshot({path:path.join(OUT,'02-workspace-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.goto(BASE+'#case/AR-3002',{waitUntil:'networkidle'});
   await page.locator('[data-mark-reviewed="kyc"]').click();
