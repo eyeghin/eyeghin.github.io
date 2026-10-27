@@ -491,3 +491,6 @@ body.route-home .analyst-launch{display:none}
  #queue-body tr.clickable td:nth-child(4) small{display:none}
  #queue-body tr.clickable td:nth-child(5){font-size:11px}
 }
+
+/* Mobile product navigation must fit 390px without horizontal overflow. */
+@media(max-width:640px){.rail{gap:0;justify-content:space-between;padding:0 5px;width:100%;max-width:100vw;min-width:0;overflow:hidden}.rail a{flex:0 0 39px;margin:0;width:39px;min-width:0}.rail .rail-bottom{margin-top:0}.console{min-width:0}.console-main{max-width:100vw;min-width:0}}
