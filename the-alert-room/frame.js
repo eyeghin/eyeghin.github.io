@@ -31,7 +31,30 @@ function pageRoute(){const p=decodeURIComponent(location.hash.replace(/^#/,'')||
 const link=(href,text,variant='stroke')=>'<a href="'+safe(href)+'" class="btn btn-'+variant+'">'+safe(text)+' <span class="arrow" aria-hidden="true">↗</span></a>';
 const eyebrow=t=>'<div class="eyebrow section-kicker">'+safe(t)+'</div>';
 const copyText=t=>'<p class="body-copy">'+safe(t)+'</p>';
-function makePage(html,title){root.innerHTML=html;if(pageRoute().name==='workspace')queueRefresh();document.title=title+' | The Alert Room';const route=pageRoute();$$('.top-links a').forEach(x=>x.classList.toggle('active',x.getAttribute('href')==='#'+route.name));$('.nav-shell')?.classList.remove('open');$('.nav-toggle')?.setAttribute('aria-expanded','false');window.scrollTo({top:0,behavior:'instant'});reveal();}
+function parentRoute(route){
+ const name=route.name,id=route.id;
+ if(name==='home')return null;
+ if(name==='case')return {href:'#workspace',label:'All alerts'};
+ if(name==='lesson'){const bits=id.split('-');bits.pop();return {href:'#course/'+bits.join('-'),label:'Module'};}
+ if(name==='course'||name==='quiz')return {href:'#learn',label:'Academy'};
+ if(name==='reviewer'&&id)return {href:'#reviewer',label:'Reviewer queue'};
+ if(name==='reviewer')return {href:'#qa',label:'Training QA'};
+ if(name==='qa'&&id)return {href:'#qa',label:'QA desk'};
+ return {href:'#home',label:'Home'};
+}
+function closeMenu(){
+ $('.nav-shell')?.classList.remove('open');
+ const btn=$('.nav-toggle');if(btn){btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','Open menu');}
+ const backdrop=$('.nav-backdrop');if(backdrop)backdrop.hidden=true;
+}
+function syncNavigation(){
+ const r=pageRoute(),parent=parentRoute(r),back=$('#site-back');
+ if(back){back.hidden=!parent;if(parent){back.href=parent.href;back.setAttribute('aria-label','Back to '+parent.label);const t=back.querySelector('.site-back-label');if(t)t.textContent=parent.label;}}
+ const section=({case:'workspace',course:'learn',lesson:'learn',quiz:'learn',reviewer:'qa',feedback:'story',privacy:'story',coach:'workspace',analyst:'workspace'})[r.name]||r.name;
+ $('.top-links a[data-nav-link]').forEach(el=>{const active=el.dataset.navLink===section;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
+ closeMenu();
+}
+function makePage(html,title){root.innerHTML=html;if(pageRoute().name==='workspace')queueRefresh();document.title=title+' | The Alert Room';syncNavigation();window.scrollTo({top:0,behavior:'instant'});reveal();}
 function reveal(){if(!('IntersectionObserver'in window)||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){$$('.reveal').forEach(x=>x.classList.add('is-visible'));return}const observer=new IntersectionObserver(entries=>entries.forEach(x=>{if(x.isIntersecting){x.target.classList.add('is-visible');observer.unobserve(x.target)}}),{threshold:.07});$$('.reveal').forEach(x=>observer.observe(x))}
 function publicIntro(kicker,title,desc){return '<section class="wrap inner-hero enter">'+eyebrow(kicker)+'<h1>'+title+'</h1><p class="body-copy">'+desc+'</p></section>'}
 function warnings(){return '<div class="notice"><b>Training data only.</b> Every customer, account, payment and document in this exercise is fictional. Do not enter real customer records, employer-confidential information or SAR details. No regulatory filing takes place.</div>'}
@@ -80,7 +103,7 @@ makePage(header+'<section class="wrap quiz-layout"><div>'+left+'</div><aside><di
 /* CASE DESK / investigation experience */
 const icon={analyst:'A.',workspace:'▦',queue:'▦',qa:'◈',learn:'◧',quiz:'◉',reviewer:'▥',coach:'◇',progress:'▧'};
 function rail(active){return '<aside class="rail" aria-label="Desk navigation">'+Object.entries({workspace:'Queue',analyst:'Analyst AI',qa:'QA desk',reviewer:'Reviewer',learn:'Academy',quiz:'Questions',progress:'Progress'}).map(([key,label])=>'<a href="#'+key+'" class="'+(key===active?'active':'')+'" aria-label="'+safe(label)+'"><span aria-hidden="true">'+icon[key]+'</span><span class="tooltip">'+safe(label)+'</span></a>').join('')+'<a class="rail-bottom" href="#home" aria-label="Home"><span aria-hidden="true">⌂</span><span class="tooltip">Home</span></a></aside>'}
-function desk(content,active){return '<div class="console">'+rail(active)+'<div class="console-main">'+content+'</div></div>'}
+function desk(content,active){return '<div class="console"><div class="console-main">'+content+'</div></div>'}
 function consoleTop(kicker,title,sub,actions=''){return '<div class="console-top"><div><div class="console-kicker">'+safe(kicker)+'</div><h1>'+safe(title)+'</h1><p>'+safe(sub)+'</p></div><div class="tool-actions">'+actions+'</div></div>'}
 function metricStrip(items){return '<div class="metric-strip">'+items.map(([label,n])=>'<div class="metric"><span>'+safe(label)+'</span><strong>'+n+'</strong></div>').join('')+'</div>'}
 function statsCase(c){let t=c.transactions||[],cr=t.filter(x=>x.direction==='Credit'),db=t.filter(x=>x.direction==='Debit');return {tx:t.length,credits:cr.reduce((n,x)=>n+Number(x.amount),0),debits:db.reduce((n,x)=>n+Number(x.amount),0),counterparties:new Set(t.map(x=>x.counterparty)).size,max:Math.max(0,...t.map(x=>x.amount))}}
@@ -93,7 +116,12 @@ makePage(desk(consoleTop('MONITORING / PRACTICE SHIFT '+String(state.session).pa
 metricStrip([['ALERTS IN QUEUE',data.cases.length],['NOT YET STARTED',data.cases.filter(c=>status(c.id)==='new').length],['IN PROGRESS',data.cases.filter(c=>status(c.id)==='active').length],['PASSED TRAINING QA',data.cases.filter(c=>status(c.id)==='passed').length]])+
 '<div class="well"><div class="well-head"><h2>Monitoring alerts</h2><span id="queue-count">'+filteredCases().length+' records</span></div><div class="toolbar"><input class="field-control grow" id="queue-search" placeholder="Search alert ID, rule or customer" aria-label="Search alerts" value="'+safe(ui.queueQuery)+'"><select class="field-control" id="queue-priority" aria-label="Filter priority"><option value="all">All priorities</option>'+[1,2,3].map(n=>'<option value="'+n+'" '+(ui.queuePriority==String(n)?'selected':'')+'>Priority '+n+'</option>').join('')+'</select><select class="field-control" id="queue-status" aria-label="Filter review status"><option value="all">All statuses</option>'+[['new','Unassigned'],['active','In progress'],['returned','Returned'],['passed','Passed QA']].map(x=>'<option value="'+x[0]+'" '+(ui.queueStatus===x[0]?'selected':'')+'>'+x[1]+'</option>').join('')+'</select><select class="field-control" id="queue-type" aria-label="Filter scenario"><option value="all">All scenarios</option>'+types.map(x=>'<option value="'+safe(x)+'" '+(ui.queueType===x?'selected':'')+'>'+safe(x)+'</option>').join('')+'</select></div><div class="data-scroll"><table class="data-grid"><thead><tr><th>Pri</th><th>Alert ID</th><th>Scenario / triggering pattern</th><th>Training subject</th><th>Largest</th><th>Case status</th><th></th></tr></thead><tbody id="queue-body">'+queueRows()+'</tbody></table></div><div class="table-foot"><span>40 fictional alert records. Priorities, customer profiles, and all ledger entries are synthetic.</span><span>SELECT A ROW TO INVESTIGATE →</span></div></div><div style="margin-top:20px">'+warnings()+'</div>','workspace'),'Alert queue')}
 function evidenceMark(t,d){return '<input type="checkbox" class="tickbox" data-evidence="'+safe(t.id)+'" '+(d.evidence.includes(t.id)?'checked':'')+' aria-label="Select transaction '+safe(t.id)+' as evidence">'}
-function caseTabs(){return '<div class="case-tabs" role="tablist" aria-label="Investigation sections">'+[['overview','Customer & KYC'],['ledger','Transactions'],['flow','Fund flows'],['timeline','Chronology'],['referral','Referral review'],['workpaper','Case narrative']].map(x=>'<button role="tab" aria-selected="'+String(ui.caseTab===x[0])+'" data-case-tab="'+x[0]+'">'+x[1]+'</button>').join('')+'</div>'}
+const caseSections=[['overview','Customer'],['ledger','Transactions'],['flow','Funds flow'],['timeline','Timeline'],['referral','Referral'],['workpaper','Narrative']];
+function caseTabs(){return '<nav class="case-tabs" aria-label="Case review stages">'+caseSections.map((x,i)=>'<button type="button" aria-current="'+(ui.caseTab===x[0]?'step':'false')+'" aria-label="Stage '+(i+1)+': '+x[1]+'" data-case-tab="'+x[0]+'"><span class="case-stage-number">'+String(i+1).padStart(2,'0')+'</span><span>'+x[1]+'</span></button>').join('')+'</nav>'}
+function caseStageActions(){
+ const pos=Math.max(0,caseSections.findIndex(v=>v[0]===ui.caseTab));
+ return '<div class="case-stage-actions"><span>STEP '+(pos+1)+' OF '+caseSections.length+'</span><div>'+(pos>0?'<button type="button" data-case-prev>← Previous</button>':'<a href="#workspace">← All alerts</a>')+(pos<caseSections.length-1?'<button type="button" data-case-next>Next: '+caseSections[pos+1][1]+' →</button>':'<a href="#qa">Open QA desk ↗</a>')+'</div></div>';
+}
 function kv(key,value){return '<div><dt>'+safe(key)+'</dt><dd>'+safe(value)+'</dd></div>'}
 function caseOverview(c,d){
 return '<div class="well"><div class="well-head"><h2>Customer overview</h2><span>KYC / FICTIONAL PROFILE</span></div><div class="context-card"><dl class="context-grid">'+kv('Training subject',c.reference)+kv('Business / occupation',c.sector)+kv('Expected activity',c.expected)+kv('Prior account behavior',c.baseline)+kv('Monitoring rule',c.title)+kv('Opened for review',c.opened)+kv('Alert triggering pattern',c.trigger)+kv('Customer classification','Training-only sample')+kv('Documentation status','Not supplied / assess information gaps')+'</dl></div><div class="insight">The account profile is a starting point, not an answer. Compare the pattern against expected behavior and identify which additional facts could change your conclusion.</div></div>'+metricStrip([['TRANSACTION COUNT',statsCase(c).tx],['TOTAL INBOUND',usd(statsCase(c).credits)],['TOTAL OUTBOUND',usd(statsCase(c).debits)],['COUNTERPARTIES',statsCase(c).counterparties]])+
@@ -127,7 +155,7 @@ const c=getCase(id);if(!c)return notfound();const d=work(id);
 const parts={overview:caseOverview,ledger:caseLedger,flow:caseFlow,timeline:caseTimeline,referral:caseReferral,workpaper:caseWorkpaper};
 const content=(parts[ui.caseTab]||caseOverview)(c,d);
 const statusTxt=caseStatusText(id);
-makePage(desk('<div class="case-breadcrumb"><a href="#workspace">ALERTS</a><span>/</span><span>'+safe(c.id)+'</span><span>/</span><span>'+safe(ui.caseTab).toUpperCase()+'</span></div>'+consoleTop('ALERT INVESTIGATION / '+safe(c.id),c.title,c.trigger,'<span class="tag p'+c.priority+'">P'+c.priority+'</span> <span class="case-elapsed" aria-label="Active review time"><small>ACTIVE REVIEW</small><b data-case-time>'+clockText(activeDuration(id))+'</b></span> '+link('#qa','QA desk'))+'<div class="review-steps"><span class="active">01 TRIAGE</span><b>/</b><span class="active">02 RESEARCH</span><b>/</b><span class="'+(ui.caseTab==='workpaper'?'active':'')+'">03 WRITE</span><b>/</b><span>04 SUBMIT</span><b>/</b><span>05 QA</span></div><div class="case-grid"><div class="case-main"><div class="well">'+caseTabs()+'<div class="context-card" style="padding:13px 23px;display:flex;justify-content:space-between;gap:10px"><span class="eyebrow" style="color:#9EAFBF">'+safe(c.reference)+'</span><span class="eyebrow" style="color:#8494A7">'+statusTxt.toUpperCase()+'</span></div></div><div style="height:16px"></div>'+content+'</div>'+panelCase(c,d)+'</div>','workspace'),'Case investigation');}
+makePage(desk('<div class="case-breadcrumb"><a href="#workspace">ALERTS</a><span>/</span><span>'+safe(c.id)+'</span><span>/</span><span>'+safe(ui.caseTab).toUpperCase()+'</span></div>'+consoleTop('ALERT INVESTIGATION / '+safe(c.id),c.title,c.trigger,'<span class="tag p'+c.priority+'">P'+c.priority+'</span> <span class="case-elapsed" aria-label="Active review time"><small>ACTIVE REVIEW</small><b data-case-time>'+clockText(activeDuration(id))+'</b></span> '+link('#qa','QA desk'))+'<div class="review-steps"><span class="active">01 TRIAGE</span><b>/</b><span class="active">02 RESEARCH</span><b>/</b><span class="'+(ui.caseTab==='workpaper'?'active':'')+'">03 WRITE</span><b>/</b><span>04 SUBMIT</span><b>/</b><span>05 QA</span></div><div class="case-grid"><div class="case-main"><div class="well">'+caseTabs()+'<div class="context-card" style="padding:13px 23px;display:flex;justify-content:space-between;gap:10px"><span class="eyebrow" style="color:#9EAFBF">'+safe(c.reference)+'</span><span class="eyebrow" style="color:#8494A7">'+statusTxt.toUpperCase()+'</span></div></div><div style="height:16px"></div>'+content+caseStageActions()+'</div>'+panelCase(c,d)+'</div>','workspace'),'Case investigation');}
 function scoreQA(c,d){
 const n=d.narrative.trim(),ctx=d.context.trim(),all=(ctx+' '+n+' '+d.notes+' '+d.rfi).toLowerCase();
 const citations=d.evidence.filter(id=>n.includes(id));const correct=d.decision===c.outcome;
@@ -265,7 +293,12 @@ if(scores.some((n,i)=>!Number.isInteger(n)||n<0||n>maxDimension[i])||comments.le
 r.manual={scores,total:scores.reduce((a,b)=>a+b,0),comments,result,date:Date.now(),method:'same-browser-reviewer-practice'};save();location.hash='#qa/'+r.id;notify('Reviewer practice saved locally.');}
 document.addEventListener('click',e=>{
 const pageControl=e.target.closest('[data-queue-step]');if(pageControl){ui.queuePage+=Number(pageControl.dataset.queueStep);queueRefresh();return}
-const nav=e.target.closest('.nav-toggle');if(nav){const open=$('.nav-shell').classList.toggle('open');nav.setAttribute('aria-expanded',String(open));return;}
+const nav=e.target.closest('.nav-toggle');if(nav){const open=$('.nav-shell').classList.toggle('open');nav.setAttribute('aria-expanded',String(open));nav.setAttribute('aria-label',open?'Close menu':'Open menu');const backdrop=$('.nav-backdrop');if(backdrop)backdrop.hidden=!open;return;}
+if(e.target.closest('.nav-backdrop')){closeMenu();return;}
+const stepDir=e.target.closest('[data-case-next],[data-case-prev]');if(stepDir){
+ snapshot();let pos=caseSections.findIndex(x=>x[0]===ui.caseTab);pos+=stepDir.hasAttribute('data-case-next')?1:-1;
+ if(caseSections[pos]){ui.caseTab=caseSections[pos][0];casePage(pageRoute().id);}return;
+}
 const teaser=e.target.closest('[data-teaser]');if(teaser){$$('[data-teaser]').forEach(x=>x.classList.toggle('selected',x===teaser));const value=teaser.dataset.teaser;$('#teaser-outcome').textContent=({close:'A documented closure can be defensible if the customer’s event activity and use of funds are supported. The alert alone isn’t enough.',rfi:'A focused request may be reasonable if the claimed event or venue payment cannot be corroborated.',escalate:'Escalation based on the number of incoming payments alone would be premature. Review the event purpose and supporting evidence first.'})[value];return;}
 const row=e.target.closest('[data-open-case],[data-open-qa],[data-open-reviewer]');if(row&&!e.target.closest('a,button,input')){location.hash=row.dataset.openCase?'#case/'+row.dataset.openCase:row.dataset.openQa?'#qa/'+row.dataset.openQa:'#reviewer/'+row.dataset.openReviewer;return;}
 const tab=e.target.closest('[data-case-tab]');if(tab){snapshot();ui.caseTab=tab.dataset.caseTab;const y=window.scrollY;casePage(pageRoute().id);window.scrollTo({top:y,behavior:'instant'});return;}
@@ -301,6 +334,8 @@ document.addEventListener('submit',e=>{
 if(e.target.id==='review-form'){e.preventDefault();manualSave(e.target);return}
 
 });
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('.nav-shell')?.classList.contains('open')){closeMenu();$('.nav-toggle')?.focus();}});
+document.addEventListener('click',e=>{if(e.target.closest('.top-links a[data-nav-link]'))closeMenu();});
 window.addEventListener('hashchange',()=>{if(pageRoute().name!=='case'){ui.caseTab='overview';ui.txQuery='';ui.txDirection='all'}render()});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render);else render();
 })();
