@@ -56,6 +56,7 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.locator('textarea[name="comments"]').fill('The fictional evidence IDs are traceable and the account profile provides a reasonable explanation. The analyst may improve the chronology with exact amounts and counterparties to strengthen the case conclusion.');
   await page.locator('#review-form button[type="submit"]').click();
   await page.waitForURL(/#qa\/QA-/);
+  await page.waitForFunction(()=>document.querySelector('#view')?.textContent?.includes('Local reviewer feedback'),null,{timeout:10000});
   assert.match(await page.locator('#view').innerText(),/Local reviewer feedback/);
   console.log('MANUAL_REVIEW_OK',page.url());
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
