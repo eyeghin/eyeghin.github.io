@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0C0F14">
+<meta name="theme-color" content="#101A1D">
 <meta name="description" content="The Alert Room is a free AML and financial-crime learning space. Investigate fictional transaction monitoring cases, write your own case assessments and learn from transparent training QA. Created by Erik Yeghinyan.">
 <meta name="author" content="Erik Yeghinyan">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -16,11 +16,11 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="The Alert Room — Free AML casework practice">
 <meta name="twitter:description" content="An alert doesn't come with an answer key. Learn and practice the investigation.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval' https://esm.run https://cdn.jsdelivr.net https://*.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://esm.run https://cdn.jsdelivr.net https://*.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://raw.githubusercontent.com https://*.githubusercontent.com https://mlc.ai https://*.mlc.ai; worker-src 'self' blob:; form-action 'none'; object-src 'none'; base-uri 'self'">
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="./frame.css"><link rel="stylesheet" href="./artdirection.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="./frame.css"><link rel="stylesheet" href="./artdirection.css"><link rel="stylesheet" href="./analyst.css">
 <script defer src="./data.js"></script>
-<script defer src="./frame.js"></script><script defer src="./immersive.js"></script>
+<script defer src="./frame.js"></script><script defer src="./immersive.js"></script><script defer src="./analyst.js"></script>
 </head>
 <body>
 <a href="#main" class="skip">Skip to main content</a>
@@ -32,7 +32,7 @@
    <a href="#learn">Academy</a>
    <a href="#workspace">Investigation room</a>
    <a href="#qa">QA desk</a>
-   <a href="#feedback">Feedback</a>
+   <a href="#analyst">Analyst AI</a>
   </nav>
   <a href="#workspace" class="nav-cta">ENTER THE ROOM <span aria-hidden="true">↗</span></a>
   <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -41,13 +41,14 @@
 <main id="main" class="page"><div id="view"><section class="wrap inner-hero"><h1>The Alert Room</h1><p>Free AML investigation training and casework.</p></section></div></main>
 <footer class="footer">
  <div class="wrap footer-main">
-  <div><a href="#home" class="brand"><i aria-hidden="true">A.</i><span>THE <b>ALERT</b> ROOM</span></a><p class="footer-summary">An independent place to learn anti-money laundering and financial-crime investigation through fictional cases, evidence-based writing and review.</p><small style="color:#8C98A5;font-size:11px">Created by Erik Yeghinyan · 2026</small></div>
-  <div class="footer-col"><b>THE PLATFORM</b><a href="#learn">Learning library</a><a href="#quiz">Knowledge check</a><a href="#workspace">Investigation desk</a><a href="#qa">Quality review</a><a href="#reviewer">Reviewer practice</a></div>
-  <div class="footer-col"><b>THE PROJECT</b><a href="#story">Founder's letter</a><a href="./story.html">Read the letter online</a><a href="#feedback">Send feedback</a><a href="#progress">Your progress</a><a href="#coach">Guided study</a></div>
-  <div class="footer-col"><b>TRANSPARENCY</b><a href="#privacy">Privacy and educational use</a><a href="./resources.html">Official sources</a><a href="https://github.com/eyeghin/erikyeghinyan-portfolio/issues" target="_blank" rel="noopener noreferrer">Public issue tracker ↗</a></div>
+  <div><a href="#home" class="brand"><i aria-hidden="true">A.</i><span>THE <b>ALERT</b> ROOM</span></a><p class="footer-summary">Financial-crime learning that asks you to think. Fictional alerts, evidence-led investigations, and judgment that improves with practice.</p><small style="color:#A9B5AA;font-size:11px">Independently created by Erik Yeghinyan</small></div>
+  <div class="footer-col"><b>LEARN</b><a href="#learn">Academy</a><a href="#quiz">Knowledge checks</a><a href="#analyst">Ask Analyst AI</a></div>
+  <div class="footer-col"><b>PRACTICE</b><a href="#workspace">Alert workspace</a><a href="#qa">QA reports</a><a href="#reviewer">Reviewer training</a></div>
+  <div class="footer-col"><b>PROJECT</b><a href="#story">Founder's story</a><a href="#feedback">Feedback</a><a href="#privacy">Privacy</a></div>
  </div>
- <div class="wrap footer-bottom"><span>© 2026 The Alert Room. Independent educational project.</span><span>Fictional cases only. Not a professional certification, bank system, or regulatory filing service.</span></div>
+ <div class="wrap footer-bottom"><span>© 2026 The Alert Room. An independent educational project.</span><span>Fictional training only · No real SAR submissions or official certification</span></div>
 </footer>
+<a href="#analyst" class="analyst-launch" aria-label="Open Analyst AI learning assistant"><span class="analyst-launch-symbol">A.</span><span>Ask Analyst <small>AI CASEWORK ASSISTANT</small></span></a>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>
