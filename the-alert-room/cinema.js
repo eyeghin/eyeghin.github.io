@@ -67,7 +67,7 @@ if(i===1){
 }
 if(i===2)inner='<div class="nova-example-panel"><div class="label">CHOOSE A TRAINING DISPOSITION</div><div class="value">Would you close, inquire, or escalate?</div><div class="mini">Expected behavior: '+safe(c.expected||'Check customer baseline')+'.</div><div class="nova-decision-options">'+[['close','Close'],['rfi','Request information'],['escalate','Escalate']].map(x=>'<button type="button" data-nova-decision="'+x[0]+'" aria-pressed="'+(decision===x[0]?'true':'false')+'">'+x[1]+'</button>').join('')+'</div><div class="nova-decision-result" id="nova-decision-result" aria-live="polite">'+(decision?response(decision):'Choose one option to examine the reasoning. This is not a real filing.')+'</div></div>';
 if(i===3)inner='<div class="nova-example-panel"><div class="label">AUTOMATED TRAINING QA / ILLUSTRATION</div><div class="nova-score-row"><strong>86<span style="color:#9c97c4">/100</span></strong><span>ILLUSTRATIVE SCORE ONLY<br>NOT A SUBMITTED CASE</span></div><div class="nova-score-track"><b></b></div><div class="mini">A real practice submission is scored for judgment, evidence, KYC context, chronology, and documentation quality. Revise based on the findings.</div></div>';
-return '<div class="nova-eyebrow">'+safe(s.eyebrow)+'</div><h3>'+safe(s.title)+'</h3><p>'+safe(s.body)+'</p>'+inner;
+return '<h3>'+safe(s.title)+'</h3><p>'+safe(s.body)+'</p>'+inner;
 }
 function response(v){
 const c=data();
