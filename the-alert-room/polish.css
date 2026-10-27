@@ -1,0 +1,122 @@
+/* The Alert Room / precise typography and mobile UI fixes.
+   A single late-loaded design layer; intentionally restrained. */
+:root{--ui-night:#0a1018;--ui-ink:#f7f9fc;--ui-muted:#b8c5d4;--ui-blue:#b7dcff;--ui-line:#304253}
+body{font-family:Manrope,system-ui,sans-serif;letter-spacing:0}
+.vi-site{overflow:clip}
+.vi-site h1,.vi-site h2,.vi-site h3,.vi-site h4{letter-spacing:-.04em;line-height:1.12}
+.vi-hero{background:radial-gradient(ellipse 85% 48% at 50% 82%,#142e47,#0a121c 58%,#070b11 100%)}
+.vi-hero .vi-hero-centered{padding-top:112px;padding-bottom:114px;min-height:760px;max-width:1260px}
+.vi-hero .vi-hero-writing-center{position:relative;z-index:4;max-width:970px}
+.vi-hero .vi-hero-writing-center h1{font-size:clamp(67px,7.8vw,116px);line-height:1.03;letter-spacing:-.05em;font-weight:800;margin:35px 0 38px;text-shadow:none;white-space:normal}
+.vi-hero .vi-hero-writing-center h1 em{display:inline-block;font-style:normal;color:#beddf8}
+.vi-hero .vi-hero-writing-center>.vi-index{font-size:11px;letter-spacing:.15em;gap:10px}
+.vi-hero .vi-hero-lower{max-width:575px;border-color:#54718e70;padding-top:23px;gap:20px}
+.vi-hero .vi-hero-lower p{max-width:510px;font-size:15px;line-height:1.7;color:#d4e0ec}
+.vi-hero .vi-hero-art-center{opacity:.37}
+.vi-hero .vi-hero-art-center .vi-graph{width:min(64vw,700px);opacity:.62;transform:translateY(125px);animation:none;filter:none}
+.vi-hero .vi-hero-art-center .vi-aura{width:580px;opacity:.48}
+.vi-hero .vi-hero-art-center .vi-visual-note{display:none}
+.vi-signal-burst{margin-top:25px;background:#111f2c;border-color:#5a85a55e;color:#dae9f5;letter-spacing:.05em;animation:none}
+.vi-hero .vi-hero-foot{border-top:1px solid #52667859;gap:14px}
+.vi-site .vi-link{min-height:51px;padding:12px 22px;gap:24px;border-radius:9px;font-weight:750}
+.vi-site .vi-link:hover{transform:translateY(-1px)}
+.vi-story h2,.vi-walk h2,.vi-explore h2,.vi-founder h2,.vi-last h2{letter-spacing:-.045em;line-height:1.08}
+.vi-step-story h3,.vi-pane-content h4{letter-spacing:-.035em;line-height:1.15}
+.vi-agent-mock{border-radius:12px}
+.vi-site .vi-text-button{background:transparent}
+.founder-hero{padding-top:92px;padding-bottom:90px}
+.founder-hero h1{font-size:clamp(46px,7vw,97px);line-height:1.12;letter-spacing:-.05em;font-weight:720;max-width:1050px;margin:30px 0}
+.founder-hero p{font-size:clamp(16px,1.5vw,19px);line-height:1.65;max-width:710px}
+.inner-hero h1{letter-spacing:-.055em;line-height:1.14}
+.footer .footer-col{gap:14px}
+.feedback-light{background:#f4f6f8;color:#101c29;padding:clamp(46px,7vw,92px) 0}
+.feedback-layout{max-width:800px;margin:0 auto;display:grid;gap:23px}
+.feedback-layout h2{font-weight:760;letter-spacing:-.045em;font-size:clamp(28px,4vw,45px);line-height:1.16;margin:0}
+.feedback-layout p{font-size:15px;line-height:1.72;color:#384e61;max-width:610px;margin:0}
+.feedback-email{display:inline-flex;align-items:center;gap:28px;justify-content:space-between;padding:17px 21px;width:fit-content;min-width:220px;background:#101c29;color:white;border-radius:10px;font-size:14px;font-weight:730}
+.feedback-email:hover{background:#203e5d}
+.feedback-secondary{font-size:12px!important;color:#617285!important}
+.ag-launcher{right:20px;bottom:20px;min-height:52px;padding:6px 16px 6px 6px;max-width:190px;gap:10px;border:1px solid #cbd6e1;border-radius:12px;background:#fff;color:#101820;box-shadow:0 9px 35px #0003;font-weight:700;letter-spacing:0}
+.ag-launcher:hover{box-shadow:0 11px 36px #0004;transform:translateY(-2px)}
+.ag-avatar{width:37px;height:37px;flex:0 0 37px;border-radius:9px;background:#182b42;color:#f8fbff;font-size:16px;letter-spacing:-.035em}
+.ag-launcher strong{font-size:12px;letter-spacing:-.015em}
+.ag-launcher small{font-size:9px;color:#617283}
+.ag-unread{width:6px;height:6px;top:9px;right:8px;background:#72a6da}
+.ag-greeting{border-radius:12px;max-width:265px;box-shadow:0 9px 30px #0003}
+.ag-drawer{height:min(680px,calc(100dvh - 36px));width:min(420px,calc(100vw - 28px));background:#f6f8fb;color:#142133;border:1px solid #cfdae5;border-radius:14px;box-shadow:0 24px 80px #0005}
+.ag-drawer-header{padding:15px 17px;background:#101924;gap:11px}
+.ag-drawer-header .ag-avatar{width:36px;height:36px;flex-basis:36px;background:#d2e5f8;color:#12233a;border-radius:9px}
+.ag-drawer-header-text h2{font-size:16px;letter-spacing:-.02em}
+.ag-drawer-header-text p{font-size:10px;color:#adbfce}
+.ag-drawer-status{font-size:9px;padding:6px 8px;border-radius:6px;border-color:#3c536b;color:#d8e9f8}
+.ag-close{border-radius:8px}
+.ag-drawer .ag-conversation{flex:1;display:block;min-height:0;overflow-y:auto;padding:21px 19px;background:#f7f9fb;scrollbar-width:thin}
+.ag-drawer .analyst-intro{padding:25px 0 18px;max-width:335px}
+.ag-drawer .analyst-monogram{width:44px;height:44px;display:grid;place-items:center;background:#14283c;color:white;font-size:17px;letter-spacing:-.03em;font-weight:800;border-radius:12px;margin-bottom:25px}
+.ag-drawer .analyst-intro h3{font-size:clamp(21px,4vw,26px);font-weight:790;letter-spacing:-.04em;line-height:1.22;margin:0 0 13px;color:#101a25;overflow-wrap:break-word}
+.ag-drawer .analyst-intro p{font-size:13px;line-height:1.7;color:#4b6276;margin:0 0 18px}
+.ag-drawer .analyst-intro small{font-size:9px;letter-spacing:.12em;font-weight:700;color:#607b92}
+.ag-drawer .analyst-turn{max-width:94%;margin:14px 0;padding:13px 16px;background:#e7edf4;border:1px solid #d7e0e9;border-radius:13px 13px 13px 4px}
+.ag-drawer .analyst-turn.user{background:#1c354e;color:white;border-color:#1c354e;margin-left:auto;border-radius:13px 13px 4px 13px}
+.ag-drawer .analyst-turn small{font-size:9px;letter-spacing:.14em;font-weight:750;color:#54718c}
+.ag-drawer .analyst-turn.user small{color:#b9dbf6}
+.ag-drawer .analyst-turn p{font-size:12.5px;line-height:1.69;white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0 0;color:#182737}
+.ag-drawer .analyst-turn.user p{color:#fff}
+.ag-drawer .analyst-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 17px;border-top:1px solid #dde6ef;background:#fff;font-size:10px;color:#34485b}
+.ag-drawer #analyst-context-label{display:flex;gap:6px;align-items:center;font-size:10px}
+.ag-drawer #analyst-context-label[hidden]{display:none}
+.ag-drawer #analyst-context-label input{accent-color:#315a7d}
+.ag-drawer #analyst-clear{margin-left:auto;white-space:nowrap;background:none;border:0;font-size:10px;color:#59718a}
+.ag-drawer .analyst-chips{display:flex;gap:7px;padding:11px 15px 9px;overflow-x:auto;scrollbar-width:none;flex:0 0 auto;background:#fff}
+.ag-drawer .analyst-chips::-webkit-scrollbar{display:none}
+.ag-drawer .analyst-chips button{white-space:nowrap;flex:0 0 auto;padding:9px 12px;border:1px solid #d2dde8;background:#f7fafc;border-radius:8px;color:#28425a;font-size:11px}
+.ag-drawer .analyst-chips button:hover{background:#e7f0f7;border-color:#95b1c9}
+.ag-drawer .analyst-chat-form{display:flex;gap:9px;align-items:end;background:#fff;padding:9px 15px 11px}
+.ag-drawer #analyst-input{font-family:Manrope,system-ui,sans-serif;min-width:0;min-height:43px;max-height:130px;resize:vertical;flex:1;background:#f8fafc;color:#122338;border:1px solid #b8c9d8;border-radius:10px;padding:12px;outline:0;font-size:13px;line-height:1.5}
+.ag-drawer #analyst-input:focus{border-color:#4a799e;box-shadow:0 0 0 2px #b5d5ee55}
+.ag-drawer #analyst-send{height:43px;width:43px;flex:0 0 43px;border:0;border-radius:10px;background:#142d43;color:#fff;font-size:23px;cursor:pointer}
+.ag-drawer #analyst-send:hover{background:#2d5676}
+.ag-drawer .analyst-privacy{padding:0 15px 13px;background:#fff;color:#5d7080;font-size:9px;letter-spacing:.012em;line-height:1.5}
+@media(max-width:850px){
+.vi-hero .vi-hero-centered{min-height:695px}
+.vi-hero .vi-hero-writing-center h1{font-size:clamp(57px,9.7vw,88px);line-height:1.055}
+.vi-hero .vi-hero-art-center .vi-graph{width:580px;transform:translateY(130px)}
+}
+@media(max-width:640px){
+html,body{max-width:100%;overflow-x:clip}
+.vi-hero .vi-hero-centered{min-height:670px;max-height:none;padding:65px 19px 70px;justify-content:center}
+.vi-hero .vi-hero-writing-center h1{font-size:clamp(38px,10.8vw,50px);line-height:1.11;letter-spacing:-.043em;margin:30px 0;max-width:100%;word-break:normal;text-wrap:nowrap}
+.vi-hero .vi-hero-writing-center>.vi-index{font-size:9px;letter-spacing:.105em;gap:8px}
+.vi-hero .vi-hero-lower{max-width:335px;padding-top:20px;gap:17px}
+.vi-hero .vi-hero-lower p{font-size:13px;line-height:1.66;max-width:320px}
+.vi-hero .vi-hero-lower>div{gap:14px}
+.vi-hero .vi-hero-art-center{opacity:.20}
+.vi-hero .vi-hero-art-center .vi-graph{transform:translateY(195px);width:125vw;opacity:.38;max-height:70%}
+.vi-hero .vi-hero-art-center .vi-aura{width:95vw;opacity:.26}
+.vi-hero .vi-hero-foot{padding-top:14px;padding-bottom:14px;flex-wrap:wrap;justify-content:center;text-align:center;font-size:8px;gap:7px}
+.vi-signal-burst{font-size:9px;letter-spacing:0;padding:9px 12px}
+.vi-site .vi-link{width:100%;max-width:295px;justify-content:center;gap:20px}
+.vi-story h2,.vi-walk h2,.vi-explore h2,.vi-founder h2,.vi-last h2{letter-spacing:-.04em;line-height:1.13}
+.vi-walk-header h2,.vi-explore h2,.vi-founder h2{font-size:clamp(34px,9.2vw,46px)}
+.vi-step-story h3{font-size:clamp(28px,8vw,35px)}
+.founder-hero{padding-top:66px;padding-bottom:65px}
+.founder-hero h1{font-size:clamp(36px,9.4vw,52px);line-height:1.14;letter-spacing:-.043em;margin:29px 0}
+.founder-hero p{font-size:15px;line-height:1.7}
+.inner-hero{padding-top:60px;padding-bottom:50px}
+.inner-hero h1{font-size:clamp(38px,9vw,55px);line-height:1.12;letter-spacing:-.045em}
+.feedback-light{padding:55px 0 80px}
+.ag-launcher{bottom:calc(12px + env(safe-area-inset-bottom,0px));right:12px;padding:5px 11px 5px 5px;min-height:46px}
+.ag-launcher .ag-avatar{width:34px;height:34px;flex-basis:34px}
+.ag-launcher small{display:none}
+.ag-unread{display:none}
+.ag-drawer{inset:0;width:100vw;height:100dvh;max-width:100vw;max-height:100dvh;border-radius:0;transform:translateY(12px)}
+.ag-drawer-header{padding:calc(14px + env(safe-area-inset-top,0px)) 15px 15px}
+.ag-drawer-status{display:none}
+.ag-drawer .ag-conversation{padding:17px 19px}
+.ag-drawer .analyst-intro{padding-top:17px}
+.ag-drawer .analyst-chat-form{padding:8px 13px}
+.ag-drawer .analyst-privacy{padding:0 13px calc(10px + env(safe-area-inset-bottom,0px))}
+}
+@media(prefers-reduced-motion:reduce){
+.vi-site *, .ag-drawer *, .ag-drawer, .ag-launcher{transition:none!important;animation:none!important}
+}
