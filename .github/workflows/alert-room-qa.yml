@@ -7,6 +7,8 @@ on:
       - "the-alert-room/frame.css"
       - "the-alert-room/artdirection.css"
       - "the-alert-room/immersive.js"
+      - "the-alert-room/analyst.js"
+      - "the-alert-room/analyst.css"
       - "the-alert-room/data.js"
       - "the-alert-room/index.html"
       - "the-alert-room/browser-qa.cjs"
