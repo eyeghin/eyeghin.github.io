@@ -1,7 +1,7 @@
 
 const {chromium}=require('playwright-core');
 const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');
-const BASE='http://127.0.0.1:8000/the-alert-room/';const OUT=path.join(__dirname,'../.qa-visual');
+const BASE='http://127.0.0.1:8000/the-alert-room/';const OUT=path.join(__dirname,'../visual-qa');
 fs.mkdirSync(OUT,{recursive:true});
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',args:['--no-sandbox']});const errors=[];
@@ -12,6 +12,7 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   await page.waitForSelector('.p-hero h1',{timeout:25000});
   assert.match(await page.locator('.p-hero h1').innerText(),/answer key/i);
+  await page.evaluate(()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible')));
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:72,fullPage:true,animations:'disabled'});
   const pages=[
    ['learn','.learning-grid .learning-tile',6],
@@ -43,7 +44,7 @@ fs.mkdirSync(OUT,{recursive:true});
   page.once('dialog',dialog=>dialog.accept());
   await page.locator('[data-submit-case]').click();
   await page.waitForURL(/#qa\/QA-/, {timeout:12000});
-  assert.ok(await page.locator('.qa-score').count()>0,'QA score missing');
+  await page.waitForSelector('.qa-score',{timeout:10000});assert.ok(await page.locator('.qa-score').count()>0,'QA score missing');
   console.log('FULL_CASE_QA_OK',page.url());
   await page.screenshot({path:path.join(OUT,'04-qa-report.jpg'),type:'jpeg',quality:76,fullPage:true,animations:'disabled'});
   const reportHash=page.url().split('#')[1];
@@ -61,6 +62,7 @@ fs.mkdirSync(OUT,{recursive:true});
   mobile.on('pageerror',e=>errors.push('MOBILE: '+e.message));
   await mobile.goto(BASE+'#home',{waitUntil:'networkidle'});
   await mobile.waitForSelector('.p-hero h1');
+  await mobile.evaluate(()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible')));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
   console.log('MOBILE_OVERFLOW',JSON.stringify(overflow));
