@@ -81,6 +81,7 @@ fs.mkdirSync(OUT,{recursive:true});
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
    const dim=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
+   if(dim.scroll>dim.viewport+4){const bad=await mobile.evaluate(()=>Array.from(document.querySelectorAll('body *')).map(el=>({node:el.tagName,cls:typeof el.className==='string'?el.className:'',right:Math.round(el.getBoundingClientRect().right),width:Math.round(el.getBoundingClientRect().width)})).filter(x=>x.right>window.innerWidth+6&&x.width>0).slice(0,14));console.log('OVERFLOW_ELEMENTS',route,JSON.stringify(bad));}
    assert.ok(dim.scroll<=dim.viewport+4,'Mobile horizontal overflow on '+route+': '+JSON.stringify(dim));
    await mobile.screenshot({path:path.join(OUT,file),type:'jpeg',quality:72,fullPage:true,animations:'disabled'});
    console.log('MOBILE_ROUTE_OK',route);
