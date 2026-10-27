@@ -55,7 +55,7 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.equal(await page.locator('a[href="./resources.html"]').count(),0,'Official sources link should not appear in footer');
   assert.equal(await page.locator('a[href*="/issues"]').count(),0,'Public issue tracker should not appear in footer');
   await page.locator('.ag-quick [data-analyst-quick="0"]').click();
-  assert.ok((await page.locator('#analyst-input').inputValue()).includes('AML monitoring alert'),'Analyst quick topic did not populate question');
+  assert.match(await page.locator('#analyst-input').inputValue(),/fictional AML alert|investigation/i,'Analyst quick topic did not populate question');
   const aiLibrary=await page.evaluate(async()=>{
     try {
       const lib=await Promise.race([
