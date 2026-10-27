@@ -77,7 +77,7 @@ function markup(){
 }
 function welcome(){
  return '<div class="analyst-welcome"><div class="analyst-welcome-mark">A.</div><h2>Your second set of eyes.<br>Not your replacement.</h2><p>Ask about transaction patterns, suspicious versus unusual activity, customer due diligence, QA feedback, or a decision you’re unsure about. You do the investigating. Analyst helps you think it through.</p>'
- +'<div class="analyst-suggestions">'+['How do I investigate an alert?','What evidence should I select?','What does QA look for?'].map((x,i)=>'<button type="button" data-analyst-quick="'+i+'">'+x+'</button>').join('')+'</div></div>';
+ +(document.querySelector('#analyst-drawer #analyst-root')?'':'<div class="analyst-suggestions">'+['How do I investigate an alert?','What evidence should I select?','What does QA look for?'].map((x,i)=>'<button type="button" data-analyst-quick="'+i+'">'+x+'</button>').join('')+'</div>')+'</div>';
 }
 function messages(){
  const el=$('#analyst-messages');if(!el)return;
