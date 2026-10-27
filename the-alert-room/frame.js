@@ -59,7 +59,7 @@ makePage('<section class="p-hero"><div class="p-hero-grid"></div><div class="wra
 }
 function getCourse(id){return data.courses.find(x=>x.id===id)}
 function getCase(id){return data.cases.find(x=>x.id===id)}
-function work(id){if(!state.casework[id])state.casework[id]={notes:'',context:'',rfi:'',narrative:'',decision:'',evidence:[],checks:{kyc:false,ledger:false,flows:false},status:'new',started:Date.now()};return state.casework[id]}
+function work(id){if(!state.casework[id])state.casework[id]={notes:'',context:'',rfi:'',narrative:'',decision:'',evidence:[],checks:{kyc:false,ledger:false,flows:false},status:'new',started:Date.now()};let d=state.casework[id];d.checks=d.checks||{kyc:!!d.screening?.kyc,ledger:!!d.screening?.ledger,flows:!!d.screening?.network};d.evidence=Array.isArray(d.evidence)?d.evidence:[];for(const k of ['notes','context','rfi','narrative','decision'])d[k]=typeof d[k]==='string'?d[k]:'';return d}
 function latest(id){return state.submissions.filter(x=>x.caseId===id).slice(-1)[0]}
 function status(id){const r=latest(id);if(r)return r.outcome==='passed'?'passed':'returned';const d=state.casework[id];return d&&(d.context||d.notes||d.evidence?.length)?'active':'new'}
 function academy(){
