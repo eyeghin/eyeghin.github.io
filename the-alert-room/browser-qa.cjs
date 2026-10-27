@@ -23,10 +23,20 @@ fs.mkdirSync(OUT,{recursive:true});
    ['workspace','#queue-body tr[data-open-case]',10],
    ['story','.founder-letter article',1],
    ['feedback','#feedback-form',1],
-   ['coach','#coach-result',1],
+   ['analyst','#analyst-root .analyst-shell',1],
    ['privacy','.wrap',1]
   ];
   for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);}
+  await page.goto(BASE+'#analyst',{waitUntil:'networkidle'});
+  await page.waitForSelector('#analyst-input',{timeout:10000});
+  assert.equal(await page.locator('a[href="./resources.html"]').count(),0,'Official sources link should not appear in footer');
+  assert.equal(await page.locator('a[href*="/issues"]').count(),0,'Public issue tracker should not appear in footer');
+  await page.locator('[data-analyst-topic="0"]').click();
+  assert.ok((await page.locator('#analyst-input').inputValue()).includes('AML monitoring alert'),'Analyst quick topic did not populate question');
+  await page.screenshot({path:path.join(OUT,'09-analyst-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
+  await page.goto(BASE+'#analyst/AR-3002',{waitUntil:'networkidle'});
+  await page.waitForSelector('#analyst-context-label:not([hidden])',{timeout:10000});
+  assert.match(await page.locator('#analyst-context-label').innerText(),/AR-3002/);
   await page.goto(BASE+'#workspace',{waitUntil:'networkidle'});
   await page.waitForSelector('#queue-pager');
   assert.equal(await page.locator('#queue-body tr[data-open-case]').count(),10,'Queue pagination should show ten alerts');
@@ -87,7 +97,7 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(overflow.scroll<=overflow.viewport+4,'Unexpected horizontal mobile overflow');
   await mobile.locator('.nav-toggle').click();assert.ok(await mobile.locator('.top-links').isVisible());
   console.log('MOBILE_NAV_OK');
-  for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg']]){
+  for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg'],['analyst','#analyst-root .analyst-shell','10-analyst-mobile.jpg']]){
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
    const dim=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
