@@ -25,6 +25,7 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.match(await page.locator('#nova-stage-display').innerText(),/86\/100/);
   await page.locator('[data-nova-step="0"]').click();
   await page.evaluate(()=>document.querySelectorAll('.nova-rise').forEach(el=>el.classList.add('in')));
+  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:72,fullPage:true,animations:'disabled'});
   const pages=[
    ['learn','.learning-grid .learning-tile',6],
