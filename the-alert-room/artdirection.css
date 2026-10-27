@@ -327,3 +327,7 @@ body.route-story .founder-letter blockquote{font-family:"Newsreader",Georgia,ser
  .p-hero h1{animation:none!important}
  .investigation-visual{transition:none!important}
 }
+
+/* Keep map annotations outside the live payment totals. */
+@media(min-width:701px){.iv-note{bottom:-34px;right:-12px}}
+@media(max-width:700px){.iv-note{display:none}}
