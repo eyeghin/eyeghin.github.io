@@ -376,3 +376,21 @@ body.route-home .p-hero .hero-fine{max-width:700px}
  #queue-body tr.clickable td:nth-child(7){grid-area:arrow;text-align:right;font-size:20px;color:#BCD4B9}
  #queue-body tr.clickable .tag{padding:5px 8px;font-size:10px}
 }
+
+.queue-pagination{
+ display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+ padding:16px 21px;border-top:1px solid #4A6352;background:#1C2D29;
+ color:#A9C2AC;font:11px "IBM Plex Mono",monospace
+}
+.queue-pagination>div{display:flex;gap:12px;align-items:center}
+.queue-pagination button{background:#263B32;border:1px solid #69836F;color:#F4F4EB;
+ font:600 12px "DM Sans",sans-serif;min-height:37px;padding:7px 14px;
+ transition:background .2s,border-color .2s}
+.queue-pagination button:hover:not(:disabled){background:#375744;border-color:#A7C2A8}
+.queue-pagination button:disabled{opacity:.35}
+.queue-page-counter{min-width:36px;text-align:center;color:#C3D7C3}
+@media(max-width:700px){
+ .queue-pagination{padding:14px 15px}
+ .queue-pagination>div{width:100%;justify-content:space-between}
+ .queue-pagination button{min-height:40px}
+}
