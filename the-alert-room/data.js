@@ -77,6 +77,15 @@ window.AR_ARCHETYPES = [
 ];
 window.AR_CASES = Array.from({length:40},function(_,i){
  var a=window.AR_ARCHETYPES[i%8],n=i+1,order=Math.floor(i/8),id="AR-"+String(3000+n),amt=Math.round((a.level===3?300:1200)+(n*137)%9000),tx=[];
- for(var t=0;t<8;t++){var dir=t<5?"Credit":"Debit",v=dir==="Credit"?Math.round(amt*(.22+t*.05)):Math.round(amt*(.38+(t-5)*.23));tx.push({id:"TX-"+String(26000+n*10+t),date:"2026-10-"+String(6+(i%17)).padStart(2,"0"),time:String(9+t).padStart(2,"0")+":"+String((11+t*7)%60).padStart(2,"0"),direction:dir,method:t%3===0?"ACH":t%3===1?"P2P":"Wire",counterparty:dir==="Credit"?"Originator "+String(t+1):"Beneficiary "+String(t-4),amount:v,note:t<5?"Incoming transaction":"Outgoing transfer"});}
+ for(var t=0;t<24;t++){
+   var dir=t%7<4?"Credit":"Debit";
+   var focused=t>=15;
+   if(focused && (a.answer==="escalate" || a.answer==="rfi"))dir=(t%3===0)?"Debit":"Credit";
+   var v=focused?Math.round(amt*(.45+(t%5)*.18)):Math.round((65+((i*19+t*43)%780))*(dir==="Credit"?1.15:.88));
+   if(a.type==="Business cash deposits" && focused)v=7600+((t*173+i*91)%2050);
+   var day=String(1+((i*3+t)%25)).padStart(2,"0");
+   tx.push({id:"TX-"+String(26000+n*100+t),date:"2026-10-"+day,time:String(8+(t%12)).padStart(2,"0")+":"+String((11+t*7)%60).padStart(2,"0"),direction:dir,method:t%3===0?"ACH":t%3===1?"P2P":"Wire",counterparty:dir==="Credit"?(focused?"New originator "+String(t-13):"Existing payor "+String((t%4)+1)):(focused?"External beneficiary "+String((t%5)+1):"Known expense "+String((t%6)+1)),amount:v,note:focused?"Activity within monitoring alert scope":"Routine historical account activity"});
+ }
+ tx.sort((x,y)=>(x.date+" "+x.time).localeCompare(y.date+" "+y.time));
  return {id:id,title:a.type,sector:a.sector,expected:a.expected,trigger:a.risk,reference:"Customer "+String(n).padStart(3,"0"),opened:"2026-10-"+String(6+(i%17)).padStart(2,"0"),priority:a.level,outcome:a.answer,why:a.why,transactions:tx,kind:a.type,description:"Illustrative fictional review. Compare activity with expected account purpose, assess counterparties and timing, then document your own conclusion.",riskIndicators:[a.risk,"Transaction activity should be assessed against customer profile","Additional details may change the final determination"],baseline:order===0?"Stable prior month":order===1?"Moderate growth":order===2?"Several quiet weeks":order===3?"New account relationship":"Recent profile review"};
 });
