@@ -1,10 +1,10 @@
 
-const {chromium}=require('playwright');
+const {chromium}=require('playwright-core');
 const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');
 const BASE='http://127.0.0.1:8000/the-alert-room/';const OUT=path.join(__dirname,'../.qa-visual');
 fs.mkdirSync(OUT,{recursive:true});
 (async()=>{
- const browser=await chromium.launch({headless:true,args:['--no-sandbox']});const errors=[];
+ const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',args:['--no-sandbox']});const errors=[];
  const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
  page.on('pageerror',e=>errors.push('PAGE: '+e.message));
  page.on('console',m=>{if(m.type()==='error')errors.push('CONSOLE: '+m.text())});
