@@ -396,3 +396,5 @@ textarea.field-control{line-height:1.7;resize:vertical;min-height:130px}
  .visual-panel:hover{transform:none}
  .p-hero h1{animation:none}
 }
+
+@media(max-width:700px){.table-foot{flex-wrap:wrap;gap:10px}.table-foot span{min-width:0;overflow-wrap:anywhere}.console-main>.well{min-width:0}.toolbar{min-width:0}.toolbar>.field-control{max-width:100%}.data-scroll{width:100%;max-width:100%}.metric-strip .metric{min-width:0}.metric span{overflow-wrap:anywhere}}
