@@ -28,6 +28,11 @@ function openAgent(requestedCase){
  if(open){if(requestedCase)caseContext(requestedCase);return}
  previousFocus=document.activeElement;
  open=true;dismissGreeting();
+ // Chat never leaves the navigation menu open behind the conversation.
+ document.querySelector('.nav-shell')?.classList.remove('open');
+ const navToggle=document.querySelector('.nav-toggle');
+ if(navToggle){navToggle.setAttribute('aria-expanded','false');navToggle.setAttribute('aria-label','Open menu');}
+ const backdrop=document.querySelector('.nav-backdrop');if(backdrop)backdrop.hidden=true;
  panel.classList.add('is-open');panel.removeAttribute('inert');panel.setAttribute('aria-hidden','false');
  launcher.setAttribute('aria-expanded','true');
  launcher.hidden=true;

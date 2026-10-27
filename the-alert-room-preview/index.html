@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="./vision.css">
 <link rel="stylesheet" href="./floating-agent.css">
 <link rel="stylesheet" href="./experience.css">
+<link rel="stylesheet" href="./navigation.css">
 <link rel="stylesheet" href="./polish.css">
 <script defer src="./data.js"></script>
 <script defer src="./vision.js"></script>
@@ -37,13 +38,21 @@
 <a href="#main" class="skip">Skip to main content</a>
 <header class="nav-shell">
  <div class="nav-inner">
-  <a href="#home" class="brand" aria-label="The Alert Room home"><i aria-hidden="true">A.</i><span>THE <b>ALERT</b> ROOM</span></a>
-  <nav class="top-links" aria-label="Main navigation">
-   <a href="#home">Home</a><a href="#learn">Learn</a><a href="#workspace">Investigate</a><a href="#qa">QA</a><a href="#analyst">Analyst</a>
+  <a id="site-back" class="site-back" href="#home" aria-label="Back to homepage" hidden><span aria-hidden="true">←</span><span class="site-back-label">Back</span></a>
+  <a href="#home" class="brand" aria-label="The Alert Room home"><i aria-hidden="true">A.</i><span>THE ALERT ROOM</span></a>
+  <nav class="top-links" id="site-navigation" aria-label="Site navigation">
+   <div class="menu-heading"><span>THE ALERT ROOM</span><strong>Explore</strong><p>Learn the concepts. Work the case. Review the decision.</p></div>
+   <a href="#home" data-nav-link="home"><span class="menu-num">01</span><span>Home<small>The starting point</small></span><span class="menu-arr" aria-hidden="true">↗</span></a>
+   <a href="#learn" data-nav-link="learn"><span class="menu-num">02</span><span>Learn<small>Lessons and practice</small></span><span class="menu-arr" aria-hidden="true">↗</span></a>
+   <a href="#workspace" data-nav-link="workspace"><span class="menu-num">03</span><span>Investigate<small>Realistic training cases</small></span><span class="menu-arr" aria-hidden="true">↗</span></a>
+   <a href="#qa" data-nav-link="qa"><span class="menu-num">04</span><span>Quality review<small>Scores and feedback</small></span><span class="menu-arr" aria-hidden="true">↗</span></a>
+   <a href="#story" data-nav-link="story"><span class="menu-num">05</span><span>Our story<small>Why this exists</small></span><span class="menu-arr" aria-hidden="true">↗</span></a>
+   <a href="#progress" data-nav-link="progress" class="menu-secondary"><span class="menu-num">06</span><span>My progress<small>Saved in this browser</small></span><span class="menu-arr" aria-hidden="true">↗</span></a>
+   <button type="button" class="menu-analyst" data-open-analyst>Ask Analyst <span aria-hidden="true">↗</span></button>
   </nav>
-  <a href="#workspace" class="nav-cta">Open the workspace <span aria-hidden="true">↗</span></a>
-  <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+  <button class="nav-toggle" type="button" aria-label="Open menu" aria-controls="site-navigation" aria-expanded="false"><span></span><span></span><span></span><b>Menu</b></button>
  </div>
+ <button type="button" class="nav-backdrop" aria-label="Close menu" hidden></button>
 </header>
 <main id="main" class="page"><div id="view"><section class="wrap inner-hero"><h1>The Alert Room</h1><p>Free AML investigation training and casework.</p></section></div></main>
 <footer class="footer">
@@ -52,8 +61,8 @@
    <p class="footer-summary">Free, evidence-led financial crime training. Investigate fictional cases, write your findings and learn from review.</p>
    <small style="color:#a4a6b2;font-size:11px">Created independently by Erik Yeghinyan.</small></div>
   <div class="footer-col"><b>EXPLORE</b><a href="#learn">Academy</a><a href="#workspace">Investigations</a><a href="#qa">Training QA</a></div>
-  <div class="footer-col"><b>SUPPORT</b><a href="#analyst">Ask Analyst</a><a href="#progress">My progress</a><a href="#story">About the project</a></div>
-  <div class="footer-col"><b>ABOUT</b><a href="#story">Founder's letter</a><a href="#privacy">Privacy and limitations</a></div>
+  <div class="footer-col"><b>SUPPORT</b><a href="#progress">My progress</a><a href="#privacy">Privacy</a></div>
+  <div class="footer-col"><b>ABOUT</b><a href="#story">The story</a><button type="button" data-open-analyst class="footer-ask">Ask Analyst</button></div>
  </div>
  <div class="wrap footer-bottom"><span>© 2026 The Alert Room</span><span>All cases and payments are fictional. No real SAR filing or certification.</span></div>
 </footer>
