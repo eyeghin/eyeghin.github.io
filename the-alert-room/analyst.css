@@ -112,3 +112,7 @@ body.route-analyst .analyst-launch{display:none}
  .analyst-hero-invite{padding:65px 0}
 }
 @media(prefers-reduced-motion:reduce){.analyst-thinking i{animation:none}.analyst-launch{transition:none}}
+
+body.route-analyst .analyst-launch{display:none!important}
+.analyst-bubble .content{overflow-wrap:anywhere}
+@media(max-width:720px){.analyst-launch{font-size:12px}}
