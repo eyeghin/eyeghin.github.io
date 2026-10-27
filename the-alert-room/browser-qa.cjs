@@ -39,7 +39,6 @@ fs.mkdirSync(OUT,{recursive:true});
    ['quiz','.quiz-card',1],
    ['workspace','#queue-body tr[data-open-case]',10],
    ['story','.founder-letter article',1],
-   ['feedback','.feedback-email[href^="mailto:"]',1],
    ['analyst','#analyst-root .ag-chat',1],
    ['privacy','.wrap',1]
   ];
