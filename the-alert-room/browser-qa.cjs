@@ -33,6 +33,19 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.equal(await page.locator('a[href*="/issues"]').count(),0,'Public issue tracker should not appear in footer');
   await page.locator('[data-analyst-topic="0"]').click();
   assert.ok((await page.locator('#analyst-input').inputValue()).includes('AML monitoring alert'),'Analyst quick topic did not populate question');
+  const aiLibrary=await page.evaluate(async()=>{
+    try {
+      const lib=await Promise.race([
+        import('https://esm.run/@mlc-ai/web-llm@0.2.85'),
+        new Promise((_,reject)=>setTimeout(()=>reject(Error('Runtime CDN import timed out')),30000))
+      ]);
+      return {ok:typeof lib.CreateMLCEngine==='function',models:lib.prebuiltAppConfig?.model_list?.filter(m=>['Qwen2.5-0.5B-Instruct-q4f16_1-MLC','Qwen2.5-1.5B-Instruct-q4f16_1-MLC'].includes(m.model_id)).map(m=>m.model_id)||[]};
+    } catch(e) { return {ok:false,error:String(e?.message||e)} }
+  });
+  console.log('ANALYST_RUNTIME_IMPORT',JSON.stringify(aiLibrary));
+  assert.ok(aiLibrary.ok,'Genuine AI runtime could not import: '+JSON.stringify(aiLibrary));
+  assert.equal(aiLibrary.models.length,2,'Both optional models must be registered in the runtime');
+  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'09-analyst-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.goto(BASE+'#analyst/AR-3002',{waitUntil:'networkidle'});
   await page.waitForSelector('#analyst-context-label:not([hidden])',{timeout:10000});
@@ -91,6 +104,7 @@ fs.mkdirSync(OUT,{recursive:true});
   await mobile.goto(BASE+'#home',{waitUntil:'networkidle'});
   await mobile.waitForSelector('.investigation-visual .iv-map svg',{timeout:12000});
   await mobile.evaluate(()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible')));
+  await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
   console.log('MOBILE_OVERFLOW',JSON.stringify(overflow));
