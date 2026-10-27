@@ -10,12 +10,21 @@ fs.mkdirSync(OUT,{recursive:true});
  page.on('console',m=>{if(m.type()==='error')errors.push('CONSOLE: '+m.text())});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await page.waitForSelector('.p-hero h1',{timeout:25000});
-  await page.waitForSelector('.investigation-visual .iv-map svg',{timeout:12000});
-  assert.match(await page.locator('.p-hero h1').innerText(),/beginning/i);
-  assert.ok(await page.locator('.iv-member').count()>=10,'Funds-flow graph missing');
+  await page.waitForSelector('.nova-hero h1',{timeout:25000});
+  await page.waitForSelector('#nova-universe',{timeout:12000});
+  assert.match(await page.locator('.nova-hero h1').innerText(),/find the why/i);
+  assert.ok(await page.locator('.nova-object').count()>0,'Cinematic hero object missing');
+  assert.ok(await page.locator('.nova-player').count()>0,'Playable case walkthrough missing');
   assert.ok(await page.locator('body.route-home').count()>0,'Homepage route styling not active');
-  await page.evaluate(()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible')));
+  const canvas = await page.locator('#nova-universe').evaluate(el=>({width:el.width,height:el.height}));
+  assert.ok(canvas.width>100&&canvas.height>100,'Animated financial universe canvas did not initialize');
+  await page.locator('[data-nova-step="2"]').click();
+  await page.locator('[data-nova-decision="close"]').click();
+  assert.match(await page.locator('#nova-decision-result').innerText(),/Aligned|evidence/i);
+  await page.locator('[data-nova-step="3"]').click();
+  assert.match(await page.locator('#nova-stage-display').innerText(),/86\/100/);
+  await page.locator('[data-nova-step="0"]').click();
+  await page.evaluate(()=>document.querySelectorAll('.nova-rise').forEach(el=>el.classList.add('in')));
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:72,fullPage:true,animations:'disabled'});
   const pages=[
    ['learn','.learning-grid .learning-tile',6],
@@ -102,8 +111,8 @@ fs.mkdirSync(OUT,{recursive:true});
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
   mobile.on('pageerror',e=>errors.push('MOBILE: '+e.message));
   await mobile.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await mobile.waitForSelector('.investigation-visual .iv-map svg',{timeout:12000});
-  await mobile.evaluate(()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('is-visible')));
+  await mobile.waitForSelector('#nova-universe',{timeout:12000});
+  await mobile.evaluate(()=>document.querySelectorAll('.nova-rise').forEach(el=>el.classList.add('in')));
   await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
