@@ -35,10 +35,34 @@ function status(text,pct){
  const bar=$('#analyst-load-progress');if(bar)bar.style.width=progressPct+'%';
  const badge=$('#analyst-current-status');if(badge)badge.textContent=state==='ready'?'AI READY':state==='loading'?'MODEL LOADING':state==='error'?'MODEL UNAVAILABLE':'ON-DEVICE AI';
  const button=$('#analyst-model-button');if(button){button.disabled=state==='loading'||busy;button.textContent=state==='ready'?'✓ Analyst ready':state==='loading'?'Preparing local AI…':state==='error'?'Retry loading AI':'Start Analyst';}
- const send=$('#analyst-send');if(send)send.disabled=state!=='ready'||busy;
+ const send=$('#analyst-send');if(send)send.disabled=state==='loading'||busy;
  const input=$('#analyst-input');if(input)input.disabled=busy;
 }
+
+function compactMarkup(){
+return '<div class="ag-chat">'
++'<div class="ag-conversation" id="analyst-messages" role="log" aria-label="Analyst conversation" aria-live="polite"></div>'
++'<div class="ag-quick"><span>TRY ASKING</span>'+[
+'Review an unusual transaction',
+'What makes evidence strong?',
+'Challenge my decision'
+].map((v,i)=>'<button type="button" data-analyst-quick="'+i+'">'+v+'</button>').join('')+'</div>'
++'<div class="ag-options"><label id="analyst-context-label" hidden><input id="analyst-attach" type="checkbox"> Use fictional case <strong id="analyst-case-id"></strong></label>'
++'<details class="ag-model-settings"><summary>AI model &amp; device setup <span aria-hidden="true">⌄</span></summary>'
++'<div class="ag-settings-inner"><label for="analyst-model">ON-DEVICE MODEL</label>'
++'<select id="analyst-model">'+MODELS.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join('')+'</select>'
++'<p id="analyst-model-description" class="analyst-small">'+esc(MODELS[0].desc)+'</p>'
++'<button type="button" id="analyst-model-button" class="ag-start">Start Analyst</button>'
++'<div class="analyst-meter"><i id="analyst-load-progress"></i></div></div></details></div>'
++'<div class="ag-compose"><div class="ag-compose-surface"><form id="analyst-chat-form"><textarea id="analyst-input" rows="2" maxlength="3500" aria-label="Message Analyst" placeholder="Ask a question about AML or this case…"></textarea>'
++'<button id="analyst-send" type="submit" aria-label="Send to Analyst">↗</button></form></div>'
++'<div class="ag-composer-foot"><span id="analyst-load-status" role="status">Model not loaded</span><button id="analyst-clear" type="button">Clear chat</button></div>'
++'<p class="ag-disclosure">Real on-device AI. First response requires downloading a large model and a WebGPU-compatible browser. No real customer data.</p></div>'
++'</div>';
+}
+
 function markup(){
+ if(document.querySelector('#analyst-drawer #analyst-root'))return compactMarkup();
  return '<div class="analyst-shell"><aside class="analyst-sidebar"><div class="analyst-sideheading">01 / YOUR AI ASSISTANT</div>'
  +'<div class="analyst-engine-card"><div class="analyst-engine-icon">A.</div><h3>Bring the questions.<br>Keep the judgment.</h3><p>Analyst helps you interrogate an alert, understand a typology and strengthen your case reasoning. Not a regulatory filing service.</p></div>'
  +'<div class="analyst-controls"><label for="analyst-model">RUN ANALYST LOCALLY</label><select id="analyst-model">'+MODELS.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>').join('')+'</select>'
@@ -53,7 +77,7 @@ function markup(){
 }
 function welcome(){
  return '<div class="analyst-welcome"><div class="analyst-welcome-mark">A.</div><h2>Your second set of eyes.<br>Not your replacement.</h2><p>Ask about transaction patterns, suspicious versus unusual activity, customer due diligence, QA feedback, or a decision you’re unsure about. You do the investigating. Analyst helps you think it through.</p>'
- +'<div class="analyst-suggestions">'+['How do I investigate an alert?','What evidence should I select?','What does QA look for?'].map((x,i)=>'<button type="button" data-analyst-quick="'+i+'">'+x+'</button>').join('')+'</div></div>';
+ +(document.querySelector('#analyst-drawer #analyst-root')?'':'<div class="analyst-suggestions">'+['How do I investigate an alert?','What evidence should I select?','What does QA look for?'].map((x,i)=>'<button type="button" data-analyst-quick="'+i+'">'+x+'</button>').join('')+'</div>')+'</div>';
 }
 function messages(){
  const el=$('#analyst-messages');if(!el)return;
@@ -117,14 +141,26 @@ async function ask(question){
  finally{reply.pending=false;busy=false;status(progress,progressPct);messages();}
 }
 function mount(){
- const node=$('#analyst-root');if(!node||node===rootNode)return;
+ const node=document.querySelector('#analyst-drawer #analyst-root')||$('#analyst-root');if(!node||node===rootNode)return;
  rootNode=node;node.innerHTML=markup();
  const id=node.dataset.case||'',c=(window.AR_CASES||[]).find(x=>x.id===id);
  caseId=c?.id||'';allowContext=false;
- if(caseId){$('#analyst-context-label').hidden=false;$('#analyst-case-id').textContent=caseId;}
+ setCaseContext(caseId);
  $('#analyst-model').value=chosen;$('#analyst-model-description').textContent=MODELS.find(x=>x.id===chosen)?.desc||'';
  status(state==='ready'?'AI ready. Ask Analyst a question.':progress,progressPct);messages();
 }
+
+function setCaseContext(id){
+ const c=(window.AR_CASES||[]).find(x=>x.id===id);
+ caseId=c?.id||'';
+ allowContext=false;
+ const label=$('#analyst-context-label'),input=$('#analyst-attach'),title=$('#analyst-case-id');
+ if(label)label.hidden=!caseId;
+ if(input)input.checked=false;
+ if(title)title.textContent=caseId;
+}
+window.AlertAnalyst={setCaseContext,available:()=>state==='ready',isLoading:()=>state==='loading'};
+
 document.addEventListener('click',e=>{
  const topic=e.target.closest('[data-analyst-topic],[data-analyst-quick]');
  if(topic){
@@ -149,7 +185,14 @@ document.addEventListener('change',e=>{
 document.addEventListener('submit',e=>{
  if(e.target.id!=='analyst-chat-form')return;e.preventDefault();
  const input=$('#analyst-input');if(!input||!input.value.trim())return;
- if(state!=='ready'){status('Start Analyst with the button on the left first.',progressPct);return;}
+ if(state!=='ready'){
+  const saved=input.value.trim();
+  if(state==='loading'){status('Analyst is loading the local language model. Your question will remain here.',progressPct);return;}
+  if(!window.confirm('Analyst needs to download an AI model (possibly over 1 GB) to this browser and use its GPU. The model runs locally and may take time to load. Continue?'))return;
+  status('Preparing Analyst on your device…',0);
+  load().then(()=>{if(state==='ready'){input.value='';ask(saved);}else input.value=saved;});
+  return;
+ }
  const value=input.value;input.value='';ask(value);
 });
 document.addEventListener('keydown',e=>{if(e.target.id==='analyst-input'&&e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();$('#analyst-chat-form')?.requestSubmit();}});

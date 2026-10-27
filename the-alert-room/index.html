@@ -23,10 +23,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;550;600;650;700;750;800&display=swap">
 <link rel="stylesheet" href="./brand.css">
 <link rel="stylesheet" href="./story.css">
+<link rel="stylesheet" href="./floating-agent.css">
 <script defer src="./data.js"></script>
 <script defer src="./story-engine.js"></script>
 <script defer src="./frame.js"></script>
 <script defer src="./analyst.js"></script>
+<script defer src="./floating-agent.js"></script>
 </head>
 <body>
 <a href="#main" class="skip">Skip to main content</a>
@@ -52,7 +54,12 @@
  </div>
  <div class="wrap footer-bottom"><span>© 2026 The Alert Room</span><span>All cases and payments are fictional. No real SAR filing or certification.</span></div>
 </footer>
-<a href="#analyst" class="analyst-launch" aria-label="Ask Analyst AI"><span class="analyst-launch-symbol">A.</span><span>Ask Analyst <small>LEARNING ASSISTANT</small></span></a>
+<button type="button" id="ag-launcher" class="ag-launcher" aria-label="Ask Analyst AI" aria-controls="analyst-drawer" aria-expanded="false"><span class="ag-avatar">A.</span><span><strong>Ask Analyst</strong><small>Your AI assistant</small></span><span class="ag-unread" aria-hidden="true"></span></button>
+<div class="ag-greeting" id="ag-greeting"><button type="button" aria-label="Dismiss Analyst greeting" data-ag-dismiss>×</button><h3>Hi, I'm Analyst.</h3><p id="ag-greeting-text">Have a question about AML or your case? I'm here to help.</p></div>
+<aside class="ag-drawer" id="analyst-drawer" role="dialog" aria-modal="false" aria-label="Analyst AI assistant" aria-hidden="true" inert>
+ <div class="ag-drawer-header"><span class="ag-avatar" aria-hidden="true">A.</span><div class="ag-drawer-header-text"><h2>Analyst</h2><p>Financial-crime learning companion</p></div><span class="ag-drawer-status">AI ASSISTANT</span><button type="button" class="ag-close" id="ag-close" aria-label="Close Analyst chat">×</button></div>
+ <div id="analyst-root"></div>
+</aside>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>

@@ -16,7 +16,8 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(await page.locator('.ar-step').count()===4,'Four narrative stages missing');
   assert.equal(await page.locator('.ar-work-row').count(),3,'Three distinct work chapters must render');
   assert.ok(!(await page.locator('.ar-site').innerText()).includes('NaNNaN'),'Broken narrative concatenation');
-  assert.equal(await page.locator('.analyst-launch:visible').count(),0,'Floating AI shortcut must not interrupt hero story');
+  assert.equal(await page.locator('#ag-launcher:visible').count(),1,'Analyst launcher must be available on the homepage');
+  assert.equal(await page.locator('.ag-drawer.is-open').count(),0,'Agent must not obstruct the homepage until requested');
   await page.locator('[data-ar-step="1"]').click();
   assert.match(await page.locator('#ar-step-panel').innerText(),/profile changes the picture/i);
   await page.locator('[data-ar-step="2"]').click();
@@ -36,16 +37,25 @@ fs.mkdirSync(OUT,{recursive:true});
    ['workspace','#queue-body tr[data-open-case]',10],
    ['story','.founder-letter article',1],
    ['feedback','#feedback-form',1],
-   ['analyst','#analyst-root .analyst-shell',1],
+   ['analyst','#analyst-root .ag-chat',1],
    ['privacy','.wrap',1]
   ];
   for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);}
-  await page.goto(BASE+'#analyst',{waitUntil:'networkidle'});
+  await page.goto(BASE+'#home',{waitUntil:'networkidle'});
+  if(await page.locator('#analyst-drawer.is-open').count())await page.locator('#ag-close').click();
+  await page.locator('#ag-launcher').click();
+  await page.waitForSelector('#analyst-drawer.is-open',{timeout:10000});
   await page.waitForSelector('#analyst-input',{timeout:10000});
+  assert.ok(await page.locator('#analyst-messages').isVisible(),'Interactive chat messages must be visible');
+  await page.locator('#ag-close').click();
+  assert.equal(await page.locator('#analyst-drawer.is-open').count(),0,'Agent must close without route change');
+  await page.locator('a[href="#analyst"]').first().click();
+  await page.waitForSelector('#analyst-drawer.is-open');
+  assert.match(page.url(),/#home$/,'Opening Analyst must not navigate away from current page');
   assert.equal(await page.locator('a[href="./resources.html"]').count(),0,'Official sources link should not appear in footer');
   assert.equal(await page.locator('a[href*="/issues"]').count(),0,'Public issue tracker should not appear in footer');
-  await page.locator('[data-analyst-topic="0"]').click();
-  assert.ok((await page.locator('#analyst-input').inputValue()).includes('AML monitoring alert'),'Analyst quick topic did not populate question');
+  await page.locator('.ag-quick [data-analyst-quick="0"]').click();
+  assert.match(await page.locator('#analyst-input').inputValue(),/fictional AML alert|investigation/i,'Analyst quick topic did not populate question');
   const aiLibrary=await page.evaluate(async()=>{
     try {
       const lib=await Promise.race([
@@ -61,8 +71,11 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'09-analyst-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.goto(BASE+'#analyst/AR-3002',{waitUntil:'networkidle'});
+  await page.waitForSelector('#analyst-drawer.is-open',{timeout:10000});
   await page.waitForSelector('#analyst-context-label:not([hidden])',{timeout:10000});
   assert.match(await page.locator('#analyst-context-label').innerText(),/AR-3002/);
+  assert.equal(await page.locator('#analyst-attach').isChecked(),false,'Case data must be opt-in');
+  await page.locator('#ag-close').click();
   await page.goto(BASE+'#workspace',{waitUntil:'networkidle'});
   await page.waitForSelector('#queue-pager');
   assert.equal(await page.locator('#queue-body tr[data-open-case]').count(),10,'Queue pagination should show ten alerts');
@@ -126,7 +139,14 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(overflow.scroll<=overflow.viewport+4,'Unexpected horizontal mobile overflow');
   await mobile.locator('.nav-toggle').click();assert.ok(await mobile.locator('.top-links').isVisible());
   console.log('MOBILE_NAV_OK');
-  for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg'],['analyst','#analyst-root .analyst-shell','10-analyst-mobile.jpg']]){
+  if(await mobile.locator('#analyst-drawer.is-open').count())await mobile.locator('#ag-close').click();
+  await mobile.locator('#ag-launcher').click();
+  await mobile.waitForSelector('#analyst-drawer.is-open');
+  const agentMobile=await mobile.evaluate(()=>({width:document.querySelector('#analyst-drawer').getBoundingClientRect().width,viewport:innerWidth}));
+  assert.ok(Math.abs(agentMobile.width-agentMobile.viewport)<=2,'Agent must fill mobile viewport without overflow');
+  await mobile.screenshot({path:path.join(OUT,'11-analyst-agent-mobile.jpg'),type:'jpeg',quality:75,fullPage:false,animations:'disabled'});
+  await mobile.locator('#ag-close').click();
+  for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg'],['analyst','#analyst-root .ag-chat','10-analyst-mobile.jpg']]){
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
    const dim=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
