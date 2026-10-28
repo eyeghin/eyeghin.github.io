@@ -31,7 +31,17 @@ function pageRoute(){const p=decodeURIComponent(location.hash.replace(/^#/,'')||
 const link=(href,text,variant='stroke')=>'<a href="'+safe(href)+'" class="btn btn-'+variant+'">'+safe(text)+' <span class="arrow" aria-hidden="true">↗</span></a>';
 const eyebrow=t=>'<div class="eyebrow section-kicker">'+safe(t)+'</div>';
 const copyText=t=>'<p class="body-copy">'+safe(t)+'</p>';
-function makePage(html,title){root.innerHTML=html;if(pageRoute().name==='workspace')queueRefresh();document.title=title+' | The Alert Room';const route=pageRoute();$$('.top-links a').forEach(x=>x.classList.toggle('active',x.getAttribute('href')==='#'+route.name));$('.nav-shell')?.classList.remove('open');$('.nav-toggle')?.setAttribute('aria-expanded','false');window.scrollTo({top:0,behavior:'instant'});reveal();}
+function makePage(html,title){
+ root.innerHTML=html;
+ if(pageRoute().name==='workspace')queueRefresh();
+ document.title=title+' | The Alert Room';
+ const route=pageRoute(),back=$('#site-back'),backLabel=$('#site-back-label');
+ const backTo=route.name==='case'?['#workspace','All alerts']:route.name==='course'?['#learn','All courses']:route.name==='lesson'?['#course/'+route.id.replace(/-\d+$/,''),'Course lessons']:route.name==='qa'&&route.id?['#qa','QA reports']:route.name==='reviewer'&&route.id?['#reviewer','Reviewer desk']:route.name==='home'?null:['#home','Home'];
+ if(back){back.hidden=!backTo;if(backTo){back.href=backTo[0];back.setAttribute('aria-label','Back to '+backTo[1]);if(backLabel)backLabel.textContent=backTo[1];}}
+ $('.top-links a').forEach(x=>{const active=x.getAttribute('href')==='#'+(route.name==='case'?'workspace':route.name==='lesson'||route.name==='course'?'learn':route.name);x.classList.toggle('active',active);if(active)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
+ $('.nav-shell')?.classList.remove('open');$('.nav-toggle')?.setAttribute('aria-expanded','false');
+ window.scrollTo({top:0,behavior:'instant'});reveal();
+}
 function reveal(){if(!('IntersectionObserver'in window)||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){$$('.reveal').forEach(x=>x.classList.add('is-visible'));return}const observer=new IntersectionObserver(entries=>entries.forEach(x=>{if(x.isIntersecting){x.target.classList.add('is-visible');observer.unobserve(x.target)}}),{threshold:.07});$$('.reveal').forEach(x=>observer.observe(x))}
 function publicIntro(kicker,title,desc){return '<section class="wrap inner-hero enter">'+eyebrow(kicker)+'<h1>'+title+'</h1><p class="body-copy">'+desc+'</p></section>'}
 function warnings(){return '<div class="notice"><b>Training data only.</b> Every customer, account, payment and document in this exercise is fictional. Do not enter real customer records, employer-confidential information or SAR details. No regulatory filing takes place.</div>'}
