@@ -1,67 +1,44 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#090c10">
-<meta name="description" content="The Alert Room is a free AML and financial-crime learning space. Investigate fictional transaction monitoring cases, write your own case assessments and learn from transparent training QA. Created by Erik Yeghinyan.">
-<meta name="author" content="Erik Yeghinyan">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<link rel="canonical" href="https://eyeghin.github.io/the-alert-room/">
-<title>The Alert Room — An Alert Is Not An Answer</title>
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="The Alert Room">
-<meta property="og:title" content="The Alert Room — An Alert Is Not An Answer">
-<meta property="og:description" content="Free AML education built around the work: understand the customer, follow transactions, write a decision, and learn from QA. Founded by Erik Yeghinyan.">
-<meta property="og:url" content="https://eyeghin.github.io/the-alert-room/">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="The Alert Room — Free AML casework practice">
-<meta name="twitter:description" content="An alert doesn't come with an answer key. Learn and practice the investigation.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval' https://challenges.cloudflare.com https://esm.run https://cdn.jsdelivr.net https://*.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://challenges.cloudflare.com https://*.workers.dev https://esm.run https://cdn.jsdelivr.net https://*.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://raw.githubusercontent.com https://*.githubusercontent.com https://mlc.ai https://*.mlc.ai; frame-src https://challenges.cloudflare.com; worker-src 'self' blob:; form-action 'none'; object-src 'none'; base-uri 'self'">
-<link rel="icon" type="image/svg+xml" href="./favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="./brand.css">
-<link rel="stylesheet" href="./vision.css">
-<link rel="stylesheet" href="./floating-agent.css">
-<script defer src="./data.js"></script>
-<script defer src="./vision.js"></script>
-<script defer src="./frame.js"></script>
-<script defer src="./analyst-config.js"></script>
-<script defer src="./analyst.js"></script>
-<script defer src="./floating-agent.js"></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fafbff"><meta name="author" content="Erik Yeghinyan">
+<meta name="description" content="The Alert Room — a free, independent AML learning environment. Explore concepts, investigate 40 fictional alerts, write case assessments and learn from transparent practice QA.">
+<title>The Alert Room — Learn to think like an investigator</title>
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750;800;850;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./product.css">
+<script defer src="./data.js"></script><script defer src="./product.js"></script><script defer src="./agent.js"></script>
 </head>
-<body>
-<a href="#main" class="skip">Skip to main content</a>
-<header class="nav-shell">
- <div class="nav-inner">
-  <a id="site-back" href="#home" class="site-back" aria-label="Back" hidden><span aria-hidden="true">←</span><span id="site-back-label">Back</span></a>
-  <a href="#home" class="brand" aria-label="The Alert Room home"><i aria-hidden="true">A.</i><span>THE <b>ALERT</b> ROOM</span></a>
-  <nav class="top-links" id="site-navigation" aria-label="Main navigation">
-   <a href="#home">Home</a><a href="#learn">Learn</a><a href="#workspace">Investigate</a><a href="#qa">QA</a><a href="#progress">Progress</a>
+<body data-page="index" class="page-home">
+<a class="skip-link" href="#app">Skip to content</a>
+<header class="site-header">
+ <div class="header-inner">
+  <a href="./" class="logo" aria-label="The Alert Room homepage"><span class="logo-symbol">a<span>.</span></span><span class="logo-name">the alert room<span class="logo-punctuation">.</span></span></a>
+  <nav id="primary-nav" class="site-nav" aria-label="Main navigation">
+   <a href="./" data-nav="index">Discover</a>
+   <a href="learn.html" data-nav="learn">Academy</a>
+   <a href="workspace.html" data-nav="workspace">Investigate</a>
+   <a href="qa.html" data-nav="qa">Quality review</a>
+   <a href="assistant.html" data-nav="assistant">Analyst AI</a>
   </nav>
-  <a href="#workspace" class="nav-cta">Open the workspace <span aria-hidden="true">↗</span></a>
-  <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-controls="site-navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+  <div class="nav-actions"><a class="header-cta" href="workspace.html">Enter workspace <span aria-hidden="true">↗</span></a><button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open site menu"><span></span><span></span><span></span></button></div>
  </div>
 </header>
-<main id="main" class="page"><div id="view"><section class="wrap inner-hero"><h1>The Alert Room</h1><p>Free AML investigation training and casework.</p></section></div></main>
-<footer class="footer">
- <div class="wrap footer-main">
-  <div><a href="#home" class="brand"><i aria-hidden="true">A.</i><span>THE <b>ALERT</b> ROOM</span></a>
-   <p class="footer-summary">Free, evidence-led financial crime training. Investigate fictional cases, write your findings and learn from review.</p>
-   <small style="color:#a4a6b2;font-size:11px">Created independently by Erik Yeghinyan.</small></div>
-  <div class="footer-col"><b>EXPLORE</b><a href="#learn">Academy</a><a href="#workspace">Investigations</a><a href="#qa">Training QA</a></div>
-  <div class="footer-col"><b>SUPPORT</b><a href="#analyst">Ask Analyst</a><a href="#progress">My progress</a><a href="#feedback">Feedback</a></div>
-  <div class="footer-col"><b>ABOUT</b><a href="#story">Founder's letter</a><a href="#privacy">Privacy and limitations</a></div>
- </div>
- <div class="wrap footer-bottom"><span>© 2026 The Alert Room</span><span>All cases and payments are fictional. No real SAR filing or certification.</span></div>
+<main id="app" tabindex="-1" aria-label="Home"><div class="loading">Preparing your workspace…</div></main>
+<footer class="site-footer">
+ <div class="container footer-grid"><div class="footer-about"><div class="footer-mark">a<span>.</span></div><h3>Better questions.<br>Better judgment.</h3><p>A free, independent training space for people learning the real work behind financial-crime investigations.</p></div>
+ <div class="footer-links"><h4>Learn & practice</h4><a href="learn.html">Academy</a><a href="quiz.html">Knowledge checks</a><a href="workspace.html">Investigation workspace</a><a href="qa.html">Quality review</a></div>
+ <div class="footer-links"><h4>Your experience</h4><a href="progress.html">Progress</a><a href="assistant.html">Analyst AI</a><a href="about.html">Our mission</a><a href="privacy.html">Privacy & limitations</a></div>
+ <div class="footer-links"><h4>Get in touch</h4><a href="mailto:eyeghinyan@gmail.com?subject=The%20Alert%20Room%20Feedback">Send feedback</a><a href="https://github.com/eyeghin/eyeghin.github.io/tree/main/the-alert-room" target="_blank" rel="noopener noreferrer">Source & project</a><p>Created by Erik Yeghinyan.</p></div>
+ </div><div class="container footer-bottom"><span>© 2026 The Alert Room · Independent learning project</span><span>Fictional data only · No real SAR filing · No certification</span></div>
 </footer>
-<button type="button" id="ag-launcher" class="ag-launcher" aria-label="Open optional Analyst training assistant" aria-controls="analyst-drawer" aria-expanded="false"><span class="ag-avatar">A.</span><span><strong>Ask Analyst</strong><small>Optional study help</small></span><span class="ag-unread" aria-hidden="true"></span></button>
-<div class="ag-greeting" id="ag-greeting" hidden aria-hidden="true"></div>
-<aside class="ag-drawer" id="analyst-drawer" role="dialog" aria-modal="false" aria-label="Analyst AI assistant" aria-hidden="true" inert>
- <div class="ag-drawer-header"><span class="ag-avatar" aria-hidden="true">A.</span><div class="ag-drawer-header-text"><h2>Analyst</h2><p>Financial-crime learning companion</p></div><span class="ag-drawer-status">OPTIONAL</span><button type="button" class="ag-close" id="ag-close" aria-label="Close Analyst chat">×</button></div>
- <div id="analyst-root"></div>
+<button class="assistant-launch" type="button" id="assistant-launch" aria-controls="assistant-panel" aria-expanded="false" aria-label="Open Analyst AI"><span class="assistant-launch-mark">✦</span><span class="assistant-launch-label">Ask Analyst</span></button>
+<div id="assistant-overlay" class="assistant-overlay" hidden></div>
+<aside id="assistant-panel" class="assistant-panel" aria-label="Analyst AI assistant" role="dialog" aria-modal="true" hidden>
+ <div class="assistant-panel-top"><div class="assistant-panel-brand"><span class="agent-avatar">✦</span><div><b>Analyst AI</b><small>AML specialist · learning and site help</small></div></div><button id="assistant-close" class="icon-button" type="button" aria-label="Close and clear conversation">×</button></div>
+ <div id="assistant-panel-content" class="assistant-panel-content"></div>
 </aside>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-</body>
-</html>
+</body></html>
