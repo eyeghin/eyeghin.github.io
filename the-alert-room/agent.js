@@ -7,8 +7,9 @@ const panel=$('#assistant-panel'),shade=$('#assistant-overlay'),launcher=$('#ass
 const root=p==='assistant'?$('#assistant-page-content'):$('#assistant-panel-content');
 if(!root)return;
 const modelChoices=[
-{id:'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',name:'Everyday · 1.5B (recommended)',memory:'A sizable first-time model download'},
-{id:'Qwen2.5-3B-Instruct-q4f16_1-MLC',name:'Research · 3B',memory:'More device memory and download required'}
+{id:'Qwen2.5-1.5B-Instruct-q4f16_1-MLC',name:'Everyday · 1.5B',memory:'Requires a substantial first-time model download'},
+{id:'Qwen2.5-3B-Instruct-q4f16_1-MLC',name:'Research · 3B',memory:'More device memory and download required'},
+{id:'Qwen3-8B-q4f16_1-MLC',name:'Expert · 8B',memory:'Powerful desktops only. Very large model download and GPU memory required'}
 ];
 const suggestions=[['Investigate an alert','How do I investigate an AML alert?'],['Understand QA','What does QA do on this website?'],['Write a case narrative','What makes a good investigation narrative?'],['Learn KYC & EDD','What is the difference between CDD and EDD?']];
 const sourceTopics=[
@@ -55,7 +56,11 @@ target.scrollTop=target.scrollHeight;
 $$('[data-prompt]',root).forEach(b=>b.onclick=()=>{let text=suggestions[Number(b.dataset.prompt)][1];$('#agent-input',root).value=text;send(text);});}
 function setStatus(text,type='guide'){const status=$('#agent-state',root),label=$('#agent-model-status',root),control=$('#agent-enable',root);if(status)status.textContent=type==='ready'?'AI READY':type==='loading'?'LOADING AI':type==='error'?'AI UNAVAILABLE':'GUIDE READY';if(label)label.textContent=text;if(control)control.textContent=type==='ready'?'✓ AI is ready':type==='loading'?'Preparing…':'Enable AI model';if(control)control.disabled=type==='loading'||busy;}
 function add(role,content,extra={}){messages.push({role,content,...extra});if(messages.length>42)messages.splice(0,messages.length-42);paint();}
-function guide(question){const q=question.toLowerCase().trim();for(const c of commands){if(c.words.some(w=>q.includes(w)))return {content:c.text,url:c.url,label:c.label}};
+function guide(question){const q=question.toLowerCase().trim();
+const caseMatch=q.match(/\bar-\d{4}\b/i);
+if(caseMatch&&ctx.cases?.some(c=>c.id.toLowerCase()===caseMatch[0].toLowerCase()))return {content:'I found that fictional investigation. You can open the case file, review the customer and ledger, and submit a practice workpaper.',url:'case.html?id='+caseMatch[0].toUpperCase(),label:'Open '+caseMatch[0].toUpperCase()};
+if(/(high.priority|p1 alerts|priority one)/i.test(q))return {content:'Here is the high-priority monitoring queue. Priorities are fictional training signals; every alert requires contextual review.',url:'workspace.html?priority=1',label:'View P1 alerts'};
+for(const c of commands){if(c.words.some(w=>q.includes(w)))return {content:c.text,url:c.url,label:c.label}};
 for(const s of sourceTopics){if(s.words.some(w=>q.includes(w)))return {content:s.text+'\n\nFor a longer, open-ended answer, enable the on-device AI model above.',url:s.link,label:'Open related page'}}
 if(/^(hello|hi|hey|thanks|thank you)[!. ]*$/.test(q))return {content:'Hi. I can help you navigate the Academy, investigate fictional alerts, understand the QA workstation, or learn AML concepts. Ask a question or start a local AI model for free-form answers.'};
 return {content:'I can navigate this website and answer common AML study questions immediately. For a free-form answer to this specific question, choose “Enable AI model.” It downloads a real language model to a compatible device; nothing is pretending to be live AI while it is disabled.'}}
