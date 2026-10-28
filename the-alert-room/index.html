@@ -35,12 +35,13 @@
 <a href="#main" class="skip">Skip to main content</a>
 <header class="nav-shell">
  <div class="nav-inner">
+  <a id="site-back" href="#home" class="site-back" aria-label="Back" hidden><span aria-hidden="true">←</span><span id="site-back-label">Back</span></a>
   <a href="#home" class="brand" aria-label="The Alert Room home"><i aria-hidden="true">A.</i><span>THE <b>ALERT</b> ROOM</span></a>
-  <nav class="top-links" aria-label="Main navigation">
-   <a href="#home">Home</a><a href="#learn">Learn</a><a href="#workspace">Investigate</a><a href="#qa">QA</a><a href="#analyst">Analyst</a>
+  <nav class="top-links" id="site-navigation" aria-label="Main navigation">
+   <a href="#home">Home</a><a href="#learn">Learn</a><a href="#workspace">Investigate</a><a href="#qa">QA</a><a href="#progress">Progress</a>
   </nav>
   <a href="#workspace" class="nav-cta">Open the workspace <span aria-hidden="true">↗</span></a>
-  <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+  <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-controls="site-navigation" aria-expanded="false"><span></span><span></span><span></span></button>
  </div>
 </header>
 <main id="main" class="page"><div id="view"><section class="wrap inner-hero"><h1>The Alert Room</h1><p>Free AML investigation training and casework.</p></section></div></main>
@@ -55,10 +56,10 @@
  </div>
  <div class="wrap footer-bottom"><span>© 2026 The Alert Room</span><span>All cases and payments are fictional. No real SAR filing or certification.</span></div>
 </footer>
-<button type="button" id="ag-launcher" class="ag-launcher" aria-label="Ask Analyst AI" aria-controls="analyst-drawer" aria-expanded="false"><span class="ag-avatar">A.</span><span><strong>Ask Analyst</strong><small>Your AI assistant</small></span><span class="ag-unread" aria-hidden="true"></span></button>
-<div class="ag-greeting" id="ag-greeting"><button type="button" aria-label="Dismiss Analyst greeting" data-ag-dismiss>×</button><h3>Hi, I'm Analyst.</h3><p id="ag-greeting-text">Have a question about AML or your case? I'm here to help.</p></div>
+<button type="button" id="ag-launcher" class="ag-launcher" aria-label="Open optional Analyst training assistant" aria-controls="analyst-drawer" aria-expanded="false"><span class="ag-avatar">A.</span><span><strong>Ask Analyst</strong><small>Optional study help</small></span><span class="ag-unread" aria-hidden="true"></span></button>
+<div class="ag-greeting" id="ag-greeting" hidden aria-hidden="true"></div>
 <aside class="ag-drawer" id="analyst-drawer" role="dialog" aria-modal="false" aria-label="Analyst AI assistant" aria-hidden="true" inert>
- <div class="ag-drawer-header"><span class="ag-avatar" aria-hidden="true">A.</span><div class="ag-drawer-header-text"><h2>Analyst</h2><p>Financial-crime learning companion</p></div><span class="ag-drawer-status">AI ASSISTANT</span><button type="button" class="ag-close" id="ag-close" aria-label="Close Analyst chat">×</button></div>
+ <div class="ag-drawer-header"><span class="ag-avatar" aria-hidden="true">A.</span><div class="ag-drawer-header-text"><h2>Analyst</h2><p>Financial-crime learning companion</p></div><span class="ag-drawer-status">OPTIONAL</span><button type="button" class="ag-close" id="ag-close" aria-label="Close Analyst chat">×</button></div>
  <div id="analyst-root"></div>
 </aside>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>

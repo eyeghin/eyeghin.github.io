@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  const part=decodeURIComponent(location.hash.replace(/^#/,'')).split('/');
  if(part[0]==='analyst'){setTimeout(()=>openAgent(part[1]||''),180);return}
  let seen=false;try{seen=sessionStorage.getItem('ar-analyst-welcome-seen')==='1'}catch(e){}
- if(!seen)greetingTimer=setTimeout(()=>{if(!open&&!document.hidden)greeting.classList.add('is-visible')},4500);
+ // The assistant opens only when requested. No unsolicited popup.
 });
 window.AlertRoomAgent={open:openAgent,close:closeAgent,isOpen:()=>open};
 })();

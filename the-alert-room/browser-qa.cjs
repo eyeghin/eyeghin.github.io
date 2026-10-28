@@ -149,6 +149,10 @@ fs.mkdirSync(OUT,{recursive:true});
   for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg'],['analyst','#analyst-root .ag-chat','10-analyst-mobile.jpg']]){
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
+   if(route==='workspace'){
+    const position=await mobile.locator('.console-main').evaluate(el=>el.getBoundingClientRect().left);
+    assert.ok(position<=24,'Mobile workspace must not have a redundant left navigation rail: '+position);
+   }
    const dim=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
    if(dim.scroll>dim.viewport+4){const bad=await mobile.evaluate(()=>Array.from(document.querySelectorAll('body *')).map(el=>({node:el.tagName,cls:typeof el.className==='string'?el.className:'',right:Math.round(el.getBoundingClientRect().right),width:Math.round(el.getBoundingClientRect().width)})).filter(x=>x.right>window.innerWidth+6&&x.width>0).slice(0,14));console.log('OVERFLOW_ELEMENTS',route,JSON.stringify(bad));}
    assert.ok(dim.scroll<=dim.viewport+4,'Mobile horizontal overflow on '+route+': '+JSON.stringify(dim));

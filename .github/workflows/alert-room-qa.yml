@@ -1,7 +1,7 @@
 name: The Alert Room - Browser QA
 on:
   push:
-    branches: [main, brand-story-reset, floating-analyst-agent-ux, cinematic-studio-reset-2026]
+    branches: [main, brand-story-reset, floating-analyst-agent-ux, cinematic-studio-reset-2026, aml-github-only-polish-2026-10]
     paths:
       - "the-alert-room/frame.js"
       - "the-alert-room/frame.css"
