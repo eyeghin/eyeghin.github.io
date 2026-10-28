@@ -90,6 +90,12 @@
 .ag-drawer .ag-compose{padding-bottom:calc(11px + env(safe-area-inset-bottom,0px))}
 .ag-drawer .ag-quick{min-height:53px}
 }
+/* Keep the optional assistant available without covering the mobile investigation. */
+@media(max-width:640px){
+.ag-launcher{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:51px;min-width:51px;max-width:51px;min-height:51px;height:51px;padding:5px;gap:0;display:grid;place-items:center;box-shadow:0 6px 22px #0005}
+.ag-launcher>.ag-avatar{width:39px;height:39px;flex-basis:39px}
+.ag-launcher>span:not(.ag-avatar){display:none}
+}
 @media(prefers-reduced-motion:reduce){
 .ag-launcher,.ag-greeting,.ag-drawer{transition:none!important}
 .ag-launcher:hover{transform:none}
