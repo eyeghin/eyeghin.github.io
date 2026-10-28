@@ -191,7 +191,7 @@ textarea.field-control{line-height:1.7;resize:vertical;min-height:130px}
 .bars span{display:block;flex:1;background:#A2BCD9;opacity:.9}
 .bars span.debit{background:#354A60}
 .qa-list{display:grid;grid-template-columns:315px minmax(0,1fr);gap:18px}
-.qa-score{display:flex;align-items:baseline;gap:15px;font-size:clamp(64px,5vw,89px);font-weight:650;letter-spacing:-.055em;line-height:1.06;font-variant-numeric:tabular-nums;white-space:nowrap}
+.qa-score{display:flex;align-items:baseline;gap:15px;font-size:clamp(64px,5vw,89px);font-weight:650;letter-spacing:-.03em;line-height:1.06;font-variant-numeric:tabular-nums;white-space:nowrap}
 .qa-score small{display:block;flex:none;font-size:clamp(19px,1.8vw,24px);color:#A2BCD9;letter-spacing:-.025em}
 .score-row{display:grid;grid-template-columns:1fr 50px;gap:10px;align-items:center;padding:12px 0;font-size:12px;border-bottom:1px solid #354A60}
 .score-row .track{grid-column:1/-1;height:4px;background:#354A60}
@@ -355,7 +355,7 @@ body.route-analyst .analyst-launch{display:none}
 /* Product foundation: one typographic and palette hierarchy */
 .nav-shell{background:rgba(12,13,19,.96);border-bottom:1px solid #343949;box-shadow:none;height:76px}
 .nav-inner{height:76px}
-.nav-shell .brand{font-weight:700;font-size:17px;letter-spacing:-.055em}
+.nav-shell .brand{font-weight:700;font-size:17px;letter-spacing:-.03em}
 .nav-shell .brand i{background:#F9FAFD;color:#0F1119;border:0;border-radius:8px;transform:none}
 .top-links a{font-size:13px;font-weight:600;color:#C7D3DF}
 .top-links a:hover,.top-links a.active{color:#F9FAFD}
@@ -493,7 +493,7 @@ body{font-family:Manrope,system-ui,sans-serif;background:#0F1119;color:#F9FAFD}
 button,input,select,textarea{font-family:Manrope,system-ui,sans-serif}
 .nav-shell{background:rgba(9,12,16,.96);border-bottom:1px solid #FFFFFF19;height:77px;box-shadow:none}
 .nav-inner{height:77px;max-width:1600px}
-.nav-shell .brand{font-size:17px;letter-spacing:-.052em;font-weight:780}
+.nav-shell .brand{font-size:17px;letter-spacing:-.028em;font-weight:780}
 .nav-shell .brand i{border-radius:50%;background:#F9FAFD;color:#0B0C12;width:34px;height:34px;border:0;font-size:13px}
 .nav-shell .top-links a{font-size:12px;letter-spacing:-.01em;color:#BCC8D4;font-weight:650}
 .nav-shell .top-links a:hover{color:#fff}
@@ -505,7 +505,7 @@ button,input,select,textarea{font-family:Manrope,system-ui,sans-serif}
 .footer-col a:hover{color:#F9FAFD}
 .footer-bottom{color:#AEB4C5;border-color:#FFFFFF1A}
 .console{background:#0F1119}
-.console-top h1{font-size:clamp(39px,4.7vw,66px);font-weight:770;letter-spacing:-.073em}
+.console-top h1{font-size:clamp(39px,4.7vw,66px);font-weight:770;letter-spacing:-.034em}
 .console-kicker{color:#B6ACFF}
 .console-top p{color:#B7C9D9;font-size:14px;line-height:1.75}
 .rail{background:#0F1119;border-color:#343949}
@@ -513,7 +513,7 @@ button,input,select,textarea{font-family:Manrope,system-ui,sans-serif}
 .rail a:hover{border-color:#B5AEFF}
 .metric-strip{background:#344758}
 .metric{background:#1B1F2B}
-.metric strong{font-size:clamp(27px,3vw,40px);font-weight:760;letter-spacing:-.055em}
+.metric strong{font-size:clamp(27px,3vw,40px);font-weight:760;letter-spacing:-.03em}
 .metric span{color:#B5C7D9;font-size:10px;font-weight:650}
 .well,.sideblock,.quiz-card{background:#1B1F2B;border-color:#343949;border-radius:12px;overflow:hidden}
 .well-head{background:#253646}
