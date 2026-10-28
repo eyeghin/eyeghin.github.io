@@ -601,3 +601,16 @@ body{font-family:Manrope,system-ui,sans-serif}
 .data-scroll{border-radius:0 0 14px 14px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
+/* Single mobile navigation: use the site menu, not a second cramped icon rail. */
+@media(max-width:640px){
+ .console{display:block!important;width:100%;min-width:0}
+ .console>.rail{display:none!important}
+ .console>.console-main{width:100%!important;max-width:100%!important;min-width:0!important;padding:27px 18px 76px!important;margin:0!important}
+ .console-top>div:first-child{min-width:0}
+ .console-top h1{font-size:clamp(32px,9.2vw,44px);line-height:1.1}
+ .console-top p{max-width:100%}
+ .toolbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
+ .toolbar .grow{min-width:0}
+ .metric-strip{width:100%}
+}
