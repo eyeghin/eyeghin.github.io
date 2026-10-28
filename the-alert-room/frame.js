@@ -38,7 +38,7 @@ function makePage(html,title){
  const route=pageRoute(),back=$('#site-back'),backLabel=$('#site-back-label');
  const backTo=route.name==='case'?['#workspace','All alerts']:route.name==='course'?['#learn','All courses']:route.name==='lesson'?['#course/'+route.id.replace(/-\d+$/,''),'Course lessons']:route.name==='qa'&&route.id?['#qa','QA reports']:route.name==='reviewer'&&route.id?['#reviewer','Reviewer desk']:route.name==='home'?null:['#home','Home'];
  if(back){back.hidden=!backTo;if(backTo){back.href=backTo[0];back.setAttribute('aria-label','Back to '+backTo[1]);if(backLabel)backLabel.textContent=backTo[1];}}
- $('.top-links a').forEach(x=>{const active=x.getAttribute('href')==='#'+(route.name==='case'?'workspace':route.name==='lesson'||route.name==='course'?'learn':route.name);x.classList.toggle('active',active);if(active)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
+ $$('.top-links a').forEach(x=>{const active=x.getAttribute('href')==='#'+(route.name==='case'?'workspace':route.name==='lesson'||route.name==='course'?'learn':route.name);x.classList.toggle('active',active);if(active)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
  $('.nav-shell')?.classList.remove('open');$('.nav-toggle')?.setAttribute('aria-expanded','false');
  window.scrollTo({top:0,behavior:'instant'});reveal();
 }
