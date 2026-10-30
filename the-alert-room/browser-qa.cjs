@@ -162,9 +162,10 @@ fs.mkdirSync(OUT,{recursive:true});
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
    if(route==='workspace'){
-    assert.equal(await mobile.locator('.ops-queue-table tbody tr[data-open-case]').count(),10,'Mobile alert cards must retain all ten rows');
-    const layout=await mobile.locator('.ops-queue-table tbody tr').first().evaluate(el=>getComputedStyle(el).display);
-    assert.equal(layout,'grid','Mobile alerts must render as readable cards rather than wide table rows');
+    assert.equal(await mobile.locator('#ops-mobile-cards a.ops-mobile-card').count(),10,'Mobile queue must display ten tappable alert cards');
+    assert.equal(await mobile.locator('.ops-mobile-card').first().evaluate(el=>getComputedStyle(el).display),'block','Mobile cases must be real cards, not a clipped table');
+    assert.equal(await mobile.locator('.ops-queue-scroll').evaluate(el=>getComputedStyle(el).display),'none','Wide alert table should be hidden on narrow screens');
+    assert.ok(await mobile.locator('.ops-mobile-card-footer').first().innerText().then(t=>t.includes('Open investigation')),'Each mobile card needs a clear action');
     const position=await mobile.locator('.console-main').evaluate(el=>el.getBoundingClientRect().left);
     assert.ok(position<=24,'Mobile workspace must not have a redundant left navigation rail: '+position);
    }
