@@ -194,7 +194,8 @@ function setCaseContext(id){
  if(input)input.checked=false;
  if(title)title.textContent=caseId;
 }
-window.AlertAnalyst={setCaseContext,available:()=>state==='ready',isLoading:()=>state==='loading'};
+function clearConversation(){history=[];messages();}
+window.AlertAnalyst={setCaseContext,clearConversation,available:()=>state==='ready',isLoading:()=>state==='loading'};
 
 document.addEventListener('click',e=>{
  const topic=e.target.closest('[data-analyst-topic],[data-analyst-quick]');
