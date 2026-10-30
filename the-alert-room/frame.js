@@ -106,6 +106,15 @@ return rows.length?rows.map(c=>'<tr class="clickable" tabindex="0" role="link" a
 +'<td><a class="ops-open-case" href="#case/'+safe(c.id)+'">Open case <span aria-hidden="true">↗</span></a></td></tr>').join('')
 :'<tr><td colspan="7" class="ops-empty">No alerts match those filters. Try clearing a filter or searching another customer.</td></tr>';
 }
+function mobileQueueRows(){
+const rows=filteredCases().slice(ui.queuePage*10,(ui.queuePage+1)*10);
+return rows.length?rows.map(c=>'<a class="ops-mobile-card" href="#case/'+safe(c.id)+'" aria-label="Investigate '+safe(c.id)+' for '+safe(c.reference)+'">'
++'<div class="ops-mobile-card-head"><span>'+safe(c.id)+'</span><span class="ops-priority ops-priority-'+c.priority+'">P'+c.priority+'</span></div>'
++'<h3>'+safe(c.title)+'</h3><p>'+safe(c.trigger)+'</p>'
++'<div class="ops-mobile-card-account"><span>'+safe(c.reference)+'</span><span>Acct •••• '+safe(c.accountSuffix||'0000')+'</span></div>'
++'<div class="ops-mobile-card-footer"><span class="ops-status '+safe(status(c.id))+'">'+safe(caseStatusText(c.id))+'</span><strong>Open investigation ↗</strong></div></a>').join('')
+:'<div class="ops-mobile-empty">No matching alerts. Change your filters to see other cases.</div>';
+}
 function queue(){
 const types=[...new Set(data.cases.map(x=>x.title))];
 const next=data.cases.find(c=>status(c.id)==='active')||data.cases.find(c=>status(c.id)==='returned')||data.cases.find(c=>status(c.id)==='new')||data.cases[0];
@@ -270,6 +279,7 @@ function queueRefresh(){
  const count=filteredCases().length,pages=Math.max(1,Math.ceil(count/10));
  ui.queuePage=Math.max(0,Math.min(ui.queuePage,pages-1));
  body.innerHTML=queueRows();
+ const mobile=$('#ops-mobile-cards');if(mobile)mobile.innerHTML=mobileQueueRows();
  const tally=$('#queue-count');if(tally)tally.textContent=count+' matching / '+data.cases.length+' total';
  let pager=$('#queue-pager');
  if(!pager){
