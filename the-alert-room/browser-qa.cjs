@@ -158,7 +158,7 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(Math.abs(agentMobile.width-agentMobile.viewport)<=2,'Agent must fill mobile viewport without overflow');
   await mobile.screenshot({path:path.join(OUT,'11-analyst-agent-mobile.jpg'),type:'jpeg',quality:75,fullPage:false,animations:'disabled'});
   await mobile.locator('#ag-close').click();
-  for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg'],['analyst','#analyst-root .ag-chat','10-analyst-mobile.jpg']]){
+  for(const [route,selector,file] of [['workspace','#ops-mobile-cards .ops-mobile-card','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg'],['analyst','#analyst-root .ag-chat','10-analyst-mobile.jpg']]){
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
    if(route==='workspace'){
