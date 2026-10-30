@@ -90,6 +90,13 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'02-workspace-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.goto(BASE+'#case/AR-3002',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('.ops-case-steps a').count(),5,'All five investigation stages must be labeled and accessible');
+  await page.locator('.ops-case-next').click();
+  await page.waitForURL(/#case\/AR-3002\/ledger$/);
+  assert.ok(await page.locator('.ops-case-stephead').innerText().then(t=>t.includes('Transactions')),'Continue must open transaction stage');
+  await page.goBack();
+  await page.waitForURL(/#case\/AR-3002$/);
+  assert.ok(await page.locator('.ops-case-stephead').innerText().then(t=>t.includes('Customer & KYC')),'Browser Back must restore previous case stage');
   assert.equal(await page.locator('[data-case-clock]').count(),1,'Every investigation must display a session timer');
   assert.match(await page.locator('.context-grid').first().innerText(),/account reference/i,'Masked fictional account context missing');
   await page.locator('[data-mark-reviewed="kyc"]').click();
@@ -155,6 +162,9 @@ fs.mkdirSync(OUT,{recursive:true});
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
    if(route==='workspace'){
+    assert.equal(await mobile.locator('.ops-queue-table tbody tr[data-open-case]').count(),10,'Mobile alert cards must retain all ten rows');
+    const layout=await mobile.locator('.ops-queue-table tbody tr').first().evaluate(el=>getComputedStyle(el).display);
+    assert.equal(layout,'grid','Mobile alerts must render as readable cards rather than wide table rows');
     const position=await mobile.locator('.console-main').evaluate(el=>el.getBoundingClientRect().left);
     assert.ok(position<=24,'Mobile workspace must not have a redundant left navigation rail: '+position);
    }
