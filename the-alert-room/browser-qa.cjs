@@ -90,6 +90,8 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'02-workspace-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.goto(BASE+'#case/AR-3002',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('[data-case-clock]').count(),1,'Every investigation must display a session timer');
+  assert.match(await page.locator('.context-grid').first().innerText(),/account reference/i,'Masked fictional account context missing');
   await page.locator('[data-mark-reviewed="kyc"]').click();
   await page.locator('[data-case-tab="ledger"]').click();
   await page.waitForSelector('[data-evidence]');
