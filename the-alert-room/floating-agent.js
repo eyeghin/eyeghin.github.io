@@ -37,6 +37,8 @@ function openAgent(requestedCase){
 }
 function closeAgent(){
  if(!open)return;open=false;
+ // Closing the drawer discards prior questions and model responses by design.
+ window.AlertAnalyst?.clearConversation?.();
  panel.classList.remove('is-open');panel.setAttribute('aria-hidden','true');panel.setAttribute('inert','');
  launcher.hidden=false;launcher.setAttribute('aria-expanded','false');
  document.documentElement.style.overflow='';
