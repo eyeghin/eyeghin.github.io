@@ -1233,3 +1233,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
  .ops-case-next{justify-content:space-between}
 }
 @media(prefers-reduced-motion:reduce){.ops-case-step-progress span,.ops-feature-action,.ops-case-next{transition:none}}
+
+/* Mobile queue uses actual case cards. Do not force HTML table rows into CSS grid. */
+.ops-mobile-cards{display:none}
+@media(max-width:740px){
+ .ops-queue-scroll{display:none}
+ .ops-mobile-cards{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:13px}
+ .ops-mobile-card{display:block;min-width:0;padding:19px;border:1px solid #3C3E4F;border-radius:11px;background:#1E202C;color:#F8F8FB}
+ .ops-mobile-card:hover,.ops-mobile-card:focus-visible{background:#29283C;border-color:#7972C6}
+ .ops-mobile-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#ABADBE;font-weight:700;font-size:11px;letter-spacing:.08em}
+ .ops-mobile-card h3{font-size:20px;font-weight:680;letter-spacing:-.05em;line-height:1.25;margin:14px 0 6px}
+ .ops-mobile-card p{color:#ABB0C0;font-size:12px;line-height:1.6;margin:0 0 20px}
+ .ops-mobile-card-account{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:14px 0;color:#D5D6E0;font-size:11px;border-top:1px solid #393C4B}
+ .ops-mobile-card-account span:first-child{font-weight:700}
+ .ops-mobile-card-account span:last-child{color:#969BAC}
+ .ops-mobile-card-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #393C4B;padding:15px 0 0}
+ .ops-mobile-card-footer strong{color:#CEC8FF;font-size:12px}
+ .ops-mobile-empty{padding:27px;color:#ADB0BC;font-size:12px;line-height:1.6}
+ .ops-case-steps.case-tabs{flex-wrap:nowrap;scroll-snap-type:x proximity;scroll-behavior:smooth}
+ .ops-case-steps a{scroll-snap-align:start}
+}
