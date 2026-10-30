@@ -975,3 +975,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .vi-hero::before{background:none}
 .signal-console,.signal-console-action{transition:none}
 }
+
+
+/* Case timing distinguishes the review session from fabricated institution SLAs. */
+.case-clock-strip{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;border:1px solid #393B50;border-radius:10px;background:#1A1928;color:#ADB0C3;margin-bottom:20px;padding:12px 18px;font-size:10px;font-weight:720;letter-spacing:.1em}
+.case-clock-strip time{color:#ECEBFF;font-size:14px;font-variant-numeric:tabular-nums;font-weight:730;letter-spacing:.04em;margin-left:9px}
+.case-grid .context-grid dt{color:#9FA4B8}
+.case-grid .context-grid dd{color:#F0EFFB}
+@media(max-width:640px){.case-clock-strip{padding:13px 14px;gap:7px;font-size:9px}.case-clock-strip time{font-size:12px}}
