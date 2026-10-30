@@ -25,11 +25,40 @@ if(index===3)body="<small>DISPOSITION / YOUR JUDGMENT</small><h4>What happens ne
 return "<div class='vi-step-story'>"+head("0"+(index+1),stageNames[index])+"<h3>"+["It starts with a signal.","Context changes everything.","Let the evidence speak.","Make the call. Defend it."][index]+"</h3><p>"+["A rule match says an investigation may be needed. It does not tell you why the activity occurred.","Check the customer background and expected activity before drawing conclusions.","The timing, amount, direction and counterparties of transactions matter more than the alert headline.","An analyst must justify closure, further information or escalation using specific supporting facts."][index]+"</p></div><div class='vi-ledger-pane'><div class='vi-pane-top'>AR / "+safe(x.id)+"<span>EDUCATIONAL SIMULATION</span></div><div class='vi-pane-content'>"+body+"</div><div class='vi-pane-bottom'>ALL DATA IS SYNTHETIC <span>ANALYZE WITH CARE ↗</span></div></div>";
 }
 function explained(value){const a=c();return value===a.outcome?"Aligned with the fictional reference outcome. Your real training workpaper still needs evidence IDs and a defensible rationale.":value==="rfi"?"Target an unanswered material fact; explain exactly what you need to corroborate.":"The alert alone does not prove wrongdoing. Compare against customer behavior and the ledger first.";}
+function hero(){
+const a=c(),tx=a.transactions||[],incoming=tx.filter(t=>t.direction==="Credit"),outgoing=tx.filter(t=>t.direction==="Debit");
+const sum=list=>list.reduce((n,t)=>n+Number(t.amount||0),0);
+const rows=tx.slice(0,5).map(t=>`<div class="signal-ledger-row"><span class="signal-direction ${t.direction==="Credit"?"in":"out"}" aria-label="${t.direction}">${t.direction==="Credit"?"↙":"↗"}</span><span class="signal-ledger-party">${safe(t.counterparty)}<small>${safe(t.id)} · ${safe(t.date)}</small></span><strong>${t.direction==="Credit"?"+":"−"}${usd(t.amount)}</strong></div>`).join("");
+return `<div class="vi-site">
+<section class="vi-hero" aria-labelledby="signal-title">
+<div class="vi-shell vi-hero-layout">
+<div class="vi-hero-writing">
+<div class="signal-pretitle"><span class="signal-live-mark" aria-hidden="true"></span><span>THE ALERT ROOM / A FINANCIAL CRIME PRACTICE LAB</span></div>
+<h1 id="signal-title">An alert is<br>not <em>an answer<span class="signal-stop">.</span></em></h1>
+<p class="signal-lede">The rule found a pattern. Now it’s your move: understand the customer, follow the money, and explain what the evidence actually supports.</p>
+<div class="signal-actions">${link("#workspace","Enter the investigation room")}<button class="signal-secondary" data-vi-scroll="vi-walk">See how a case works <span aria-hidden="true">↘</span></button></div>
+<div class="signal-cred"><span>40 FICTIONAL ALERTS</span><span aria-hidden="true">/</span><span>REAL ANALYST WORKFLOW</span><span aria-hidden="true">/</span><span>FREE TO PRACTICE</span></div>
+</div>
+<div class="signal-console" aria-label="Fictional alert preview for ${safe(a.id)}">
+<div class="signal-window-head"><div class="signal-window-name"><span class="signal-square" aria-hidden="true"></span> INVESTIGATION / LIVE PREVIEW</div><div class="signal-window-index">CASE ${safe(a.id)}</div></div>
+<div class="signal-console-body">
+<div class="signal-console-kicker">TRANSACTION MONITORING <span class="signal-priority">PRIORITY 0${safe(a.priority||2)}</span></div>
+<h2>${safe(a.title||"Activity outside expected pattern")}</h2><p class="signal-trigger">${safe(a.trigger||"Review the customer context and transaction history.")}</p>
+<div class="signal-console-sums">
+<div><span>INBOUND / SAMPLE</span><strong>${usd(sum(incoming))}</strong></div>
+<div><span>OUTBOUND / SAMPLE</span><strong>${usd(sum(outgoing))}</strong></div>
+<div><span>TRANSACTIONS</span><strong>${tx.length}</strong></div>
+</div>
+<div class="signal-ledger"><div class="signal-ledger-head"><span>LEDGER EXCERPT</span><span>FICTIONAL TRANSACTIONS</span></div>${rows}</div>
+<a class="signal-console-action" href="#case/${safe(a.id)}"><span>OPEN THIS CASE</span><span aria-hidden="true">↗</span></a>
+</div>
+</div>
+</div>
+<div class="vi-shell signal-footnote"><span>NOT A BANK. NOT A CERTIFICATION. A PLACE TO PRACTICE JUDGMENT.</span><span>EXPLORE THE METHOD ↓</span></div>
+</section>`;
+}
 function home(){
-return "<div class='vi-site'>"
-+"<section class='vi-hero'><div class='vi-shell vi-hero-layout'><div class='vi-hero-writing'>"+head("00","AN INVESTIGATION BEGINS")+
-"<h1>An alert<br>is not<br><em>an answer.</em></h1><div class='vi-hero-lower'><p>Real judgment begins after the warning. Learn to question the signal, follow the funds, and defend your decision.</p><div>"+link("#workspace","Begin an investigation")+"<button data-vi-scroll='vi-walk' class='vi-text-button'>Experience the story ↓</button></div></div></div>"
-+"<div class='vi-hero-art'><div class='vi-aura'></div>"+network()+"<div class='vi-data-stamp top'><small>CASE AR-3002</small><strong>MONITORING</strong></div><div class='vi-data-stamp bottom'><small>TRANSACTIONS</small><strong>"+(c().transactions||[]).length+" OBSERVED</strong></div><div class='vi-visual-note'><i></i>FICTIONAL TRAINING SIGNAL</div></div></div><div class='vi-shell vi-hero-foot'><span>THE ALERT ROOM — EST. 2026</span><span>FREE / INDEPENDENT / FICTIONAL</span><span>SCROLL TO INVESTIGATE ↓</span></div></section>"
+return hero()
 +"<section class='vi-story'><div class='vi-shell'>"+head("01","THE IDEA")+"<div class='vi-story-grid'><h2>The warning<br>is only the<br><i>beginning.</i></h2><div><p>Rules find patterns. An analyst has to find meaning.</p><p>That means understanding the customer, tracing the transactions and documenting what the evidence actually supports.</p><div class='vi-principles'>CONTEXT → EVIDENCE → JUDGMENT</div></div></div></div></section>"
 +"<section class='vi-walk' id='vi-walk'><div class='vi-shell'><div class='vi-walk-header'>"+head("02","PLAY THE INVESTIGATION")+"<h2>One case.<br>Four questions.</h2><p>Play the sequence or choose a stage. Every decision reveals another part of the story.</p></div>"
 +"<div class='vi-workbench'><div class='vi-workbench-nav'><div class='vi-workbench-caption'>CASE STUDY / AR-3002 <span>TRAINING MODE</span></div><div class='vi-steps'>"+stageNames.map((v,i)=>"<button data-vi-step='"+i+"' aria-selected='"+(i===0)+"'><b>0"+(i+1)+"</b><span>"+v+"</span></button>").join("")+"</div><div class='vi-controls'><button id='vi-play'>▶ Play</button><button id='vi-next'>Next →</button></div></div><div class='vi-current' id='vi-current'>"+panel(0)+"</div></div><div class='vi-under-workbench'><span>NO REAL SAR SUBMISSION / NO ACTUAL CUSTOMER RECORDS</span><a href='#case/AR-3002'>OPEN THE COMPLETE CASE ↗</a></div></div></section>"
