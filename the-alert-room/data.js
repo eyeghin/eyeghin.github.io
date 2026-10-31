@@ -75,8 +75,21 @@ window.AR_ARCHETYPES = [
  {type:"Payroll correction batch",sector:"Small business",expected:"Monthly payroll and tax outflows",risk:"Unusual number of same-day ACH credits",answer:"close",level:3,why:"A documented payroll correction and matching batch ledger provide a legitimate explanation."},
  {type:"Refund destination changes",sector:"Online merchant",expected:"$12,000 card settlement monthly",risk:"Refunds sent toward newly changed destinations",answer:"rfi",level:2,why:"Need to reconcile merchant order records, payment origin and refund beneficiaries."}
 ];
+/* All names and relationships below are invented for practice, not bank data.
+   Five distinct synthetic customers per monitoring typology (8 x 5 = 40). */
+window.AR_CUSTOMER_ALIASES=[
+ ["Northline Creative","Pine Street Studio","Arbor Freelance","Meridian Design Desk","Cobalt Media Works"],
+ ["Lantern Nights Co.","Morrow Event Group","Lumen Live Events","Crescent Gatherings","Horizon Concerts"],
+ ["Maya Arden","Jonah Vale","Nora Ellis","Avery Quinn","Leo Mercer"],
+ ["Willow Table Kitchen","Fig & Rye Bistro","Cedar Street Cafe","Tideway Grill","Juniper Dining Co."],
+ ["Camila Stone","Rowan Pierce","Taylor Finch","Emery Brooks","Morgan Reed"],
+ ["Marshline Wholesale","Briar Supply Co.","Westhaven Imports","Orchard Parts Trading","Crest Distribution"],
+ ["Oakline Services","Summit Admin Co.","Brightbrook Studio","Elm Ledger Services","Harborline Office Co."],
+ ["Cedar Goods Online","Northstar Retail Web","Kestrel Home Goods","Evergreen Market Online","Brightlane Merchants"]
+];
+window.AR_COUNTERPARTIES=["Rowan Ellis","Camden Hale","Ari Mercer","Samira Park","Elliot Rhodes","Noah Soren","Kira Vale","Mina Bell","Jules Moreno","Drew Linden","Casey Bloom","Riley Arden","Haven Supply","Stonebridge Venue","North Vale Services","Juniper Logistics"];
 window.AR_CASES = Array.from({length:40},function(_,i){
- var a=window.AR_ARCHETYPES[i%8],n=i+1,order=Math.floor(i/8),id="AR-"+String(3000+n),amt=Math.round((a.level===3?300:1200)+(n*137)%9000),tx=[];
+ var a=window.AR_ARCHETYPES[i%8],n=i+1,order=Math.floor(i/8),id="AR-"+String(3000+n),alias=window.AR_CUSTOMER_ALIASES[i%8][order],amt=Math.round((a.level===3?300:1200)+(n*137)%9000),tx=[];
  for(var t=0;t<24;t++){
    var dir=t%7<4?"Credit":"Debit";
    var focused=t>=15;
@@ -84,8 +97,18 @@ window.AR_CASES = Array.from({length:40},function(_,i){
    var v=focused?Math.round(amt*(.45+(t%5)*.18)):Math.round((65+((i*19+t*43)%780))*(dir==="Credit"?1.15:.88));
    if(a.type==="Business cash deposits" && focused)v=7600+((t*173+i*91)%2050);
    var day=String(1+((i*3+t)%25)).padStart(2,"0");
-   tx.push({id:"TX-"+String(26000+n*100+t),date:"2026-10-"+day,time:String(8+(t%12)).padStart(2,"0")+":"+String((11+t*7)%60).padStart(2,"0"),direction:dir,method:t%3===0?"ACH":t%3===1?"P2P":"Wire",counterparty:dir==="Credit"?(focused?"New originator "+String(t-13):"Existing payor "+String((t%4)+1)):(focused?"External beneficiary "+String((t%5)+1):"Known expense "+String((t%6)+1)),amount:v,note:focused?"Activity within monitoring alert scope":"Routine historical account activity"});
+   var method=a.type==="Business cash deposits"?(dir==="Credit"?"Cash deposit":"ACH")
+   :a.type==="Payroll correction batch"?"ACH"
+   :a.type==="Refund destination changes"?(dir==="Debit"?"Card refund":"Card settlement")
+   :a.type==="Weekend ticket collections"?(dir==="Credit"?"P2P":"ACH")
+   :a.type==="New-beneficiary wire"?(focused?"Wire":"ACH")
+   :(t%3===0?"ACH":t%3===1?"P2P":"Wire");
+ var who=window.AR_COUNTERPARTIES[(i*3+t+(focused?7:0))%window.AR_COUNTERPARTIES.length];
+ var party=(a.type==="Business cash deposits"&&dir==="Credit")?"Store register / "+String(1+(t%3))
+   :a.type==="Payroll correction batch"?"Payroll / "+who
+   :(dir==="Credit"?(focused?"New payer / ":"Returning payer / "):(focused?"New beneficiary / ":"Known payee / "))+who;
+ tx.push({id:"TX-"+String(26000+n*100+t),date:"2026-10-"+day,time:String(8+(t%12)).padStart(2,"0")+":"+String((11+t*7)%60).padStart(2,"0"),direction:dir,method:method,counterparty:party,amount:v,note:focused?"Activity within monitoring alert scope":"Routine historical account activity"});
  }
  tx.sort((x,y)=>(x.date+" "+x.time).localeCompare(y.date+" "+y.time));
- return {id:id,title:a.type,sector:a.sector,expected:a.expected,trigger:a.risk,reference:"Customer "+String(n).padStart(3,"0"),opened:"2026-10-"+String(6+(i%17)).padStart(2,"0"),priority:a.level,outcome:a.answer,why:a.why,transactions:tx,kind:a.type,description:"Illustrative fictional review. Compare activity with expected account purpose, assess counterparties and timing, then document your own conclusion.",riskIndicators:[a.risk,"Transaction activity should be assessed against customer profile","Additional details may change the final determination"],baseline:order===0?"Stable prior month":order===1?"Moderate growth":order===2?"Several quiet weeks":order===3?"New account relationship":"Recent profile review"};
+ return {id:id,title:a.type,sector:a.sector,expected:a.expected,trigger:a.risk,reference:alias,accountSuffix:String(4300+n),opened:"2026-10-"+String(6+(i%17)).padStart(2,"0"),priority:a.level,outcome:a.answer,why:a.why,transactions:tx,kind:a.type,description:"Illustrative fictional review. Compare activity with expected account purpose, assess counterparties and timing, then document your own conclusion.",riskIndicators:[a.risk,"Transaction activity should be assessed against customer profile","Additional details may change the final determination"],baseline:order===0?"Stable prior month":order===1?"Moderate growth":order===2?"Several quiet weeks":order===3?"New account relationship":"Recent profile review"};
 });

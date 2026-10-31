@@ -32,7 +32,13 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const hosted=window.AR_HOSTED_ANALYST||{},hostedEnabled=Boolean(hosted.endpoint&&hosted.siteKey);
 let turnstileToken="",turnstileWidget=null,turnstileLoading=null;
 let engine=null,engineModel='',chosen=MODELS[0].id,loading=null,busy=false,state='idle',progress='Model not loaded',progressPct=0;
-let history=[],rootNode=null,caseId='',allowContext=false;
+let history=[],rootNode=null,caseId='',allowContext=false,conversationVersion=0;
+const guides=[
+ ['Review an alert','Start with Customer & KYC. Compare expected activity with the ledger, select at least three relevant transactions, review funds flow and chronology, then write your own supported disposition. Mark KYC and transaction review complete before submitting.'],
+ ['Select evidence','Use transaction IDs, dates, amounts, direction and counterparties to support or challenge your hypothesis. Select evidence in Transactions and cite at least three selected IDs in your narrative. An alert alone does not prove suspicious activity.'],
+ ['Understand QA','Submit your workpaper to receive a deterministic educational rubric score. It checks structure, citations and alignment with a fictional reference disposition. It does not verify every factual claim or replace professional review. Revise the case and submit again to create another review cycle.'],
+ ['Save and privacy','Drafts, evidence and QA reports are stored in this browser only. They do not sync across devices. Export the ledger or QA report to keep a copy. Use only fictional data; deleting browser data can erase your work.']
+];
 function status(text,pct){
  if(typeof text==='string')progress=text;if(Number.isFinite(pct))progressPct=Math.max(0,Math.min(100,pct));
  const label=$('#analyst-load-status');if(label)label.textContent=hostedEnabled?(progress==='Model not loaded'?'Hosted Analyst · Verify to begin.':progress):progress;
@@ -46,6 +52,7 @@ function status(text,pct){
 function compactMarkup(){
 return '<div class="ag-chat">'
 +'<div class="ag-conversation" id="analyst-messages" role="log" aria-label="Analyst conversation" aria-live="polite"></div>'
++'<div class="ag-site-guide"><details><summary>Practice guide · no AI download needed</summary><div>'+guides.map((x,i)=>'<button type="button" data-site-guide="'+i+'">'+esc(x[0])+'</button>').join('')+'</div></details></div>'
 +'<div class="ag-quick"><span>TRY ASKING</span>'+[
 'Review an unusual transaction',
 'What makes evidence strong?',
@@ -61,7 +68,7 @@ return '<div class="ag-chat">'
 +'<div class="ag-compose"><div class="ag-compose-surface"><form id="analyst-chat-form"><textarea id="analyst-input" rows="2" maxlength="3500" aria-label="Message Analyst" placeholder="Ask a question about AML or this case…"></textarea>'
 +'<button id="analyst-send" type="submit" aria-label="Send to Analyst">↗</button></form></div>'
 +'<div class="ag-composer-foot"><span id="analyst-load-status" role="status">Model not loaded</span><button id="analyst-clear" type="button">Clear chat</button></div>'
-+'<p class="ag-disclosure">'+(hostedEnabled?'Hosted AI answers may be inaccurate. Questions are sent securely to the configured AI service after human verification. Do not enter real customer data.':'Real on-device AI. First response requires downloading a large model and a WebGPU-compatible browser. No real customer data.')+'</p></div>'
++'<p class="ag-disclosure">'+(hostedEnabled?'Hosted AI answers may be inaccurate. Questions are sent securely to the configured AI service after human verification. Do not enter real customer data.':'Optional experimental AI requires a large model download and a compatible WebGPU device. Availability and answer quality vary. The practice guide works without AI. Use fictional data only.')+'</p></div>'
 +'</div>';
 }
 
@@ -91,7 +98,7 @@ function messages(){
   const item=document.createElement('article');item.className='analyst-message '+(msg.role==='user'?'user':'assistant');
   const avatar=document.createElement('div');avatar.className='analyst-avatar';avatar.textContent=msg.role==='user'?'Y':'A.';
   const bubble=document.createElement('div');bubble.className='analyst-bubble';
-  const title=document.createElement('div');title.className='who';title.textContent=msg.role==='user'?'YOU':'ANALYST / AI';
+  const title=document.createElement('div');title.className='who';title.textContent=msg.role==='user'?'YOU':msg.role==='guide'?'PRACTICE GUIDE / PREWRITTEN':'ANALYST / AI';
   const content=document.createElement('div');content.className='content';content.textContent=msg.content||'';
   if(msg.pending&&!msg.content)content.innerHTML='<span class="analyst-thinking" aria-label="Thinking"><i></i><i></i><i></i></span>';
   bubble.append(title,content);item.append(avatar,bubble);el.append(item);
@@ -122,7 +129,7 @@ async function load(){
     status(String(p?.text||'Preparing model on this device…').slice(0,140),n);
    }});
    engineModel=chosen;state='ready';status('AI ready. Ask Analyst a question.',100);
-  }catch(e){state='error';engine=null;engineModel='';status('Could not start AI: '+String(e?.message||e).slice(0,180),0);}
+  }catch(e){state='error';engine=null;engineModel='';const settings=$('.ag-model-settings');if(settings)settings.open=false;status('Could not start AI: '+String(e?.message||e).slice(0,180),0);}
   finally{loading=null;status(progress,progressPct);}
  })();
  return loading;
@@ -141,9 +148,9 @@ async function initializeHosted(){
  catch{status('Verification unavailable. Try again later.',0);}
 }
 async function askHosted(question){
- const text=String(question||'').trim();if(!text||busy)return;
+ const text=String(question||'').trim();if(!text||busy)return;const version=conversationVersion;
  if(!turnstileToken){status('Complete the verification before sending.',0);return;}
- const list=history.filter(v=>!v.pending).slice(-10).map(v=>({role:v.role,content:v.content.slice(0,3000)}));
+ const list=history.filter(v=>!v.pending&&v.role!=='guide').slice(-10).map(v=>({role:v.role,content:v.content.slice(0,3000)}));
  list.push({role:'user',content:text});
  history.push({role:'user',content:text});const reply={role:'assistant',content:'',pending:true};history.push(reply);
  busy=true;messages();status('Analyst is preparing your response…',100);
@@ -151,6 +158,7 @@ async function askHosted(question){
   const response=await fetch(hosted.endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:list,turnstileToken,syntheticCase:context(),webSearch:false})});
   const payload=await response.json().catch(()=>({}));
   if(!response.ok)throw Error(payload.error||'Hosted AI service is unavailable');
+  if(version!==conversationVersion)return;
   reply.content=String(payload.answer||'No response provided').slice(0,10000);
   status('Advanced Analyst ready · Verify again to ask a follow-up.',100);
  }catch(e){reply.content='Analyst could not answer: '+String(e?.message||e).slice(0,200);status('Please try again with a new verification.',0);}
@@ -159,7 +167,7 @@ async function askHosted(question){
 
 async function ask(question){
  if(hostedEnabled)return askHosted(question);
- const text=String(question||'').trim();if(!text||busy)return;
+ const text=String(question||'').trim();if(!text||busy)return;const version=conversationVersion;
  if(state!=='ready'||!engine){status('Start the AI model before sending your question.',progressPct);return;}
  history.push({role:'user',content:text});
  const reply={role:'assistant',content:'',pending:true};history.push(reply);
@@ -167,9 +175,9 @@ async function ask(question){
  try{
   const prompt=[{role:'system',content:SYS}];const shared=context();
   if(shared)prompt.push({role:'system',content:shared});
-  prompt.push(...history.filter(x=>!x.pending).slice(-10).map(x=>({role:x.role,content:x.content.slice(0,3500)})));
+  prompt.push(...history.filter(x=>!x.pending&&x.role!=='guide').slice(-10).map(x=>({role:x.role,content:x.content.slice(0,3500)})));
   const stream=await engine.chat.completions.create({messages:prompt,max_tokens:900,temperature:.35,stream:true});
-  for await(const part of stream){const delta=part?.choices?.[0]?.delta?.content;if(delta){reply.content=(reply.content+delta).slice(0,6500);reply.pending=false;messages();}}
+  for await(const part of stream){const delta=part?.choices?.[0]?.delta?.content;if(version!==conversationVersion)break;if(delta){reply.content=(reply.content+delta).slice(0,6500);reply.pending=false;messages();}}
   if(!reply.content)reply.content='No response was returned. Try rephrasing your question.';
   status('AI ready. Responses are generated on your device.',100);
  }catch(e){reply.content='The local model could not finish: '+String(e?.message||e).slice(0,220);state='error';status('Model generation failed; retry loading AI.',0);}
@@ -194,9 +202,11 @@ function setCaseContext(id){
  if(input)input.checked=false;
  if(title)title.textContent=caseId;
 }
-window.AlertAnalyst={setCaseContext,available:()=>state==='ready',isLoading:()=>state==='loading'};
+function clearConversation(){conversationVersion++;engine?.interruptGenerate?.();history=[];allowContext=false;const input=$('#analyst-input');if(input)input.value='';const attach=$('#analyst-attach');if(attach)attach.checked=false;messages();}
+window.AlertAnalyst={setCaseContext,clearConversation,available:()=>state==='ready',isLoading:()=>state==='loading'};
 
 document.addEventListener('click',e=>{
+ const guide=e.target.closest('[data-site-guide]');if(guide){const item=guides[Number(guide.dataset.siteGuide)];if(item){history.push({role:'guide',content:item[0]+' — '+item[1]});messages();}return;}
  const topic=e.target.closest('[data-analyst-topic],[data-analyst-quick]');
  if(topic){
   const i=Number(topic.dataset.analystTopic??topic.dataset.analystQuick??0);
@@ -207,7 +217,7 @@ document.addEventListener('click',e=>{
   const input=$('#analyst-input');if(input){input.value=v||'';input.focus();}return;
  }
  if(e.target.closest('#analyst-model-button')){load();return;}
- if(e.target.closest('#analyst-clear')){if(history.length&&!confirm('Clear the local conversation?'))return;history=[];messages();return;}
+ if(e.target.closest('#analyst-clear')){if(history.length&&!confirm('Clear the local conversation?'))return;clearConversation();return;}
 });
 document.addEventListener('change',e=>{
  if(e.target.id==='analyst-attach')allowContext=e.target.checked;

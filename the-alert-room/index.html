@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#090c10">
+<meta name="theme-color" content="#08090D">
 <meta name="description" content="The Alert Room is a free AML and financial-crime learning space. Investigate fictional transaction monitoring cases, write your own case assessments and learn from transparent training QA. Created by Erik Yeghinyan.">
 <meta name="author" content="Erik Yeghinyan">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -20,9 +20,8 @@
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="./brand.css">
-<link rel="stylesheet" href="./vision.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="./experience.css">
 <link rel="stylesheet" href="./floating-agent.css">
 <script defer src="./data.js"></script>
 <script defer src="./vision.js"></script>
@@ -36,9 +35,9 @@
 <header class="nav-shell">
  <div class="nav-inner">
   <a id="site-back" href="#home" class="site-back" aria-label="Back" hidden><span aria-hidden="true">←</span><span id="site-back-label">Back</span></a>
-  <a href="#home" class="brand" aria-label="The Alert Room home"><i aria-hidden="true">A.</i><span>THE <b>ALERT</b> ROOM</span></a>
+  <a href="#home" class="brand" aria-label="The Alert Room home"><span class="brand-word">THE ALERT<br>ROOM<span class="brand-dot">.</span></span></a>
   <nav class="top-links" id="site-navigation" aria-label="Main navigation">
-   <a href="#home">Home</a><a href="#learn">Learn</a><a href="#workspace">Investigate</a><a href="#qa">QA</a><a href="#progress">Progress</a>
+   <a href="#home">Home</a><a href="#learn">Learn</a><a href="#workspace">Investigate</a><a href="#qa">QA</a><a href="#analyst">Analyst</a>
   </nav>
   <a href="#workspace" class="nav-cta">Open the workspace <span aria-hidden="true">↗</span></a>
   <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-controls="site-navigation" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -47,14 +46,14 @@
 <main id="main" class="page"><div id="view"><section class="wrap inner-hero"><h1>The Alert Room</h1><p>Free AML investigation training and casework.</p></section></div></main>
 <footer class="footer">
  <div class="wrap footer-main">
-  <div><a href="#home" class="brand"><i aria-hidden="true">A.</i><span>THE <b>ALERT</b> ROOM</span></a>
+  <div><a href="#home" class="brand"><span class="ar-logo" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="38" height="38" rx="10" stroke="#7770FF" stroke-width="1.5"/><path d="M10 28L18 12L26 28M13 23H23" stroke="#F8F9FB" stroke-width="2.7" stroke-linecap="square"/><circle cx="29" cy="13" r="3" fill="#847CFF"/></svg></span><span class="brand-word">THE ALERT ROOM.</span></a>
    <p class="footer-summary">Free, evidence-led financial crime training. Investigate fictional cases, write your findings and learn from review.</p>
    <small style="color:#a4a6b2;font-size:11px">Created independently by Erik Yeghinyan.</small></div>
   <div class="footer-col"><b>EXPLORE</b><a href="#learn">Academy</a><a href="#workspace">Investigations</a><a href="#qa">Training QA</a></div>
   <div class="footer-col"><b>SUPPORT</b><a href="#analyst">Ask Analyst</a><a href="#progress">My progress</a><a href="#feedback">Feedback</a></div>
   <div class="footer-col"><b>ABOUT</b><a href="#story">Founder's letter</a><a href="#privacy">Privacy and limitations</a></div>
  </div>
- <div class="wrap footer-bottom"><span>© 2026 The Alert Room</span><span>All cases and payments are fictional. No real SAR filing or certification.</span></div>
+ <div class="wrap footer-bottom"><span>© 2026 The Alert Room · Independently created by Erik Yeghinyan</span><span>All cases and payments are fictional. No real SAR filing or certification.</span></div>
 </footer>
 <button type="button" id="ag-launcher" class="ag-launcher" aria-label="Open optional Analyst training assistant" aria-controls="analyst-drawer" aria-expanded="false"><span class="ag-avatar">A.</span><span><strong>Ask Analyst</strong><small>Optional study help</small></span><span class="ag-unread" aria-hidden="true"></span></button>
 <div class="ag-greeting" id="ag-greeting" hidden aria-hidden="true"></div>
