@@ -24,3 +24,5 @@ body:has(.inner-hero) .nav-shell,body:has(.founder-hero) .nav-shell{position:rel
 .ops-priority-2{color:#805b1b}
 .ops-rail-number,.ops-rail-support,.ops-rail-home,.ops-rail-brand>span{color:#a9bdb0}
 .case-tabs a[aria-current=page],.case-tabs a.active{color:#244b40}
+/* Keep the opening title clear of its caption on shorter desktop viewports. */
+@media(min-width:741px){.film-title{font-size:clamp(100px,min(13.4vw,16svh),220px);top:20%}}
