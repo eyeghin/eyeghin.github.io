@@ -19,3 +19,7 @@ body:has(.case-cinema) .nav-toggle{color:#eef3ff}
 @media(prefers-reduced-motion:reduce){.cinema-copy,.cinema-welcome{animation:none!important}.learning-tile{transition:none}}
 
 .room-hypotheses{display:flex;gap:7px;flex-wrap:wrap;margin-top:19px}.room-hypotheses button{min-height:44px;padding:10px 12px;border:1px solid #c3d2eb;border-radius:4px;background:white;color:#345580;font-size:10px;cursor:pointer}.room-hypotheses button[aria-pressed=true]{background:#e7efff;border-color:#315ed5;color:#254faf}.room-judgment .room-hypothesis-result{font-size:10px;line-height:1.75;color:#536d94;margin-top:16px}.room-hypotheses button:focus-visible{outline:2px solid #315ed5;outline-offset:3px}
+
+/* Inner pages retain readable navigation on their light surfaces. */
+body:has(.inner-hero) .nav-shell{background:#fff;color:#17243b}
+body:has(.inner-hero) .nav-toggle{color:#17243b}

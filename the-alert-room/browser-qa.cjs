@@ -48,7 +48,7 @@ fs.mkdirSync(OUT,{recursive:true});
    ['analyst','#analyst-root .ag-chat',1],
    ['privacy','.wrap',1]
   ];
-  for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);await page.screenshot({path:path.join(OUT,'route-'+route.replace(/[^a-z0-9-]/g,'-')+'-desktop.jpg'),type:'jpeg',quality:80,animations:'disabled'});}
+  for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);if(await page.locator('.inner-hero').count()){const nav=await page.locator('.nav-shell').evaluate(el=>({bg:getComputedStyle(el).backgroundColor,fg:getComputedStyle(el).color}));assert.equal(nav.bg,'rgb(255, 255, 255)',route+': light navigation surface');assert.equal(nav.fg,'rgb(23, 36, 59)',route+': readable navigation ink');}console.log('ROUTE_OK',route,'elements',n);await page.screenshot({path:path.join(OUT,'route-'+route.replace(/[^a-z0-9-]/g,'-')+'-desktop.jpg'),type:'jpeg',quality:80,animations:'disabled'});}
   await page.goto(BASE+'#story',{waitUntil:'networkidle'});
   if(await page.locator('#analyst-drawer.is-open').count())await page.locator('#ag-close').click();
   assert.match(await page.locator('.founder-opening h1').innerText(),/Good judgment/);
