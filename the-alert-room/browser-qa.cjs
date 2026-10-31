@@ -49,6 +49,16 @@ fs.mkdirSync(OUT,{recursive:true});
    ['privacy','.wrap',1]
   ];
   for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);}
+  await page.goto(BASE+'#feedback',{waitUntil:'networkidle'});
+  await page.locator('#feedback-form input[name="title"]').fill('Evidence selection feedback');
+  await page.locator('#feedback-form textarea[name="message"]').fill('A fictional example of feedback about choosing and citing evidence in the investigation workspace.');
+  await page.locator('#feedback-form input[name="consent"]').check();
+  await page.locator('#feedback-form button[type="submit"]').click();
+  assert.ok(await page.locator('#feedback-ready').isVisible());
+  assert.match(await page.locator('#feedback-email').getAttribute('href'),/^mailto:eyeghinyane@gmail\.com\?subject=/);
+  const downloaded=page.waitForEvent('download');await page.locator('#feedback-download').click();
+  assert.equal((await downloaded).suggestedFilename(),'alert-room-feedback.txt');
+  console.log('FEEDBACK_DRAFT_DOWNLOAD_OK');
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   if(await page.locator('#analyst-drawer.is-open').count())await page.locator('#ag-close').click();
   await page.locator('#ag-launcher').click();
