@@ -114,7 +114,7 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.waitForSelector('[data-evidence]');
   assert.equal(await page.locator('[data-evidence]').count(),24);
   const exportBtn=await page.locator('[data-export-ledger]').evaluate(el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color}));
-  assert.notEqual(exportBtn.background,'rgb(255, 255, 255)','Export button has invisible white-on-white styling');
+  assert.notEqual(exportBtn.background,exportBtn.color,'Export button foreground and background must differ');
   await page.waitForFunction(()=>document.querySelector('[data-case-clock]')?.textContent!=='00:00:00',{},{timeout:4000});
   const activeBefore=await page.locator('[data-case-clock]').innerText();
   assert.notEqual(activeBefore,'00:00:00','Review clock should advance');
