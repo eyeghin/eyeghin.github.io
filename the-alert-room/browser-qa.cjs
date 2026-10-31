@@ -34,6 +34,11 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.locator('#vi-play').click();
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:72,fullPage:true,animations:'disabled'});
+  // Skip link preserves the current route; routed content receives focus.
+  await page.locator('.skip').focus();await page.keyboard.press('Enter');
+  assert.match(page.url(),/#home$/);assert.equal(await page.locator('#main').evaluate(el=>el===document.activeElement),true);
+  const promo=await page.locator('.vi-agent-grid h2').evaluate(el=>({color:getComputedStyle(el).color,background:getComputedStyle(el.closest('section')).backgroundColor}));
+  assert.equal(promo.color,'rgb(248, 249, 251)','Analyst promo heading must remain readable on dark background');
   const pages=[
    ['learn','.learning-grid .learning-tile',6],
    ['quiz','.quiz-card',1],
@@ -50,6 +55,13 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.waitForSelector('#analyst-drawer.is-open',{timeout:10000});
   await page.waitForSelector('#analyst-input',{timeout:10000});
   assert.ok(await page.locator('#analyst-messages').isVisible(),'Interactive chat messages must be visible');
+  await page.locator('.ag-site-guide summary').click();
+  await page.locator('[data-site-guide="2"]').click();
+  assert.match(await page.locator('#analyst-messages').innerText(),/PRACTICE GUIDE \/ PREWRITTEN/);
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('#ag-launcher').evaluate(el=>el===document.activeElement),true,'Escape returns focus');
+  await page.locator('#ag-launcher').click();
+  assert.ok(!(await page.locator('#analyst-messages').innerText()).includes('PREWRITTEN'),'Close must discard conversation');
   await page.locator('#ag-close').click();
   assert.equal(await page.locator('#analyst-drawer.is-open').count(),0,'Agent must close without route change');
   await page.locator('a[href="#analyst"]').first().click();
@@ -97,6 +109,7 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.goBack();
   await page.waitForURL(/#case\/AR-3002$/);
   await page.waitForFunction(()=>document.querySelector('.ops-case-stephead')?.textContent.includes('Customer & KYC'),{timeout:10000});
+  assert.equal(await page.locator('.ops-case-stephead h2').evaluate(el=>el===document.activeElement),true,'Route must focus the current stage heading');
   assert.equal(await page.locator('[data-case-clock]').count(),1,'Every investigation must display a session timer');
   assert.match(await page.locator('.context-grid').first().innerText(),/account reference/i,'Masked fictional account context missing');
   await page.locator('[data-mark-reviewed="kyc"]').click();
@@ -108,7 +121,10 @@ fs.mkdirSync(OUT,{recursive:true});
   const ids=[];
   for(let i=0;i<3;i++){const e=page.locator('[data-evidence]').nth(i);ids.push(await e.getAttribute('data-evidence'));await e.check();}
   assert.match(await page.locator('[data-case-status]').innerText(),/In progress/);
+  assert.equal(await page.locator('[data-evidence-count]').innerText(),'3');
+  assert.match(await page.locator('[data-case-status-summary]').innerText(),/In progress/);
   assert.ok(await page.locator('[data-case-evidence-check].checked').count()>0,'Case controls did not update after evidence selection');
+  await page.evaluate(()=>{document.activeElement?.blur();window.scrollTo(0,0)});
   await page.screenshot({path:path.join(OUT,'03-case-ledger.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.locator('[data-mark-reviewed="ledger"]').click();
   await page.locator('[data-case-tab="workpaper"]').click();
@@ -127,6 +143,8 @@ fs.mkdirSync(OUT,{recursive:true});
   console.log('FULL_CASE_QA_OK',page.url(),'layout',JSON.stringify(layout));
   await page.evaluate(()=>{const toast=document.querySelector('#toast');if(toast)toast.hidden=true;window.scrollTo({top:0,behavior:'instant'})});
   await page.screenshot({path:path.join(OUT,'04-qa-report.jpg'),type:'jpeg',quality:76,fullPage:true,animations:'disabled'});
+  const sidebar=await page.locator('.ops-global-nav').evaluate(el=>({width:el.getBoundingClientRect().width,scroll:el.scrollWidth}));
+  assert.ok(sidebar.width>=200&&sidebar.scroll<=sidebar.width+2,'QA sidebar must contain its labels');
   const reportHash=page.url().split('#')[1];
   await page.goto(BASE+'#reviewer',{waitUntil:'networkidle'});
   await page.locator('[data-open-reviewer]').first().click();
@@ -157,7 +175,10 @@ fs.mkdirSync(OUT,{recursive:true});
   const agentMobile=await mobile.evaluate(()=>({width:document.querySelector('#analyst-drawer').getBoundingClientRect().width,viewport:innerWidth}));
   assert.ok(Math.abs(agentMobile.width-agentMobile.viewport)<=2,'Agent must fill mobile viewport without overflow');
   await mobile.screenshot({path:path.join(OUT,'11-analyst-agent-mobile.jpg'),type:'jpeg',quality:75,fullPage:false,animations:'disabled'});
-  await mobile.locator('#ag-close').click();
+  assert.equal(await mobile.locator('#analyst-drawer').getAttribute('aria-modal'),'true');
+  assert.equal(await mobile.locator('main').getAttribute('inert'),'');
+  await mobile.keyboard.press('Escape');
+  assert.equal(await mobile.locator('main').getAttribute('inert'),null);
   for(const [route,selector,file] of [['workspace','#ops-mobile-cards .ops-mobile-card','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg'],['analyst','#analyst-root .ag-chat','10-analyst-mobile.jpg']]){
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
@@ -176,6 +197,29 @@ fs.mkdirSync(OUT,{recursive:true});
    console.log('MOBILE_ROUTE_OK',route);
   }
 
+  // Complete casework and resubmission on a fresh 390px browser context.
+  await mobile.goto(BASE+'#case/AR-3002',{waitUntil:'networkidle'});
+  await mobile.locator('[data-mark-reviewed="kyc"]').click();
+  await mobile.locator('.ops-case-next').click();
+  const mids=[];for(let i=0;i<3;i++){const el=mobile.locator('[data-evidence]').nth(i);mids.push(await el.getAttribute('data-evidence'));await el.check();}
+  assert.equal(await mobile.locator('[data-evidence-count]').innerText(),'3');
+  await mobile.locator('[data-mark-reviewed="ledger"]').click();
+  await mobile.locator('[data-case-tab="workpaper"]').click();
+  await mobile.locator('[data-case-field="context"]').fill('The fictional customer is an event organizer. Compare expected ticket collections and venue expenses against the observed payment dates and counterparties; documents are not independently verified.');
+  await mobile.locator('[data-case-field="decision"]').selectOption('rfi');
+  await mobile.locator('[data-case-field="narrative"]').fill('Review of October 2026 payments, including '+mids.join(', ')+', identifies incoming ticket-sized credits and outgoing payments. The customer baseline supports an event explanation, but an event ledger and venue invoice remain unverified. Request these records to reconcile dates, amounts and beneficiaries before deciding whether closure is supported.');
+  await mobile.locator('#case-attest').check();mobile.once('dialog',d=>d.accept());await mobile.locator('[data-submit-case]').click();
+  await mobile.waitForURL(/#qa\/QA-/);await mobile.waitForSelector('.qa-score');
+  await mobile.screenshot({path:path.join(OUT,'12-qa-report-mobile.jpg'),type:'jpeg',quality:80,fullPage:true});
+  await mobile.locator('a[href="#case/AR-3002"]').first().click();
+  await mobile.locator('[data-case-tab="workpaper"]').click();
+  assert.match(await mobile.locator('[data-case-field="narrative"]').inputValue(),new RegExp(mids[0]));
+  await mobile.locator('[data-case-field="rfi"]').fill('Obtain the event ledger and venue invoice, then reconcile them against the selected payment IDs.');
+  await mobile.locator('#case-attest').check();mobile.once('dialog',d=>d.accept());await mobile.locator('[data-submit-case]').click();
+  await mobile.waitForURL(/#qa\/QA-/);await mobile.waitForSelector('.qa-score');
+  const submissions=await mobile.evaluate(()=>JSON.parse(localStorage.getItem('tar-public-release-v1')).submissions);
+  assert.equal(submissions.length,2);assert.equal(submissions[1].cycle,2);
+  console.log('MOBILE_SUBMISSION_REVISION_OK');
   assert.deepEqual(errors,[],'Browser errors: '+errors.join('; '));
   console.log('VISUAL_QA_PASS All routes, case submissions, QA, manual review and mobile navigation');
  }finally{await browser.close()}

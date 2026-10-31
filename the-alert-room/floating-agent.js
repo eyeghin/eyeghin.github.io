@@ -24,6 +24,12 @@ function caseContext(id){
   window.AlertAnalyst?.setCaseContext?.(current);
  }
 }
+function syncModal(){
+ const modal=open&&matchMedia('(max-width:640px)').matches;
+ panel.setAttribute('aria-modal',String(modal));
+ document.querySelectorAll('.nav-shell,main,.footer').forEach(el=>{if(modal)el.setAttribute('inert','');else el.removeAttribute('inert')});
+ document.documentElement.style.overflow=modal?'hidden':'';
+}
 function openAgent(requestedCase){
  if(open){if(requestedCase)caseContext(requestedCase);return}
  previousFocus=document.activeElement;
@@ -32,7 +38,7 @@ function openAgent(requestedCase){
  launcher.setAttribute('aria-expanded','true');
  launcher.hidden=true;
  caseContext(requestedCase||parsedCase());
- if(matchMedia('(max-width:640px)').matches)document.documentElement.style.overflow='hidden';
+ syncModal();
  setTimeout(()=>{$('#analyst-input',panel)?.focus()},170);
 }
 function closeAgent(){
@@ -41,7 +47,7 @@ function closeAgent(){
  window.AlertAnalyst?.clearConversation?.();
  panel.classList.remove('is-open');panel.setAttribute('aria-hidden','true');panel.setAttribute('inert','');
  launcher.hidden=false;launcher.setAttribute('aria-expanded','false');
- document.documentElement.style.overflow='';
+ syncModal();
  if(previousFocus&&document.contains(previousFocus)){previousFocus.focus?.()}else launcher.focus();
 }
 launcher.addEventListener('click',()=>openAgent());
@@ -74,7 +80,7 @@ window.addEventListener('hashchange',()=>{
   if(open)caseContext(parsedCase());
  }
 });
-window.addEventListener('resize',()=>{if(open)document.documentElement.style.overflow=matchMedia('(max-width:640px)').matches?'hidden':''});
+window.addEventListener('resize',syncModal);
 document.addEventListener('DOMContentLoaded',()=>{
  greetingText();
  panel.setAttribute('inert','');

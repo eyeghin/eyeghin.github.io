@@ -891,7 +891,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .vi-explore{background:#F8F9FB;color:#090A10}
 .vi-route-list a{border-top-color:#D8D9E1}
 .vi-route-list a:hover{background:#EDECFD;transform:none}
-.vi-agent-section{background:#0D0E16}
+.vi-agent-section{background:#0D0E16;color:#F8F9FB}
+.vi-agent-grid h2{color:#F8F9FB}
+.vi-agent-grid>div>p{color:#BDC0CD}
+.vi-agent-section .vi-index,.vi-agent-grid>div>small{color:#A4A6B2}
 .vi-agent-button{background:#655BFF;color:white;border-radius:8px}
 .vi-agent-mock{border-color:#3A3B52;background:#171823;border-radius:12px}
 .vi-founder{background:#F1F1F7;color:#0B0B12}
@@ -988,7 +991,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 /* INVESTIGATION DESK / experience 2.0
    Desktop: labeled product sidebar, spacious alert register, persistent 5-stage case navigator.
    Mobile: cards instead of horizontal tables; stage navigation remains operable and deep-linked. */
-.console:has(.ops-view){grid-template-columns:222px minmax(0,1fr)}
+.console:has(>.ops-global-nav){grid-template-columns:222px minmax(0,1fr)}
 .console:has(.ops-case){display:block}
 .console:has(.ops-case)>.rail{display:none}
 .console:has(.ops-view)>.console-main,.console:has(.ops-case)>.console-main{max-width:none;margin:0;padding:0;background:#0E1017;color:#F7F7FB}
@@ -996,7 +999,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .ops-global-nav.rail{position:sticky;top:74px;height:calc(100svh - 74px);width:auto;display:flex;align-items:stretch;padding:32px 15px 20px;gap:6px;background:#0A0B11;border-right:1px solid #2B2D39}
 .ops-rail-brand{padding:7px 13px 27px;font-size:16px;font-weight:730;letter-spacing:-.055em;color:#F6F6FB;border-bottom:1px solid #33343E;margin-bottom:18px}
 .ops-rail-brand span{display:block;font-size:9px;letter-spacing:.19em;color:#878B9C;font-weight:650;margin-top:8px}
-.ops-global-nav.rail a.ops-rail-link{display:flex;align-items:center;gap:13px;width:100%;min-height:49px;height:auto;padding:11px 13px;border:1px solid transparent;border-radius:9px;color:#AEB1BE;font-size:12px;font-weight:600;line-height:1.35}
+.ops-global-nav.rail a.ops-rail-link{display:flex;min-width:0;align-items:center;gap:13px;width:100%;min-height:49px;height:auto;padding:11px 13px;border:1px solid transparent;border-radius:9px;color:#AEB1BE;font-size:12px;font-weight:600;line-height:1.35}
 .ops-global-nav.rail a.ops-rail-link:hover{background:#1B1D2A;color:#F5F5FA}
 .ops-global-nav.rail a.ops-rail-link.active{background:#26243B;border-color:#494267;color:#F3F2FF}
 .ops-rail-number{font-size:10px;color:#838699;font-variant-numeric:tabular-nums}
@@ -1151,10 +1154,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
  .ops-filterbar{grid-template-columns:minmax(190px,1.4fr) repeat(3,minmax(110px,1fr))}
 }
 @media(max-width:1080px){
- .console:has(.ops-view){grid-template-columns:68px minmax(0,1fr)}
+ .console:has(>.ops-global-nav){grid-template-columns:90px minmax(0,1fr)}
  .ops-global-nav.rail{padding:16px 8px;align-items:center}
- .ops-rail-brand,.ops-rail-support,.ops-global-nav.rail a.ops-rail-home,.ops-rail-link>span:not(.ops-rail-number){display:none}
- .ops-global-nav.rail a.ops-rail-link{justify-content:center;padding:10px;width:50px}
+ .ops-rail-brand,.ops-rail-support,.ops-global-nav.rail a.ops-rail-home,.ops-rail-number,.ops-rail-arrow{display:none}
+ .ops-global-nav.rail a.ops-rail-link{font-size:10px;overflow-wrap:anywhere;min-height:52px}
+ .ops-global-nav.rail a.ops-rail-link{justify-content:center;padding:8px;width:72px}
  .ops-rail-number{font-size:13px}
  .ops-case-layout{grid-template-columns:205px minmax(0,1fr)}
  .ops-case-aside{grid-column:2;position:static}
@@ -1163,8 +1167,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
  .ops-filterbar{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:740px){
- .console:has(.ops-view),.console:has(.ops-case){display:block}
- .console:has(.ops-view)>.rail{display:none}
+ .console:has(>.ops-global-nav),.console:has(.ops-case){display:block}
+ .console>.ops-global-nav.rail{display:none}
  .console:has(.ops-view)>.console-main,.console:has(.ops-case)>.console-main{padding:0!important;width:100%!important}
  .ops-view{padding:30px 17px 70px}
  .ops-head{display:block;margin-bottom:25px}
