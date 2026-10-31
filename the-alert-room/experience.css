@@ -77,3 +77,5 @@ body:has(.founder-page) .brand-dot{color:#315ed5}
 body:has(.experience-home,.founder-page) .footer{background:#101b32;color:#e5ecfb}
 body:has(.experience-home,.founder-page) .footer-summary,body:has(.experience-home,.founder-page) .footer-bottom{color:#aebfdf}
 body:has(.experience-home,.founder-page) .footer-col b{color:#9bb4e0}
+/* Preserve the full punctuation glyph inside the condensed title's reveal mask. */
+.film-line:last-child{padding-bottom:.2em}
