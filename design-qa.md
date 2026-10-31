@@ -81,5 +81,7 @@ A post-capture comparison also exposed the title period being clipped by the rev
 
 No remaining actionable P0/P1/P2 findings in these inspected states. Owner design acceptance and the previously documented broader release QA limits remain.
 
+Final source including the punctuation-mask fix: daec3e33ce26c7450fac20b15dc755865fe4b72f. Browser QA passed: https://github.com/eyeghin/eyeghin.github.io/actions/runs/41237694938 . The public preview screenshot /workspace/scratch/EY-Home-Blue-Final.jpg verifies the full circular period and clear title/caption spacing after the fix.
+
 final result: passed
 
