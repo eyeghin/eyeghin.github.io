@@ -31,6 +31,7 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.equal(await page.locator('.film-motion').getAttribute('aria-pressed'),'true');
   await page.locator('.film-motion').click();
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+  await page.waitForFunction(()=>[...document.querySelectorAll('.film-line>span')].every(el=>el.getAnimations().every(a=>a.playState==='finished')));
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:85,fullPage:false});
   await page.evaluate(()=>window.scrollTo({top:innerHeight*.95,behavior:'instant'}));
   await page.waitForFunction(()=>document.querySelector('.film-stage').dataset.chapter==='1');
@@ -49,6 +50,7 @@ fs.mkdirSync(OUT,{recursive:true});
   ];
   for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);}
   await page.goto(BASE+'#story',{waitUntil:'networkidle'});
+  if(await page.locator('#analyst-drawer.is-open').count())await page.locator('#ag-close').click();
   assert.match(await page.locator('.founder-opening h1').innerText(),/Good judgment/);
   const founderContrast=await page.locator('.founder-letter article').evaluate(el=>{
    const lum=rgb=>{const c=rgb.match(/[\d.]+/g).slice(0,3).map(Number).map(x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4});return c[0]*.2126+c[1]*.7152+c[2]*.0722};
