@@ -17,6 +17,8 @@ on:
       - "the-alert-room/cinema.js"
       - "the-alert-room/cinema.css"
       - "the-alert-room/analyst.js"
+      - "the-alert-room/analyst-config.js"
+      - "analyst-worker/**"
       - "the-alert-room/floating-agent.js"
       - "the-alert-room/floating-agent.css"
       - "the-alert-room/analyst.css"
@@ -42,6 +44,8 @@ jobs:
           chrome-version: stable
       - name: Install browser testing library
         run: npm install --no-save playwright-core
+      - name: Check hosted service boundaries
+        run: node --test analyst-worker/server.test.mjs
       - name: Serve static site
         run: |
           python3 -m http.server 8000 --bind 127.0.0.1 > /tmp/alert-room-server.log 2>&1 &

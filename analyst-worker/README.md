@@ -1,11 +1,20 @@
-# Analyst — optional hosted AI service
+# Hosted Analyst service
 
-This Cloudflare Worker is the secure backend needed to replace the browser-only small model with a capable hosted model. **It has not been deployed or connected to the public site.**
+The frontend no longer downloads a model, requires WebGPU, asks visitors for keys or presents device settings. It sends messages to the configured HTTPS endpoint when that service is available. The prewritten practice guide remains separately labeled.
 
-1. Create a Cloudflare Worker account, a Turnstile widget restricted to `eyeghin.github.io`, and an OpenAI API project with billing.
-2. In the `analyst-worker/` directory run `npx wrangler deploy` using the owner's authenticated Cloudflare account.
-3. Set encrypted secrets through `npx wrangler secret put OPENAI_API_KEY` and `npx wrangler secret put TURNSTILE_SECRET`. Never put either value into Git or public client files.
-4. Configure the public Turnstile sitekey and deployed Worker `/chat` address in the front-end only after deployment, and validate the full production chat flow end to end.
-5. Use the mandatory origin restriction, server-verified Turnstile token, rate-limit binding and request-length guard. Monitor costs and misuse; a rate limit is not a complete abuse-prevention strategy.
+## Current release status
 
-The old on-device Analyst model remains functional as a fallback. The site is static, so this backend is a separate deployment and is **not live simply because the Worker source exists in the repository**.
+The server implementation and its mocked tests are ready. **Live generation is not active.** Live provider verification has not succeeded; owner-side service activation is required. No generated-answer claim is made in the public UI. The deployed endpoint is deliberately empty until a working hosted service is verified.
+
+## Runtime requirements
+
+- `OPENAI_API_KEY`: server secret, never source or browser configuration.
+- `RATE_LIMITER`: Cloudflare rate-limit binding; the service fails closed if absent.
+- `OPENAI_MODEL`: optional model override; defaults to `gpt-4.1-mini`.
+- `ALLOWED_ORIGIN`: optional additional exact HTTPS origin. The GitHub Pages and review origins are included explicitly.
+
+Deploy this Worker through an authorized Cloudflare runtime, configure its secret and rate-limit binding, and verify a real answer after API billing is active. Set only its public `/chat` address in `the-alert-room/analyst-config.js`. No visitor setup is required.
+
+`node --test analyst-worker/server.test.mjs` checks origin restrictions, missing infrastructure, rate limits, request-size bounds, role validation, response extraction, secret isolation and upstream failure. Tests mock provider calls; they are not evidence that the hosted provider is available.
+
+The service stores no conversation. Request context is fictional and explicitly opt-in; input is bounded, only user/assistant roles are accepted and generation is capped. CORS is a browser boundary, not authentication or a substitute for server rate limits. Configure provider spending limits before enabling public generation.
