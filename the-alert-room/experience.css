@@ -18,3 +18,9 @@ body:has(.inner-hero) .nav-shell,body:has(.founder-hero) .nav-shell{position:rel
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.film-runway{height:100svh;min-height:700px}.film-title,.film-caption{opacity:1;transform:none}.ledger-camera{transform:translate3d(-12%,0,-500px) rotateY(-27deg) rotateX(11deg)}.film-chapter-copy{display:none}.method-editorial,.index-link{opacity:1!important;transform:none!important}.film-scroll{visibility:hidden}}
 
 .network-stage{padding:20px 12px 0;overflow:hidden}.network-stage svg{display:block;width:100%;height:auto;min-width:0}.network-caption{font-size:10px;color:#71816f;margin:0;padding:5px 20px 20px;line-height:1.7}.network-edge{transition:opacity .2s}.network-stage:has(.network-edge:hover) .network-edge:not(:hover){opacity:.35}@media(max-width:740px){.network-stage{padding:5px 0}.network-stage svg{min-width:570px}.network-stage{overflow-x:auto}.network-caption{font-size:9px;padding:15px}}
+
+/* Secondary text remains readable on the pale operational surface. */
+.desk-pagehead p,.console-top p,.count-pill,.queue-segments button,.local-indicator,.data-grid thead,.ops-disclaimer,.ops-empty,.ops-mobile-empty,.review-clock-label,.case-tabs a,.insight,.assignment-panel>a:not(.btn),.checkline,.ops-case-actions,.dialog-close,.flow-node span,.form-help,.qa-finding p,.context-card p,.ops-mobile-card-head,.ops-mobile-card p,.ops-mobile-card-account,.ops-mobile-card-account span:first-child,.network-caption{color:#53645a}
+.ops-priority-2{color:#805b1b}
+.ops-rail-number,.ops-rail-support,.ops-rail-home,.ops-rail-brand>span{color:#a9bdb0}
+.case-tabs a[aria-current=page],.case-tabs a.active{color:#244b40}
