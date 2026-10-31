@@ -205,6 +205,7 @@ fs.mkdirSync(OUT,{recursive:true});
    console.log('MOBILE_ROUTE_OK',route);
   }
 
+  if(await mobile.locator('#analyst-drawer.is-open').count())await mobile.locator('#ag-close').click();
   // Complete casework and resubmission on a fresh 390px browser context.
   await mobile.goto(BASE+'#case/AR-3002',{waitUntil:'networkidle'});
   await mobile.locator('[data-mark-reviewed="kyc"]').click();
