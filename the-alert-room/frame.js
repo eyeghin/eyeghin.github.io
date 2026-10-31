@@ -31,7 +31,7 @@ function reviewClock(){
  const now=Date.now();
  if(reviewCase&&reviewTick){const d=work(reviewCase);d.reviewMs=(Number(d.reviewMs)||0)+Math.max(0,now-reviewTick);}
  const r=pageRoute();reviewCase=r.name==='case'&&getCase(r.id)&&!document.hidden?r.id:'';reviewTick=reviewCase?now:0;
- const clock=$('[data-case-clock]');if(clock){const seconds=Math.floor((Number(work(r.id).reviewMs)||0)/1000);clock.textContent=[Math.floor(seconds/3600),Math.floor(seconds%3600/60),seconds%60].map(n=>String(n).padStart(2,'0')).join(':');}
+ const clock=$('[data-case-clock]');if(clock){const seconds=Math.floor((Number(work(clock.dataset.caseId).reviewMs)||0)/1000);clock.textContent=[Math.floor(seconds/3600),Math.floor(seconds%3600/60),seconds%60].map(n=>String(n).padStart(2,'0')).join(':');}
 }
 setInterval(()=>{reviewClock();if(reviewCase)save()},1000);
 document.addEventListener('visibilitychange',()=>{reviewClock();save()});
@@ -185,7 +185,7 @@ const statusTxt=caseStatusText(id);
 const next=CASE_STEPS[idx+1],previous=CASE_STEPS[idx-1];
 const actions='<div class="ops-case-actions">'+(previous?'<a class="ops-case-prev" href="#case/'+safe(c.id)+'/'+previous[0]+'">← '+previous[1]+'</a>':'<a class="ops-case-prev" href="#workspace">← All alerts</a>')+(next?'<a class="ops-case-next" href="#case/'+safe(c.id)+'/'+next[0]+'">Continue to '+next[1]+' <span>↗</span></a>':'<span class="ops-case-final">Complete the workpaper above, then submit for QA.</span>')+'</div>';
 const html='<div class="ops-case">'
-+'<div class="ops-case-top"><a href="#workspace" class="ops-return">← Back to alert queue</a><div class="ops-case-top-info"><span>'+safe(c.id)+' · TRAINING CASE</span><span>ACTIVE REVIEW <time role="timer" aria-label="Active time reviewing this alert; pauses when away from the case or browser tab" data-case-clock>00:00:00</time></span></div></div>'
++'<div class="ops-case-top"><a href="#workspace" class="ops-return">← Back to alert queue</a><div class="ops-case-top-info"><span>'+safe(c.id)+' · TRAINING CASE</span><span>ACTIVE REVIEW <time role="timer" aria-label="Active time reviewing this alert; pauses when away from the case or browser tab" data-case-clock data-case-id="'+safe(c.id)+'">00:00:00</time></span></div></div>'
 +'<header class="ops-case-header"><div><span class="ops-label">INVESTIGATION / '+safe(c.id)+'</span><h1>'+safe(c.title)+'</h1><p>'+safe(c.trigger)+'</p><div class="ops-case-chips"><span>'+safe(c.reference)+'</span><span>Acct •••• '+safe(c.accountSuffix||'0000')+'</span><span class="ops-priority ops-priority-'+c.priority+'">P'+c.priority+' priority</span><span class="ops-status '+safe(status(c.id))+'" data-case-status>'+safe(statusTxt)+'</span></div></div><a href="#qa" class="ops-case-qa">QA history ↗</a></header>'
 +'<div class="ops-case-layout"><aside class="ops-case-navpane"><div class="ops-case-navtitle"><span>THE INVESTIGATION</span><strong>5 stages</strong><small>Swipe to see all stages →</small></div>'+caseTabs(c,d)+'<p>Work is saved in this browser as you go. Use Back to revisit any step.</p></aside>'
 +'<div class="ops-case-main"><div class="ops-case-stephead"><div><span>STEP '+String(idx+1).padStart(2,'0')+' / 05</span><h2>'+step[1]+'</h2><p>'+step[2]+'</p></div><div class="ops-case-step-progress" aria-label="Stage '+(idx+1)+' of five"><span style="width:'+((idx+1)*20)+'%"></span></div></div><div class="ops-case-body">'+content+'</div>'+actions+'</div>'
