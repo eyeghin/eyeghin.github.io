@@ -5,6 +5,7 @@ on:
     paths:
       - "the-alert-room/system.css"
       - "the-alert-room/experience.css"
+      - "the-alert-room/cinematic-home.css"
       - "the-alert-room/frame.js"
       - "the-alert-room/frame.css"
       - "the-alert-room/brand.css"

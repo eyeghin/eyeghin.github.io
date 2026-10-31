@@ -10,8 +10,18 @@ fs.mkdirSync(OUT,{recursive:true});
  page.on('console',m=>{if(m.type()==='error')errors.push('CONSOLE: '+m.text())});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await page.waitForSelector('.home-title');
-  assert.match(await page.locator('.room-welcome').innerText(),/Welcome, AML analyst/);
+  await page.waitForSelector('.case-cinema[data-ready="true"]');
+  assert.equal(await page.locator('h1').count(),1,'One main page heading');
+  await page.locator('.cinema-pause').click();
+  assert.equal(await page.locator('.cinema-pause').getAttribute('aria-pressed'),'true');
+  await page.locator('[data-cinema-scene="1"]').click();
+  assert.equal(await page.locator('.case-cinema').getAttribute('data-scene'),'1');
+  assert.match(await page.locator('#cinema-scene-copy').innerText(),/customer/);
+  await page.screenshot({path:path.join(OUT,'20-cinema-context-desktop.jpg'),type:'jpeg',quality:90});
+  await page.locator('[data-cinema-scene="0"]').click();
+  const controls=await page.evaluate(()=>{const a=document.querySelector('.cinema-pause').getBoundingClientRect(),b=document.querySelector('#ag-launcher').getBoundingClientRect();return !(a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom)});
+  assert.ok(controls,'Chat launcher must not cover cinematic controls');
+  assert.match(await page.locator('.cinema-welcome').innerText(),/Welcome, AML analyst/);
   assert.equal(await page.locator('.welcome-intro').count(),0,'No forced intro overlay');
   assert.equal(await page.locator('body').evaluate(el=>el.style.overflow),'');
   await page.locator('[data-preview="activity"]').click();
@@ -19,6 +29,8 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.equal(await page.locator('.room-preview-ledger>div').count(),4);
   await page.locator('[data-preview="judgment"]').click();
   assert.match(await page.locator('#room-preview-content').innerText(),/legitimate explanation/);
+  await page.locator('[data-hypothesis="rfi"]').click();
+  assert.match(await page.locator('.room-hypothesis-result').innerText(),/missing corroboration/);
   await page.locator('[data-preview="context"]').click();
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:90,fullPage:false,animations:'disabled'});
   await page.locator('.skip').focus();await page.keyboard.press('Enter');
@@ -26,13 +38,17 @@ fs.mkdirSync(OUT,{recursive:true});
   const pages=[
    ['learn','.learning-grid .learning-tile',6],
    ['quiz','.quiz-card',1],
+   ['course/foundations','.well',1],
+   ['lesson/foundations-0','.article-body',1],
+   ['progress','.console-main',1],
+   ['reviewer','.console-main',1],
    ['workspace','#queue-body tr[data-open-case]',10],
    ['story','.founder-letter article',1],
    ['feedback','#feedback-form',1],
    ['analyst','#analyst-root .ag-chat',1],
    ['privacy','.wrap',1]
   ];
-  for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);}
+  for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);await page.screenshot({path:path.join(OUT,'route-'+route.replace(/[^a-z0-9-]/g,'-')+'-desktop.jpg'),type:'jpeg',quality:80,animations:'disabled'});}
   await page.goto(BASE+'#story',{waitUntil:'networkidle'});
   if(await page.locator('#analyst-drawer.is-open').count())await page.locator('#ag-close').click();
   assert.match(await page.locator('.founder-opening h1').innerText(),/Good judgment/);
@@ -255,6 +271,7 @@ fs.mkdirSync(OUT,{recursive:true});
   await reduced.goto(BASE+'#home',{waitUntil:'networkidle'});
   assert.equal(await reduced.locator('.welcome-intro').count(),0,'Reduced motion skips the opening sequence');
   assert.equal(await reduced.locator('.home-title').evaluate(el=>getComputedStyle(el).animationName),'none');
+  assert.equal(await reduced.locator('.cinema-pause').getAttribute('aria-pressed'),'true');
   await reduced.screenshot({path:path.join(OUT,'15-home-reduced-motion-mobile.jpg'),type:'jpeg',quality:85,fullPage:false});
   await reduced.close();
   // Mocked transport checks prove client behavior; no live-provider inference claim.
