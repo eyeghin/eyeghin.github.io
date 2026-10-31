@@ -26,3 +26,6 @@ The motion uses transforms of meaningful transaction UI in perspective, not gene
 ## Boundaries
 
 Original Alert Room branding. No Unit21 logos, affiliation, bank access, real compliance system, external reviewer assignment, real SAR filing or all-device AI claims. All investigation data is synthetic. Assignment and audit history are browser-local practice features. No production merge without owner acceptance.
+
+## October 31 owner-directed refinement
+The owner liked the cinematic motion but requested richer colors and a centered animated “Welcome AML analyst” opening. Replaced the public narrative palette with midnight/porcelain/luminous blue. The founder page's old inline slate background clashed with its inherited text palette; rebuilt the page on warm paper and pale blue with navy type, medium-weight title, numbered letter chapters and a cobalt invitation. Kept operational casework intact. The welcome is brief, skippable, once per tab session, keyboard-contained and bypassed under reduced motion. This revision follows direct owner feedback rather than introducing another reference template.
