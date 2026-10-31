@@ -4,9 +4,24 @@
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=x=>'$'+Number(x||0).toLocaleString('en-US');
 const current=()=>window.AR_CASES.find(x=>x.id==='AR-3002')||window.AR_CASES[0];
-let cleanup=()=>{};
+let cleanup=()=>{},introSeen=false;
+try{introSeen=sessionStorage.getItem('ar-welcome-v1')==='seen'}catch(e){}
+function welcome(){return !introSeen&&!matchMedia('(prefers-reduced-motion:reduce)').matches?`<div class="welcome-intro" role="dialog" aria-modal="true" aria-labelledby="welcome-title" tabindex="-1"><div class="welcome-masthead"><span>THE ALERT ROOM<span class="welcome-dot">.</span></span><button class="welcome-skip">Skip intro ↗</button></div><div class="welcome-center"><p class="welcome-eyebrow">YOUR NEXT INVESTIGATION STARTS HERE</p><h2 id="welcome-title"><span>Welcome,</span><span>AML analyst<span class="welcome-dot">.</span></span></h2><span class="welcome-rule" aria-hidden="true"></span></div><div class="welcome-foot"><span>INDEPENDENT FINANCIAL CRIME PRACTICE</span><span>CONTEXT. EVIDENCE. JUDGMENT.</span></div></div>`:''}
+function openWelcome(){
+ const intro=document.querySelector('.welcome-intro');if(!intro)return()=>{};
+ document.body.append(intro);
+ const reduced=matchMedia('(prefers-reduced-motion:reduce)'),targets=[...document.querySelectorAll('.experience-home,.nav-shell,.footer,.skip,#ag-launcher')];
+ const prior=targets.map(el=>[el,el.inert]),overflow=document.body.style.overflow;let timer=0,exitTimer=0,closed=false;
+ document.body.style.overflow='hidden';document.body.classList.add('welcome-active');targets.forEach(el=>el.inert=true);intro.focus({preventScroll:true});
+ function restore(){prior.forEach(([el,value])=>el.inert=value);document.body.style.overflow=overflow;document.body.classList.remove('welcome-active');}
+ function finish(immediate=false){if(closed)return;closed=true;clearTimeout(timer);intro.classList.add('is-leaving');exitTimer=setTimeout(()=>{restore();intro.remove();const title=document.querySelector('.film-title');if(title){title.tabIndex=-1;title.focus({preventScroll:true})}},immediate||reduced.matches?0:700)}
+ const skip=()=>finish(true),key=e=>{if(e.key==='Escape'){e.preventDefault();skip()}if(e.key==='Tab'){e.preventDefault();intro.querySelector('button').focus()}};
+ intro.querySelector('button').addEventListener('click',skip);intro.addEventListener('keydown',key);introSeen=true;try{sessionStorage.setItem('ar-welcome-v1','seen')}catch(e){}
+ timer=setTimeout(()=>finish(),1900);
+ return()=>{clearTimeout(timer);clearTimeout(exitTimer);restore();intro.remove()};
+}
 function home(){const c=current(),tx=c.transactions;
-return `<div class="experience-home">
+return welcome()+`<div class="experience-home">
 <section class="film-runway" aria-label="An investigation unfolds"><div class="film-stage">
  <div class="film-coordinate"><span>INDEPENDENT FINANCIAL CRIME PRACTICE</span><span>FICTIONAL CASE / ${esc(c.id)}</span></div>
  <div class="spatial-ledger" aria-hidden="true"><div class="ledger-camera">${tx.slice(0,8).map((t,i)=>`<div class="evidence-plane" style="--i:${i}"><div class="plane-top"><span>${esc(t.id)}</span><span>${String(i+1).padStart(2,'0')} / 24</span></div><div class="plane-amount">${t.direction==='Credit'?'+':'−'}${money(t.amount)}</div><div class="plane-rule"></div><div class="plane-detail"><span>${esc(t.method)} / ${esc(t.direction)}</span><span>${esc(t.date)}</span></div><div class="plane-party">${esc(t.counterparty.replace(/.* \/ /,''))}</div><span class="plane-label">SYNTHETIC TRANSACTION RECORD</span></div>`).join('')}</div></div>
@@ -23,6 +38,7 @@ return `<div class="experience-home">
 </div>`;
 }
 function afterRender(){cleanup();const runway=document.querySelector('.film-runway'),stage=document.querySelector('.film-stage');if(!runway)return;
+ const closeWelcome=openWelcome();
  const reduced=matchMedia('(prefers-reduced-motion:reduce)'),button=stage.querySelector('.film-motion');let paused=reduced.matches,raf=0,target=0,progress=0,pointerX=0,pointerY=0,chapter=-1,last=0;
  const scenes=[['01 / THE SIGNAL','An alert is not an answer.','Observe the activity. Question the pattern.'],['02 / THE CONTEXT','Every payment has a context.','Who is the customer? What would normal activity look like?'],['03 / THE JUDGMENT','Follow the evidence.','Select the facts. Consider another explanation. Defend your decision.']];
  function update(time){if(!document.contains(stage))return;const rect=runway.getBoundingClientRect();target=Math.max(0,Math.min(1,-rect.top/Math.max(1,runway.offsetHeight-innerHeight)));progress+=((paused?target:target)-progress)*(paused?1:.09);const p=progress;
@@ -36,7 +52,7 @@ function afterRender(){cleanup();const runway=document.querySelector('.film-runw
  button.textContent=paused?'Enable motion':'Pause motion';button.setAttribute('aria-pressed',String(paused));
  window.addEventListener('scroll',wake,{passive:true});stage.addEventListener('pointermove',pointer);button.addEventListener('click',toggle);wake();
  const observer=new IntersectionObserver(entries=>entries.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in-view');observer.unobserve(x.target)}}),{threshold:.12});document.querySelectorAll('.method-editorial,.index-link,.founder-statement,.closing-scene').forEach(el=>observer.observe(el));
- cleanup=()=>{cancelAnimationFrame(raf);window.removeEventListener('scroll',wake);stage.removeEventListener('pointermove',pointer);button.removeEventListener('click',toggle);observer.disconnect()};
+ cleanup=()=>{closeWelcome();cancelAnimationFrame(raf);window.removeEventListener('scroll',wake);stage.removeEventListener('pointermove',pointer);button.removeEventListener('click',toggle);observer.disconnect()};
 }
 window.ARStory={home,afterRender};window.addEventListener('hashchange',()=>{if(!location.hash||location.hash==='#home')return;cleanup()});
 })();
