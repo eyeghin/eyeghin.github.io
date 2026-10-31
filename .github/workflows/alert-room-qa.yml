@@ -4,6 +4,7 @@ on:
     branches: [main, brand-story-reset, floating-analyst-agent-ux, cinematic-studio-reset-2026, aml-github-only-polish-2026-10, alert-room-design-reset-2026-10]
     paths:
       - "the-alert-room/system.css"
+      - "the-alert-room/experience.css"
       - "the-alert-room/frame.js"
       - "the-alert-room/frame.css"
       - "the-alert-room/brand.css"
