@@ -129,7 +129,7 @@ async function load(){
     status(String(p?.text||'Preparing model on this device…').slice(0,140),n);
    }});
    engineModel=chosen;state='ready';status('AI ready. Ask Analyst a question.',100);
-  }catch(e){state='error';engine=null;engineModel='';status('Could not start AI: '+String(e?.message||e).slice(0,180),0);}
+  }catch(e){state='error';engine=null;engineModel='';const settings=$('.ag-model-settings');if(settings)settings.open=false;status('Could not start AI: '+String(e?.message||e).slice(0,180),0);}
   finally{loading=null;status(progress,progressPct);}
  })();
  return loading;
