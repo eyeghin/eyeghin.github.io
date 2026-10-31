@@ -57,4 +57,29 @@ Console inspection showed browser-extension metadata failures; no application-so
 - [x] Keep the interactive working preview available for owner review.
 - [ ] Obtain owner design acceptance before production merge.
 
+## October 31 refinement — owner feedback
+The owner accepted the cinematic motion, requested enhanced colors, rejected the founder page's bold/unreadable color treatment, and asked for a centered animated “Welcome AML analyst” opening.
+
+- Replaced the founder page's incompatible inline background with warm paper (#fbfaf7), a pale blue reading surface (#f0f3f9), navy headings (#172338), readable body text (#475770) and cobalt accents (#315ed5). Rebuilt the composition as a founder introduction, three numbered letter chapters and a clear invitation to practice.
+- Preserved the spatial-ledger motion and changed its palette to midnight (#080f22), luminous blue and porcelain transaction panels. Public footer uses matching midnight ink.
+- Added a centered welcome dialog with staggered text reveal and a curtain transition into the homepage. Runs once per tab session; Skip and Escape dismiss it; reduced-motion users bypass the sequence. Background navigation/footer/launcher are inert during the intro. Completion restores scrolling and focus to the homepage title.
+- [P2, resolved during implementation] The welcome initially inherited the routed view's stacking context, leaving the masthead above it. Moved the live dialog to document.body. CI screenshot 16 now shows only the intended introduction, and automatic completion restores the underlying interface.
+
+Source visual truth: previous homepage capture /workspace/scratch/EY-AlertRoom-Home-Final.jpg plus the owner's explicit color and welcome corrections. This is an intentional palette/layout revision, not a fidelity clone.
+Full-view combined comparison: /workspace/scratch/alert-room-palette-comparison.jpg. Old source: 1363 × 936; revised CI: 1440 × 900; density 1. Scaled independently into equal 780px-wide comparison columns; viewport differences are recorded rather than treated as drift.
+Focused/desktop evidence: /workspace/scratch/EY-Founder-Updated-Public.jpg (1348 × 926 public preview), and CI files 16-welcome-desktop.jpg and 17-founder-desktop.jpg (1440 × 900).
+Mobile evidence: CI 18-founder-mobile.jpg (390px wide, full page) and 15-home-reduced-motion-mobile.jpg (390 × 844).
+
+Fidelity pass: Inter remains the primary face with a medium-weight founder title instead of the old condensed poster treatment. The letter uses a readable line length and chapter spacing, stacks to one column at 390px, and retains descriptive links. Colors were inspected in the browser; automated founder body contrast is at least 4.5:1. No imagery was substituted or invented; existing fictional transaction UI remains native data content. Copy is a professional founder account, clearly distinguishes the practice environment and contains no claimed credentials or affiliations.
+
+Application-source commit 0e9524214275c00eefd762619532874352dbbb77 passed all desktop/mobile workflows and new welcome/founder assertions:
+https://github.com/eyeghin/eyeghin.github.io/actions/runs/41237398570
+The following test-only commit 561a50ed3e19868392056f18d4e3d2e3d5bde0ac improves capture timing and closes the optional Analyst before the founder screenshot. No application code differs. Latest capture run is recorded in PR #7.
+New checks: welcome content, automatic completion, inertness restoration, focus restoration, once-per-session behavior, manual skip, reduced-motion bypass, founder body contrast and 390px overflow. Existing investigation → QA → revision checks remain green. Public raw.githack preview was independently opened; welcome completion, new homepage and founder route were verified.
+
+A post-capture comparison also exposed the title period being clipped by the reveal mask. Added .2em of bottom clearance to the final title line; final-source screenshots are checked again before handoff.
+
+No remaining actionable P0/P1/P2 findings in these inspected states. Owner design acceptance and the previously documented broader release QA limits remain.
+
 final result: passed
+
