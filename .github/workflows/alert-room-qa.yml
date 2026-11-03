@@ -28,6 +28,11 @@ on:
       - "the-alert-room/browser-qa.cjs"
       - ".github/workflows/alert-room-qa.yml"
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "the-alert-room/**"
+      - "analyst-worker/**"
+      - ".github/workflows/alert-room-qa.yml"
 permissions:
   contents: read
 jobs:
