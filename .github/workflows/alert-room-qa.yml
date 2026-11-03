@@ -1,8 +1,11 @@
 name: The Alert Room - Browser QA
 on:
   push:
-    branches: [main, brand-story-reset, floating-analyst-agent-ux, cinematic-studio-reset-2026, aml-github-only-polish-2026-10]
+    branches: [main, brand-story-reset, floating-analyst-agent-ux, cinematic-studio-reset-2026, aml-github-only-polish-2026-10, alert-room-design-reset-2026-10]
     paths:
+      - "the-alert-room/system.css"
+      - "the-alert-room/experience.css"
+      - "the-alert-room/cinematic-home.css"
       - "the-alert-room/frame.js"
       - "the-alert-room/frame.css"
       - "the-alert-room/brand.css"
@@ -15,6 +18,8 @@ on:
       - "the-alert-room/cinema.js"
       - "the-alert-room/cinema.css"
       - "the-alert-room/analyst.js"
+      - "the-alert-room/analyst-config.js"
+      - "analyst-worker/**"
       - "the-alert-room/floating-agent.js"
       - "the-alert-room/floating-agent.css"
       - "the-alert-room/analyst.css"
@@ -40,6 +45,8 @@ jobs:
           chrome-version: stable
       - name: Install browser testing library
         run: npm install --no-save playwright-core
+      - name: Check hosted service boundaries
+        run: node --test analyst-worker/server.test.mjs
       - name: Serve static site
         run: |
           python3 -m http.server 8000 --bind 127.0.0.1 > /tmp/alert-room-server.log 2>&1 &

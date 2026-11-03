@@ -10,43 +10,83 @@ fs.mkdirSync(OUT,{recursive:true});
  page.on('console',m=>{if(m.type()==='error')errors.push('CONSOLE: '+m.text())});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await page.waitForSelector('.vi-hero h1',{timeout:25000});
-  assert.match(await page.locator('.vi-hero h1').innerText(),/not\s+an answer/i);
-  assert.ok(await page.locator('.vi-graph .vi-track').count()>=8,'Evidence flow illustration missing');
-  assert.ok(await page.locator('.vi-steps button').count()===4,'Four narrative stages missing');
-  assert.equal(await page.locator('.vi-route-list a').count(),3,'Three distinct work chapters must render');
-  assert.ok(!(await page.locator('.vi-site').innerText()).includes('NaNNaN'),'Broken narrative concatenation');
-  assert.equal(await page.locator('#ag-launcher:visible').count(),1,'Analyst launcher must be available on the homepage');
-  assert.equal(await page.locator('.ag-drawer.is-open').count(),0,'Agent must not obstruct the homepage until requested');
-  await page.locator('[data-vi-step="1"]').click();
-  assert.match(await page.locator('#vi-current').innerText(),/Context changes everything|Who is this customer/i);
-  await page.locator('[data-vi-step="2"]').click();
-  assert.ok(await page.locator('.vi-ledger-row').count()>=3,'Ledger evidence absent from the story');
-  await page.locator('[data-vi-step="3"]').click();
-  await page.locator('[data-vi-choice="close"]').click();
-  assert.match(await page.locator('.vi-explanation').innerText(),/Aligned with|reference outcome|rationale/i);
-  await page.locator('[data-vi-step="0"]').click();
-  await page.locator('#vi-play').click();
-  assert.match(await page.locator('#vi-play').innerText(),/Pause/i);
-  await page.locator('#vi-play').click();
-  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
-  await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:72,fullPage:true,animations:'disabled'});
+  await page.waitForSelector('.case-cinema[data-ready="true"]');
+  assert.equal(await page.locator('h1').count(),1,'One main page heading');
+  await page.locator('.cinema-pause').click();
+  assert.equal(await page.locator('.cinema-pause').getAttribute('aria-pressed'),'true');
+  await page.locator('[data-cinema-scene="1"]').click();
+  assert.equal(await page.locator('.case-cinema').getAttribute('data-scene'),'1');
+  assert.match(await page.locator('#cinema-scene-copy').innerText(),/customer/);
+  await page.screenshot({path:path.join(OUT,'20-cinema-context-desktop.jpg'),type:'jpeg',quality:90});
+  await page.locator('[data-cinema-scene="0"]').click();
+  const controls=await page.evaluate(()=>{const a=document.querySelector('.cinema-pause').getBoundingClientRect(),b=document.querySelector('#ag-launcher').getBoundingClientRect();return !(a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom)});
+  assert.ok(controls,'Chat launcher must not cover cinematic controls');
+  assert.match(await page.locator('.cinema-welcome').innerText(),/Welcome, AML analyst/);
+  assert.equal(await page.locator('.welcome-intro').count(),0,'No forced intro overlay');
+  assert.equal(await page.locator('body').evaluate(el=>el.style.overflow),'');
+  await page.locator('[data-preview="activity"]').click();
+  assert.match(await page.locator('.room-preview-ledger').innerText(),/TX-26222/);
+  assert.equal(await page.locator('.room-preview-ledger>div').count(),4);
+  await page.locator('[data-preview="judgment"]').click();
+  assert.match(await page.locator('#room-preview-content').innerText(),/legitimate explanation/);
+  await page.locator('[data-hypothesis="rfi"]').click();
+  assert.match(await page.locator('.room-hypothesis-result').innerText(),/missing corroboration/);
+  await page.locator('[data-preview="context"]').click();
+  await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:90,fullPage:false,animations:'disabled'});
+  await page.locator('.skip').focus();await page.keyboard.press('Enter');
+  assert.match(page.url(),/#home$/);assert.equal(await page.locator('#main').evaluate(el=>el===document.activeElement),true);
   const pages=[
    ['learn','.learning-grid .learning-tile',6],
    ['quiz','.quiz-card',1],
+   ['course/foundations','.well',1],
+   ['lesson/foundations-0','.article-body',1],
+   ['progress','.console-main',1],
+   ['reviewer','.console-main',1],
    ['workspace','#queue-body tr[data-open-case]',10],
    ['story','.founder-letter article',1],
    ['feedback','#feedback-form',1],
    ['analyst','#analyst-root .ag-chat',1],
    ['privacy','.wrap',1]
   ];
-  for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);console.log('ROUTE_OK',route,'elements',n);}
+  for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);if(await page.locator('.inner-hero').count()){const nav=await page.locator('.nav-shell').evaluate(el=>({bg:getComputedStyle(el).backgroundColor,fg:getComputedStyle(el).color}));assert.equal(nav.bg,'rgb(255, 255, 255)',route+': light navigation surface');assert.equal(nav.fg,'rgb(23, 36, 59)',route+': readable navigation ink');}console.log('ROUTE_OK',route,'elements',n);await page.screenshot({path:path.join(OUT,'route-'+route.replace(/[^a-z0-9-]/g,'-')+'-desktop.jpg'),type:'jpeg',quality:80,animations:'disabled'});}
+  await page.goto(BASE+'#story',{waitUntil:'networkidle'});
+  if(await page.locator('#analyst-drawer.is-open').count())await page.locator('#ag-close').click();
+  assert.match(await page.locator('.founder-opening h1').innerText(),/Good judgment/);
+  const founderContrast=await page.locator('.founder-letter article').evaluate(el=>{
+   const lum=rgb=>{const c=rgb.match(/[\d.]+/g).slice(0,3).map(Number).map(x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4});return c[0]*.2126+c[1]*.7152+c[2]*.0722};
+   return (lum(getComputedStyle(document.querySelector('.founder-body')).backgroundColor)+.05)/(lum(getComputedStyle(el).color)+.05);
+  });
+  assert.ok(founderContrast>=4.5,'Founder letter must have readable text contrast: '+founderContrast);
+  await page.screenshot({path:path.join(OUT,'17-founder-desktop.jpg'),type:'jpeg',quality:90});
+  const introSkip=await browser.newPage({viewport:{width:390,height:844}});
+  await introSkip.goto(BASE+'#story',{waitUntil:'networkidle'});
+  const founderWidth=await introSkip.evaluate(()=>({scroll:document.documentElement.scrollWidth,width:innerWidth}));
+  assert.ok(founderWidth.scroll<=founderWidth.width+1,'Founder page mobile overflow');
+  await introSkip.screenshot({path:path.join(OUT,'18-founder-mobile.jpg'),type:'jpeg',quality:85,fullPage:true});
+  await introSkip.close();console.log('WELCOME_AND_FOUNDER_OK');
+  await page.goto(BASE+'#feedback',{waitUntil:'networkidle'});
+  await page.locator('#feedback-form input[name="title"]').fill('Evidence selection feedback');
+  await page.locator('#feedback-form textarea[name="message"]').fill('A fictional example of feedback about choosing and citing evidence in the investigation workspace.');
+  await page.locator('#feedback-form input[name="consent"]').check();
+  await page.locator('#feedback-form button[type="submit"]').click();
+  assert.ok(await page.locator('#feedback-ready').isVisible());
+  assert.match(await page.locator('#feedback-email').getAttribute('href'),/^mailto:eyeghinyane@gmail\.com\?subject=/);
+  const downloaded=page.waitForEvent('download');await page.locator('#feedback-download').click();
+  assert.equal((await downloaded).suggestedFilename(),'alert-room-feedback.txt');
+  console.log('FEEDBACK_DRAFT_DOWNLOAD_OK');
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   if(await page.locator('#analyst-drawer.is-open').count())await page.locator('#ag-close').click();
   await page.locator('#ag-launcher').click();
   await page.waitForSelector('#analyst-drawer.is-open',{timeout:10000});
   await page.waitForSelector('#analyst-input',{timeout:10000});
   assert.ok(await page.locator('#analyst-messages').isVisible(),'Interactive chat messages must be visible');
+  await page.locator('.ag-site-guide summary').click();
+  await page.locator('[data-site-guide="2"]').click();
+  assert.match(await page.locator('#analyst-messages').innerText(),/PRACTICE GUIDE \/ PREWRITTEN/);
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('#ag-launcher').evaluate(el=>el===document.activeElement),true,'Escape returns focus');
+  await page.locator('#ag-launcher').click();
+  assert.ok(!(await page.locator('#analyst-messages').innerText()).includes('PREWRITTEN'),'Close must discard conversation');
   await page.locator('#ag-close').click();
   assert.equal(await page.locator('#analyst-drawer.is-open').count(),0,'Agent must close without route change');
   await page.locator('a[href="#analyst"]').first().click();
@@ -55,19 +95,14 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.equal(await page.locator('a[href="./resources.html"]').count(),0,'Official sources link should not appear in footer');
   assert.equal(await page.locator('a[href*="/issues"]').count(),0,'Public issue tracker should not appear in footer');
   await page.locator('.ag-quick [data-analyst-quick="0"]').click();
-  assert.match(await page.locator('#analyst-input').inputValue(),/fictional AML alert|investigation/i,'Analyst quick topic did not populate question');
-  const aiLibrary=await page.evaluate(async()=>{
-    try {
-      const lib=await Promise.race([
-        import('https://esm.run/@mlc-ai/web-llm@0.2.85'),
-        new Promise((_,reject)=>setTimeout(()=>reject(Error('Runtime CDN import timed out')),30000))
-      ]);
-      return {ok:typeof lib.CreateMLCEngine==='function',models:lib.prebuiltAppConfig?.model_list?.filter(m=>['Qwen2.5-0.5B-Instruct-q4f16_1-MLC','Qwen2.5-1.5B-Instruct-q4f16_1-MLC'].includes(m.model_id)).map(m=>m.model_id)||[]};
-    } catch(e) { return {ok:false,error:String(e?.message||e)} }
-  });
-  console.log('ANALYST_RUNTIME_IMPORT',JSON.stringify(aiLibrary));
-  assert.ok(aiLibrary.ok,'Genuine AI runtime could not import: '+JSON.stringify(aiLibrary));
-  assert.equal(aiLibrary.models.length,2,'Both optional models must be registered in the runtime');
+  assert.match(await page.locator('#analyst-input').inputValue(),/investigat/i,'Analyst quick topic did not populate question');
+  assert.equal(await page.locator('#analyst-model-button').count(),0,'No model setup controls');
+  assert.equal(await page.locator('.ag-model-settings').count(),0,'No device settings');
+  let promptsOpened=0;const watchDownload=async d=>{promptsOpened++;await d.dismiss()};page.on('dialog',watchDownload);
+  await page.locator('#analyst-input').fill('Hi');await page.locator('#analyst-send').click();
+  assert.match(await page.locator('#analyst-load-status').innerText(),/unavailable/i);
+  assert.equal(promptsOpened,0,'Sending never requests model download');
+  page.off('dialog',watchDownload);console.log('NO_DEVICE_SETUP_OK');
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'09-analyst-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.goto(BASE+'#analyst/AR-3002',{waitUntil:'networkidle'});
@@ -87,16 +122,43 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({path:path.join(OUT,'02-workspace-desktop.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.goto(BASE+'#case/AR-3002',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('.ops-case-steps a').count(),7,'All seven investigation tabs must be labeled and accessible');
+  await page.locator('.ops-case-next').click();
+  await page.waitForURL(/#case\/AR-3002\/ledger$/);
+  await page.waitForFunction(()=>document.querySelector('.ops-case-stephead')?.textContent.includes('Transactions'),{timeout:10000});
+  await page.goBack();
+  await page.waitForURL(/#case\/AR-3002$/);
+  await page.waitForFunction(()=>document.querySelector('.ops-case-stephead')?.textContent.includes('Overview'),{timeout:10000});
+  assert.equal(await page.locator('.ops-case-stephead h2').evaluate(el=>el===document.activeElement),true,'Route must focus the current stage heading');
+  assert.equal(await page.locator('[data-case-clock]').count(),1,'Every investigation must display a session timer');
+  assert.match(await page.locator('.context-grid').first().innerText(),/account reference/i,'Masked fictional account context missing');
   await page.locator('[data-mark-reviewed="kyc"]').click();
   await page.locator('[data-case-tab="ledger"]').click();
   await page.waitForSelector('[data-evidence]');
   assert.equal(await page.locator('[data-evidence]').count(),24);
   const exportBtn=await page.locator('[data-export-ledger]').evaluate(el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color}));
-  assert.notEqual(exportBtn.background,'rgb(255, 255, 255)','Export button has invisible white-on-white styling');
+  assert.notEqual(exportBtn.background,exportBtn.color,'Export button foreground and background must differ');
+  await page.waitForFunction(()=>document.querySelector('[data-case-clock]')?.textContent!=='00:00:00',{},{timeout:4000});
+  const activeBefore=await page.locator('[data-case-clock]').innerText();
+  assert.notEqual(activeBefore,'00:00:00','Review clock should advance');
+  await page.goto(BASE+'#learn',{waitUntil:'networkidle'});
+  const savedMs=await page.evaluate(()=>JSON.parse(localStorage.getItem('tar-public-release-v1')).casework['AR-3002'].reviewMs);
+  await page.waitForTimeout(1100);
+  assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('tar-public-release-v1')).casework['AR-3002'].reviewMs),savedMs,'Review clock pauses away from the case');
+  await page.goto(BASE+'#case/AR-3002/ledger',{waitUntil:'networkidle'});
+  await page.locator('[data-view-transaction]').first().click();
+  await page.waitForSelector('#transaction-detail[open]');
+  assert.match(await page.locator('#transaction-detail-body').innerText(),/TX-26222/);
+  await page.keyboard.press('Escape');
+  await page.locator('[data-claim-case]').click();
+  await page.waitForSelector('[data-claim-case]:disabled');
   const ids=[];
   for(let i=0;i<3;i++){const e=page.locator('[data-evidence]').nth(i);ids.push(await e.getAttribute('data-evidence'));await e.check();}
   assert.match(await page.locator('[data-case-status]').innerText(),/In progress/);
+  assert.equal(await page.locator('[data-evidence-count]').innerText(),'3');
+  assert.match(await page.locator('[data-case-status-summary]').innerText(),/In progress/);
   assert.ok(await page.locator('[data-case-evidence-check].checked').count()>0,'Case controls did not update after evidence selection');
+  await page.evaluate(async()=>{document.activeElement?.blur();window.scrollTo({top:0,behavior:'instant'});await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))});
   await page.screenshot({path:path.join(OUT,'03-case-ledger.jpg'),type:'jpeg',quality:75,fullPage:true,animations:'disabled'});
   await page.locator('[data-mark-reviewed="ledger"]').click();
   await page.locator('[data-case-tab="workpaper"]').click();
@@ -115,6 +177,8 @@ fs.mkdirSync(OUT,{recursive:true});
   console.log('FULL_CASE_QA_OK',page.url(),'layout',JSON.stringify(layout));
   await page.evaluate(()=>{const toast=document.querySelector('#toast');if(toast)toast.hidden=true;window.scrollTo({top:0,behavior:'instant'})});
   await page.screenshot({path:path.join(OUT,'04-qa-report.jpg'),type:'jpeg',quality:76,fullPage:true,animations:'disabled'});
+  const sidebar=await page.locator('.ops-global-nav').evaluate(el=>({width:el.getBoundingClientRect().width,scroll:el.scrollWidth}));
+  assert.ok(sidebar.width>=170&&sidebar.scroll<=sidebar.width+2,'QA sidebar must contain its labels');
   const reportHash=page.url().split('#')[1];
   await page.goto(BASE+'#reviewer',{waitUntil:'networkidle'});
   await page.locator('[data-open-reviewer]').first().click();
@@ -130,7 +194,7 @@ fs.mkdirSync(OUT,{recursive:true});
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
   mobile.on('pageerror',e=>errors.push('MOBILE: '+e.message));
   await mobile.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await mobile.waitForSelector('.vi-hero h1',{timeout:12000});
+  await mobile.waitForSelector('.home-title',{timeout:12000});
   
   await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
@@ -145,11 +209,18 @@ fs.mkdirSync(OUT,{recursive:true});
   const agentMobile=await mobile.evaluate(()=>({width:document.querySelector('#analyst-drawer').getBoundingClientRect().width,viewport:innerWidth}));
   assert.ok(Math.abs(agentMobile.width-agentMobile.viewport)<=2,'Agent must fill mobile viewport without overflow');
   await mobile.screenshot({path:path.join(OUT,'11-analyst-agent-mobile.jpg'),type:'jpeg',quality:75,fullPage:false,animations:'disabled'});
-  await mobile.locator('#ag-close').click();
-  for(const [route,selector,file] of [['workspace','#queue-body','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg'],['analyst','#analyst-root .ag-chat','10-analyst-mobile.jpg']]){
+  assert.equal(await mobile.locator('#analyst-drawer').getAttribute('aria-modal'),'true');
+  assert.equal(await mobile.locator('main').getAttribute('inert'),'');
+  await mobile.keyboard.press('Escape');
+  assert.equal(await mobile.locator('main').getAttribute('inert'),null);
+  for(const [route,selector,file] of [['workspace','#ops-mobile-cards .ops-mobile-card','06-workspace-mobile.jpg'],['case/AR-3002','.case-tabs','07-case-mobile.jpg'],['qa','#qa-filter','08-qa-mobile.jpg'],['analyst','#analyst-root .ag-chat','10-analyst-mobile.jpg']]){
    await mobile.goto(BASE+'#'+route,{waitUntil:'networkidle'});
    await mobile.waitForSelector(selector,{timeout:10000});
    if(route==='workspace'){
+    assert.equal(await mobile.locator('#ops-mobile-cards a.ops-mobile-card').count(),10,'Mobile queue must display ten tappable alert cards');
+    assert.equal(await mobile.locator('.ops-mobile-card').first().evaluate(el=>getComputedStyle(el).display),'block','Mobile cases must be real cards, not a clipped table');
+    assert.equal(await mobile.locator('.ops-queue-scroll').evaluate(el=>getComputedStyle(el).display),'none','Wide alert table should be hidden on narrow screens');
+    assert.ok(await mobile.locator('.ops-mobile-card-footer').first().innerText().then(t=>t.includes('Open investigation')),'Each mobile card needs a clear action');
     const position=await mobile.locator('.console-main').evaluate(el=>el.getBoundingClientRect().left);
     assert.ok(position<=24,'Mobile workspace must not have a redundant left navigation rail: '+position);
    }
@@ -160,6 +231,68 @@ fs.mkdirSync(OUT,{recursive:true});
    console.log('MOBILE_ROUTE_OK',route);
   }
 
+  if(await mobile.locator('#analyst-drawer.is-open').count())await mobile.locator('#ag-close').click();
+  // Complete casework and resubmission on a fresh 390px browser context.
+  await mobile.goto(BASE+'#case/AR-3002',{waitUntil:'networkidle'});
+  await mobile.locator('[data-mark-reviewed="kyc"]').click();
+  await mobile.locator('.ops-case-next').click();
+  const mids=[];for(let i=0;i<3;i++){const el=mobile.locator('[data-evidence]').nth(i);mids.push(await el.getAttribute('data-evidence'));await el.check();}
+  assert.equal(await mobile.locator('[data-evidence-count]').innerText(),'3');
+  await mobile.locator('[data-mark-reviewed="ledger"]').click();
+  await mobile.locator('[data-case-tab="workpaper"]').click();
+  await mobile.locator('[data-case-field="context"]').fill('The fictional customer is an event organizer. Compare expected ticket collections and venue expenses against the observed payment dates and counterparties; documents are not independently verified.');
+  await mobile.locator('[data-case-field="decision"]').selectOption('rfi');
+  await mobile.locator('[data-case-field="narrative"]').fill('Review of October 2026 payments, including '+mids.join(', ')+', identifies incoming ticket-sized credits and outgoing payments. The customer baseline supports an event explanation, but an event ledger and venue invoice remain unverified. Request these records to reconcile dates, amounts and beneficiaries before deciding whether closure is supported.');
+  await mobile.locator('#case-attest').check();mobile.once('dialog',d=>d.accept());await mobile.locator('[data-submit-case]').click();
+  await mobile.waitForURL(/#qa\/QA-/);await mobile.waitForSelector('.qa-score');
+  await mobile.screenshot({path:path.join(OUT,'12-qa-report-mobile.jpg'),type:'jpeg',quality:80,fullPage:true});
+  await mobile.locator('a[href="#case/AR-3002"]').first().click();
+  await mobile.locator('[data-case-tab="workpaper"]').click();
+  assert.match(await mobile.locator('[data-case-field="narrative"]').inputValue(),new RegExp(mids[0]));
+  await mobile.locator('[data-case-field="rfi"]').fill('Obtain the event ledger and venue invoice, then reconcile them against the selected payment IDs.');
+  await mobile.locator('#case-attest').check();mobile.once('dialog',d=>d.accept());await mobile.locator('[data-submit-case]').click();
+  await mobile.waitForURL(/#qa\/QA-/);await mobile.waitForSelector('.qa-score');
+  const submissions=await mobile.evaluate(()=>JSON.parse(localStorage.getItem('tar-public-release-v1')).submissions);
+  assert.equal(submissions.length,2);assert.equal(submissions[1].cycle,2);
+  console.log('MOBILE_SUBMISSION_REVISION_OK');
+  const unsupported=await browser.newPage({viewport:{width:390,height:844}});
+  await unsupported.addInitScript(()=>Object.defineProperty(navigator,'gpu',{get:()=>undefined,configurable:true}));
+  await unsupported.goto(BASE+'#home',{waitUntil:'networkidle'});
+  await unsupported.locator('#ag-launcher').click();
+  assert.equal(await unsupported.locator('#analyst-model-button').count(),0);
+  await unsupported.locator('#analyst-input').fill('Hi');await unsupported.locator('#analyst-send').click();
+  assert.match(await unsupported.locator('#analyst-load-status').innerText(),/unavailable/i);
+  await unsupported.locator('.ag-site-guide summary').click();
+  await unsupported.locator('[data-site-guide="0"]').click();
+  assert.match(await unsupported.locator('#analyst-messages').innerText(),/PRACTICE GUIDE \/ PREWRITTEN/);
+  await unsupported.screenshot({path:path.join(OUT,'13-analyst-fallback-mobile.jpg'),type:'jpeg',quality:80,fullPage:false});
+  await unsupported.close();console.log('UNSUPPORTED_DEVICE_GUIDE_OK');
+  const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  await reduced.goto(BASE+'#home',{waitUntil:'networkidle'});
+  assert.equal(await reduced.locator('.welcome-intro').count(),0,'Reduced motion skips the opening sequence');
+  assert.equal(await reduced.locator('.home-title').evaluate(el=>getComputedStyle(el).animationName),'none');
+  assert.equal(await reduced.locator('.cinema-pause').getAttribute('aria-pressed'),'true');
+  await reduced.screenshot({path:path.join(OUT,'15-home-reduced-motion-mobile.jpg'),type:'jpeg',quality:85,fullPage:false});
+  await reduced.close();
+  // Mocked transport checks prove client behavior; no live-provider inference claim.
+  const hosted=await browser.newPage({viewport:{width:390,height:844}});
+  await hosted.route('**/analyst-config.js',route=>route.fulfill({contentType:'application/javascript',body:'window.AR_HOSTED_ANALYST={endpoint:"'+BASE+'test-api"};'}));
+  let sent;await hosted.route('**/test-api',async route=>{sent=route.request().postDataJSON();await route.fulfill({json:{answer:'Test response: compare the customer baseline. <img src=x onerror=alert(1)>'}})});
+  await hosted.goto(BASE+'#case/AR-3002',{waitUntil:'networkidle'});await hosted.locator('#ag-launcher').click();
+  await hosted.locator('#analyst-input').fill('What should I compare?');await hosted.locator('#analyst-send').click();
+  await hosted.waitForSelector('.analyst-message.assistant');
+  assert.equal(sent.syntheticCase,'','Case context must be opt-in');
+  assert.equal(await hosted.locator('.analyst-message.assistant img').count(),0,'Response is rendered as text, not executable HTML');
+  await hosted.locator('#analyst-attach').check();await hosted.locator('#analyst-input').fill('Compare the fictional case');await hosted.locator('#analyst-send').click();
+  await hosted.waitForFunction(()=>document.querySelectorAll('.analyst-message.assistant').length===2);
+  assert.match(sent.syntheticCase,/AR-3002/);
+  await hosted.screenshot({path:path.join(OUT,'19-chat-transport-test.jpg'),type:'jpeg',quality:85});
+  await hosted.unroute('**/test-api');await hosted.route('**/test-api',route=>route.fulfill({status:503,json:{error:'Unavailable'}}));
+  await hosted.locator('#analyst-input').fill('Another question');await hosted.locator('#analyst-send').click();
+  await hosted.waitForSelector('.analyst-message.error');assert.match(await hosted.locator('.analyst-message.error').innerText(),/temporarily unavailable/);
+  await hosted.locator('#ag-close').click();await hosted.locator('#ag-launcher').click();
+  assert.equal(await hosted.locator('.analyst-message').count(),0,'Close clears questions and responses');
+  await hosted.close();console.log('HOSTED_CHAT_MOCKED_TRANSPORT_OK');
   assert.deepEqual(errors,[],'Browser errors: '+errors.join('; '));
   console.log('VISUAL_QA_PASS All routes, case submissions, QA, manual review and mobile navigation');
  }finally{await browser.close()}

@@ -1,0 +1,10 @@
+node_modules/
+visual-qa/
+
+dist/
+review.html
+
+.env
+.env.local
+.env.*.local
+.dev.vars
