@@ -6,3 +6,12 @@ test('rejects invalid roles and enforces rate limit before generation',async()=>
 test('bounds actual request bytes even without Content-Length',async()=>{assert.equal((await worker.fetch(request({messages:[{role:'user',content:'a'.repeat(21000)}]}),env)).status,413)});
 test('keeps credentials server-side and extracts generated answer',async()=>{const previous=globalThis.fetch;let sent;globalThis.fetch=async(url,options)=>{sent=JSON.parse(options.body);return new Response(JSON.stringify({output:[{content:[{type:'output_text',text:'Compare the fictional customer baseline with the ledger.'}]}]}),{status:200})};try{const response=await worker.fetch(request({messages:[{role:'user',content:'Where should I start?'}],syntheticCase:'AR-3002'}),env);const data=await response.json();assert.match(data.answer,/baseline/);assert.equal(sent.store,false);assert.equal(sent.input[0].role,'developer');assert.ok(!JSON.stringify(data).includes(env.OPENAI_API_KEY))}finally{globalThis.fetch=previous}});
 test('reports upstream failure honestly',async()=>{const previous=globalThis.fetch;globalThis.fetch=async()=>new Response('{}',{status:429});try{const response=await worker.fetch(request({messages:[{role:'user',content:'hello'}]}),env);assert.equal(response.status,503);assert.equal((await response.json()).code,'upstream_unavailable')}finally{globalThis.fetch=previous}});
+
+test('production API rejects preview origins, missing origins and non-JSON bodies',async()=>{
+ assert.equal((await worker.fetch(request({messages:[{role:'user',content:'hi'}]},{origin:'https://raw.githack.com'}),env)).status,403);
+ assert.equal((await worker.fetch(request({messages:[{role:'user',content:'hi'}]},{origin:''}),env)).status,403);
+ const bad=await worker.fetch(request({messages:[{role:'user',content:'hi'}]},{'content-type':'text/plain'}),env);
+ assert.equal(bad.status,415);
+ assert.equal(bad.headers.get('x-content-type-options'),'nosniff');
+ assert.equal(bad.headers.get('cache-control'),'no-store');
+});
