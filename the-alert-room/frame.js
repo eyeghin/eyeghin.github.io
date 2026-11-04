@@ -48,7 +48,7 @@ function makePage(html,title){
  root.innerHTML=html;
  if(changed&&!matchMedia('(prefers-reduced-motion:reduce)').matches)root.animate([{opacity:.3,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:document.body.classList.contains('desk-mode')?180:460,easing:'cubic-bezier(.16,1,.3,1)'});
  if(pageRoute().name==='workspace')queueRefresh();
- document.title=title+' | The Alert Room';
+ document.title=title==='Home'?'The Alert Room':title+' | The Alert Room';
  if(changed)routeFocus();
  const route=pageRoute(),back=$('#site-back'),backLabel=$('#site-back-label');
  const backTo=route.name==='case'?['#workspace','All alerts']:route.name==='course'?['#learn','All courses']:route.name==='lesson'?['#course/'+route.id.replace(/-\d+$/,''),'Course lessons']:route.name==='qa'&&route.id?['#qa','QA reports']:route.name==='reviewer'&&route.id?['#reviewer','Reviewer desk']:route.name==='home'?null:['#home','Home'];
