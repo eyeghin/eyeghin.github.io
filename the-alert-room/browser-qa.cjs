@@ -12,6 +12,7 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   await page.waitForSelector('.case-cinema[data-ready="true"]');
   assert.equal(await page.locator('h1').count(),1,'One main page heading');
+  assert.ok(await page.locator('.scene-art').evaluate(el=>el.complete&&el.naturalWidth>1000),'Illustration must load at full resolution');
   await page.locator('.cinema-pause').click();
   assert.equal(await page.locator('.cinema-pause').getAttribute('aria-pressed'),'true');
   await page.locator('[data-cinema-scene="1"]').click();
