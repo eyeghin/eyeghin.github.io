@@ -10,13 +10,12 @@ fs.mkdirSync(OUT,{recursive:true});
  page.on('console',m=>{if(m.type()==='error')errors.push('CONSOLE: '+m.text())});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await page.waitForFunction(() => document.querySelector('.paper-film video')?.currentTime > 0.1);
+  await page.waitForFunction(() => document.querySelector('.signal-movie')?.currentTime > 0.1);
   assert.equal(await page.locator('h1').count(),1);
-  await page.locator('[data-film-toggle]').click();
-  assert.ok(await page.locator('video').evaluate(v => v.paused));
-  await page.locator('[data-film-toggle]').click();
-  await page.waitForFunction(() => !document.querySelector('video').paused);
-  assert.equal(await page.locator('.paper-enter').getAttribute('href'),'#workspace');
+  assert.equal(await page.locator('.signal-hero button, .signal-hero video[controls]').count(),0);
+  await page.waitForSelector('.signal-hero.case-ready',{timeout:18000});
+  assert.match(await page.locator('#signal-title').innerText(),/Would you flag it/);
+  assert.equal(await page.locator('.signal-enter').getAttribute('href'),'#case/AR-3002');
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:90,fullPage:false,animations:'disabled'});
   await page.locator('.skip').focus();await page.keyboard.press('Enter');
   assert.match(page.url(),/#home$/);assert.equal(await page.locator('#main').evaluate(el=>el===document.activeElement),true);
@@ -179,7 +178,7 @@ fs.mkdirSync(OUT,{recursive:true});
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
   mobile.on('pageerror',e=>errors.push('MOBILE: '+e.message));
   await mobile.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await mobile.waitForSelector('#paper-title',{timeout:12000});
+  await mobile.waitForSelector('#signal-title',{timeout:12000});
   
   await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
@@ -255,8 +254,8 @@ fs.mkdirSync(OUT,{recursive:true});
   const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
   await reduced.goto(BASE+'#home',{waitUntil:'networkidle'});
   assert.equal(await reduced.locator('.welcome-intro').count(),0,'Reduced motion skips the opening sequence');
-  assert.equal(await reduced.locator('#paper-title').evaluate(el=>getComputedStyle(el).animationName),'none');
-  assert.ok(await reduced.locator('.paper-film video').evaluate(v => v.paused && v.currentTime === 0));
+  assert.equal(await reduced.locator('#signal-title').evaluate(el=>getComputedStyle(el).animationName),'none');
+  assert.ok(await reduced.locator('.signal-movie').evaluate(v => v.paused && v.currentTime === 0));
   await reduced.screenshot({path:path.join(OUT,'15-home-reduced-motion-mobile.jpg'),type:'jpeg',quality:85,fullPage:false});
   await reduced.close();
   // Mocked transport checks prove client behavior; no live-provider inference claim.
