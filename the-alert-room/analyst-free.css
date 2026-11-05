@@ -1,0 +1,13 @@
+/* Honest, zero-cost local AI controls. */
+.ag-local-setup{display:grid;gap:9px;margin:12px 0 4px;padding:13px 14px;border:1px solid #DFE2F1;border-radius:14px;background:#F8F9FE;color:#25273F}
+.ag-local-setup[hidden]{display:none!important}
+#analyst-load-local{min-height:43px;width:100%;display:inline-flex;justify-content:center;align-items:center;gap:10px;padding:10px 17px;border-radius:99px;border:1px solid #5358D8;background:#ECEEFF;color:#2F36A5;font:700 12px/1.3 Inter,system-ui,sans-serif;cursor:pointer}
+#analyst-load-local:hover:not(:disabled){background:#DDE0FF}
+#analyst-load-local:disabled{opacity:.67;cursor:progress}
+.ag-local-setup small{font:470 11px/1.5 Inter,system-ui,sans-serif;color:#626A86}
+.ag-disclosure{font-size:11px!important;line-height:1.5!important}
+.ag-availability{border-color:#D7DCF1!important;background:#F4F6FF!important;color:#394362!important}
+.ag-local-setup .ag-local-progress{height:3px;border-radius:5px;background:#DFE3F8;overflow:hidden}
+.ag-local-setup .ag-local-progress span{display:block;width:0;height:100%;background:#5058DC;transition:width .2s ease-out}
+.ag-local-setup .ag-local-progress[hidden]{display:none}
+@media(prefers-reduced-motion:reduce){.ag-local-setup .ag-local-progress span{transition:none}}
