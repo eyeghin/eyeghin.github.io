@@ -1,4 +1,4 @@
-/* Hosted Analyst client. No browser models, GPU requirements, or private credentials. */
+/* Analyst supports hosted AI, plus a free local case coach for every browser. */
 (()=>{'use strict';
 const $=s=>document.querySelector(s),esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const config=window.AR_HOSTED_ANALYST||{},endpoint=config.endpoint||'';
