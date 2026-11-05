@@ -10,43 +10,36 @@ fs.mkdirSync(OUT,{recursive:true});
  page.on('console',m=>{if(m.type()==='error')errors.push('CONSOLE: '+m.text())});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await page.waitForFunction(() => document.querySelector('#ar-motion-stage')?.dataset.arMounted === 'true');
-  assert.equal(await page.locator('video').count(),0,'Native hero must not contain an embedded video player');
-  assert.equal(await page.locator('#ar-motion-stage canvas').count(),2,'Cinematic scene combines the native ledger canvas and a free shader canvas');
+  await page.waitForFunction(()=>document.querySelector('#ar-motion-stage')?.dataset.ar3Mounted==='true');
+  assert.equal(await page.locator('video').count(),0,'Animated intro must not use video player');
+  assert.equal(await page.locator('#ar-motion-stage .ar3-intro').count(),1,'Film-like fullscreen intro exists');
+  assert.equal(await page.locator('#ar-motion-stage canvas').count(),1,'Intro network is original Canvas animation');
   assert.equal(await page.locator('h1').count(),1);
-  assert.equal((await page.locator('#home-title').innerText()).replace(/\s+/g,' ').trim(),'THE ALERT ROOM.');
+  assert.equal((await page.locator('#home-title').innerText()).replace(/\s+/g,' ').trim(),'FOLLOW THE MONEY.');
   assert.equal(await page.locator('.resource-links a').count(),3);
   assert.equal(await page.locator('.case-grid article').count(),3);
-
   const heroMetrics=await page.locator('#ar-motion-stage').evaluate(el=>({
-    width:el.getBoundingClientRect().width,
-    height:el.getBoundingClientRect().height,
+    width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,
     viewportWidth:innerWidth,viewportHeight:innerHeight
   }));
-  assert.ok(Math.abs(heroMetrics.width-heroMetrics.viewportWidth)<2,'Cinematic scene must fill viewport width');
-  assert.ok(Math.abs(heroMetrics.height-heroMetrics.viewportHeight)<3,'Cinematic scene must fill viewport height');
-  assert.equal(await page.locator('#ar-motion-stage .ar-account').count(),0,'No floating account frames');
-  assert.equal(await page.locator('#ar-motion-stage .cx-sphere').count(),1,'3D abstract motion centerpiece');
-  assert.notEqual(await page.locator('#home-title .ar-word').first().evaluate(el=>getComputedStyle(el).animationName),
-     'none','Kinetic typography must animate by default');
-  const canvas=await page.locator('#ar-network').evaluate(el=>({w:el.width,h:el.height}));
-  assert.ok(canvas.w>300&&canvas.h>300,'Motion canvas should have a real viewport');
-  const shaderState=await page.locator('#ar-motion-stage').getAttribute('data-shader-status');
-  assert.ok(['ready','fallback','unsupported'].includes(shaderState),'WebGL must be available or use its free CSS fallback');
-  assert.equal(await page.locator('#ar-free-shader').count(),1,'Self-hosted liquid shader canvas is installed');
+  assert.ok(Math.abs(heroMetrics.width-heroMetrics.viewportWidth)<2,'Cinematic intro must fill screen width');
+  assert.ok(Math.abs(heroMetrics.height-heroMetrics.viewportHeight)<3,'Cinematic intro must fill screen height');
+  assert.equal(await page.locator('.ar3-art-svg').count(),1,'Massive sculptural object is installed');
+  assert.equal(await page.locator('#ar-motion-stage .ar-account').count(),0,'No old floating account frames');
+  assert.notEqual(await page.locator('#home-title .ar3-headline-not-here').count(),1);
   const brand=await page.locator('#ar-motion-stage').evaluate(el=>({
     bg:getComputedStyle(el).backgroundColor,
-    cta:getComputedStyle(el.querySelector('.ar-primary')).backgroundColor,
-    title:el.querySelector('#home-title')?.textContent
+    cta:getComputedStyle(el.querySelector('.ar3-primary')).backgroundColor
   }));
-  assert.equal(brand.bg,'rgb(186, 211, 250)','Full-screen cinematic stage must use light atmospheric blue');
-  assert.equal(brand.cta,'rgb(25, 28, 31)','Primary CTA must be nearly-black and high contrast');
+  assert.equal(brand.bg,'rgb(250, 250, 254)','New porcelain-white background');
+  assert.equal(brand.cta,'rgb(17, 18, 23)','New black CTA on white contrast');
   await page.locator('a[href="#home/about"]').first().click();
   await page.waitForURL(/#home\/about$/);
   assert.ok(await page.locator('#about').isVisible());
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   await page.evaluate(()=>window.scrollTo(0,0));
   assert.equal(await page.evaluate(()=>Math.round(window.scrollY)),0,'Home must start at the full-screen cinematic opening');
+  await page.waitForFunction(()=>document.querySelector('#ar-motion-stage')?.dataset.ar3Ready==='true',{timeout:12000});
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:90,fullPage:false,animations:'disabled'});
   await page.locator('.skip').focus();await page.keyboard.press('Enter');
   assert.match(page.url(),/#home$/);assert.equal(await page.locator('#main').evaluate(el=>el===document.activeElement),true);
@@ -213,6 +206,7 @@ fs.mkdirSync(OUT,{recursive:true});
   await mobile.waitForSelector('#home-title',{timeout:12000});
   
   await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+  await mobile.waitForFunction(()=>document.querySelector('#ar-motion-stage')?.dataset.ar3Ready==='true',{timeout:12000});
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
   console.log('MOBILE_OVERFLOW',JSON.stringify(overflow));
@@ -285,12 +279,12 @@ fs.mkdirSync(OUT,{recursive:true});
   await unsupported.close();console.log('UNSUPPORTED_DEVICE_GUIDE_OK');
   const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
   await reduced.goto(BASE+'#home',{waitUntil:'networkidle'});
-  assert.equal(await reduced.locator('video').count(),0,'Native hero has no video even in reduced-motion mode');
-  assert.equal(await reduced.locator('#home-title .ar-word').first().evaluate(el=>getComputedStyle(el).animationName),'none');
-  assert.equal(await reduced.locator('#ar-motion-stage canvas').count(),2,'Reduced motion retains the static canvas and preserves free shader fallback');
-  assert.ok(await reduced.locator('#home-title').isVisible(),'Reduced motion presents the title immediately');
-  assert.equal(await reduced.locator('#ar-motion-stage').getAttribute('data-shader-status'),'reduced-motion','Motion-sensitive visitors skip GPU animation');
-  assert.ok(await reduced.locator('.ar-primary').isVisible(),'Reduced motion presents the primary CTA immediately');
+  assert.equal(await reduced.locator('video').count(),0,'Reduced-motion opening has no embedded video');
+  assert.equal(await reduced.locator('#home-title .ar3-headline span').count(),0);
+  assert.equal(await reduced.locator('#home-title span').first().evaluate(el=>getComputedStyle(el).animationName),'none');
+  assert.ok(await reduced.locator('#home-title').isVisible(),'Reduced-motion headline visible immediately');
+  assert.ok(await reduced.locator('.ar3-primary').isVisible(),'Reduced-motion CTA visible immediately');
+  assert.equal(await reduced.locator('.ar3-intro').evaluate(el=>getComputedStyle(el).display),'none','Reduced motion skips cinematic intro');
   await reduced.screenshot({path:path.join(OUT,'15-home-reduced-motion-mobile.jpg'),type:'jpeg',quality:85,fullPage:false});
   await reduced.close();
   // Mocked transport checks prove client behavior; no live-provider inference claim.
