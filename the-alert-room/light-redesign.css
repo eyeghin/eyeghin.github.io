@@ -1,0 +1,258 @@
+/* THE ALERT ROOM — LIGHT REDESIGN, 2026-11-04
+  White editorial canvas. No neon colors, heavy cards, boxed UI, or glowing type.
+  Motion is native Canvas/CSS, not video. */
+:root{
+  color-scheme:light;
+  --ar-page:#FFFFFF;--ar-text:#202D3A;--ar-secondary:#536579;
+  --ar-hairline:#E5E9EE;--ar-soft:#F7F9FB;--ar-action:#263D54;
+  --ar-accent:#6483A3;
+  --ink:#202D3A!important;--paper:#FFFFFF!important;--white:#FFFFFF!important;
+  --muted:#536579!important;--line:#E5E9EE!important;
+  --signal:#6483A3!important;--surface:#F7F9FB!important;--nav:#FFFFFF!important;
+  --navy:#FFFFFF!important;--ivory:#202D3A!important;
+  --bg:#FFFFFF!important;--bg2:#F7F9FB!important;--card:#FFFFFF!important;
+  --card2:#F7F9FB!important;--blue:#6483A3!important;
+  --blue-dark:#4E6885!important;--mint:#6483A3!important;
+  --mint2:#6483A3!important;--ag-ink:#202D3A!important;
+  --ag-paper:#FFFFFF!important;--ag-accent:#6483A3!important;
+  --ag-line:#E5E9EE!important;
+}
+html,body{background:#FFFFFF!important;color:#202D3A!important;}
+body{padding-bottom:0!important;}
+body::before{background:none!important;}
+::selection{background:#DDE8F1!important;color:#24374A!important;}
+:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible{
+  outline:2px solid #557895!important;outline-offset:4px!important;
+}
+#main,#view,.page,body.desk-mode,body.route-analyst,
+.room-home,.room-home section,.authority-hero,.resource-section,
+.about-section,.contact-section,.case-preview,
+.inner-hero,.founder-page,.founder-hero,.founder-opening,.founder-body,
+.founder-letter,.founder-opening-grid,.story-page,.story-body,
+.learning-page,.analyst-page,.quiz-page,.course-page,
+main.shell,.shell,.page-hero,.cards,.safety-note,
+.console,.console-main,.ops-view,.ops-case,.desk-mode .console,
+.desk-mode .console-main,.desk-pagehead,.console-top,.ops-case-head,
+.ops-case-stephead,.ops-case-actions,.queue-view,.qa-list,.desk-main{
+ background-color:#FFFFFF!important;color:#202D3A!important;
+}
+#view :is(h1,h2,h3,h4),main.shell :is(h1,h2,h3,h4),
+.founder-page :is(h1,h2,h3),.brand,.brand-word,
+.ag-drawer-header h2,.ag-avatar,.desk-pagehead h1,.well-head h2,
+.well-head h3,.ops-table-head h2{
+ color:#202D3A!important;text-shadow:none!important;
+}
+#view p,#view li,#view dd,#view dt,.footer p,.footer small,
+main.shell p,main.shell li,.founder-page p,.founder-letter article,
+.article-body p,.case-doc p,.qa-list p{
+ color:#536579!important;
+}
+.eyebrow,.micro,.micro-label,.section-kicker,.console-kicker,
+.form-help,.ops-disclaimer,.inline-note,.private-note,.note-text,
+.footer-summary,.table-foot,.ag-drawer-header p,.founder-byline{
+ color:#6D7D8E!important;
+}
+/* Straightforward navigation: no glowing logo, dark header or colored strip. */
+.nav-shell,.desk-mode .nav-shell,.site-header,.footer,
+.nav-shell.open .top-links,.desk-mode .nav-shell.open .top-links,
+body:has(.inner-hero) .nav-shell,body:has(.founder-hero) .nav-shell,
+body:has(.founder-page) .nav-shell,.rail,.ops-rail,.ops-sidebar{
+ background:#FFFFFF!important;color:#24374A!important;
+ border-color:#E5E9EE!important;box-shadow:none!important;
+}
+.nav-shell{border-bottom:1px solid #E5E9EE!important;}
+.nav-shell .brand,.nav-shell .brand-word,.nav-shell .brand-dot,
+.nav-shell .top-links a,.nav-shell .site-back,.site-header .brand,
+.site-header nav a,.footer a,.footer .brand,.footer .footer-bottom,
+.footer b,.brand-strong{color:#263D54!important;text-shadow:none!important;}
+.nav-shell .top-links a:hover,.nav-shell .top-links a.active,
+.site-header nav a:hover,.footer a:hover,.text-action:hover{
+ color:#6483A3!important;
+}
+.top-links a.active::after,.queue-segments button.selected::after,
+.case-tabs a.active::after{background:#6483A3!important;}
+.brand-symbol,.brand-symbol span,.brand-symbol span::after{
+ border-color:#6483A3!important;
+}
+.brand-symbol span::after{background:#6483A3!important;}
+.nav-toggle span{background:#263D54!important;}
+/* Use one strong CTA; neutral secondary buttons. No mint anywhere. */
+.nav-cta,.desk-mode .nav-cta,.nav-launch,.btn,.btn-stroke,
+.button,.button-outline,.connect-button,.ops-case-next,
+.queue-pagination button,.ag-close{
+ background:transparent!important;color:#263D54!important;
+ border:1px solid #CFD7DF!important;box-shadow:none!important;
+ text-shadow:none!important;
+}
+.btn-primary,.button-primary,#view .ar-hero .ar-primary,
+#main .authority-hero .hero-actions>a.primary-action[href="#workspace"]{
+ background:#263D54!important;color:#FFFFFF!important;
+ border:1px solid #263D54!important;box-shadow:none!important;
+ text-shadow:none!important;
+}
+.nav-cta:hover,.nav-launch:hover,.btn:hover,.button:hover,
+.connect-button:hover,.btn-primary:hover,.button-primary:hover,
+#view .ar-hero .ar-primary:hover{
+ background:#405B75!important;color:#FFFFFF!important;
+ border-color:#405B75!important;box-shadow:none!important;
+}
+/* No more boxed navigation tiles on the homepage — editorial rules. */
+#view>.resource-section{padding-block:108px!important;}
+#view>.case-preview{background:#F8FAFC!important;padding-block:110px!important;}
+#view>.contact-section{background:#F8FAFC!important;padding-block:96px!important;}
+#view .resource-links{
+ display:block!important;border-top:1px solid #D9E1E9!important;margin-top:45px!important;
+}
+#view .resource-links a{
+ background:transparent!important;box-shadow:none!important;
+ border:0!important;border-bottom:1px solid #D9E1E9!important;
+ border-radius:0!important;min-height:unset!important;
+ padding:30px 8px!important;display:flex!important;flex-direction:row!important;
+ justify-content:space-between!important;align-items:center!important;
+ gap:20px!important;transform:none!important;transition:padding .25s ease;
+}
+#view .resource-links a::before{display:none!important;}
+#view .resource-links a:hover{padding-left:20px!important;box-shadow:none!important;}
+#view .resource-links h3{font:650 clamp(23px,2.3vw,33px)/1.14 Inter,Arial,sans-serif!important;
+ color:#24374A!important;letter-spacing:-.045em!important;}
+#view .resource-links p{color:#6A7A8C!important;font-size:14px!important;max-width:720px!important;}
+#view .resource-links a>span{color:#6483A3!important;font-size:27px!important;}
+#view .case-grid{gap:32px!important;}
+#view .case-grid article{
+ min-height:0!important;background:transparent!important;border:0!important;
+ border-top:1px solid #CED7E1!important;padding:26px 0 0!important;
+ box-shadow:none!important;border-radius:0!important;transform:none!important;
+}
+#view .case-grid article:hover{transform:none!important;border-color:#7592AE!important;}
+#view .case-grid h3{font:650 25px/1.18 Inter,Arial,sans-serif!important;
+ color:#24374A!important;letter-spacing:-.04em!important;}
+#view .about-section{gap:70px!important;}
+#view .ar-founder-art{border:none!important;border-radius:50%!important;
+ aspect-ratio:1!important;max-width:340px;background:#F2F5F8!important;
+ box-shadow:none!important;}
+#view .ar-founder-art::before{border-color:#D1DCE6!important;box-shadow:none!important;}
+#view .ar-founder-art::after{border-color:#C6D4E1!important;}
+#view .ar-founder-symbol{color:#7D95AE!important;text-shadow:none!important;
+ font-size:clamp(110px,13vw,190px)!important;}
+#view .skills li{border:0!important;border-bottom:1px solid #E0E5EB!important;
+ background:transparent!important;border-radius:0!important;padding:9px 0!important;}
+#view>.resource-section h2,#view>.case-preview h2,
+#view>.about-section h2,#view>.contact-section h2{
+ font-family:Inter,Arial,sans-serif!important;color:#263D54!important;
+ text-shadow:none!important;font-weight:650!important;
+}
+/* Dense investigations retain usability but lose bulky floating cards. */
+body.desk-mode .console-main,body.desk-mode .ops-view,
+body.desk-mode .ops-case{background:#FFFFFF!important;color:#24374A!important;}
+body.desk-mode .desk-summary,
+body.desk-mode .well,body.desk-mode .ops-table-frame,
+body.desk-mode .case-summary-bar,body.desk-mode .metric-strip,
+body.desk-mode .assignment-panel,body.desk-mode .sideblock,
+body.desk-mode .ops-mobile-card,body.desk-mode .qa-finding,
+body.desk-mode .insight,body.desk-mode .well-head,
+body.desk-mode .ops-filterbar,body.desk-mode .table-foot,
+body.desk-mode .queue-pagination,
+:is(.quiz-card,.quiz-choice,.quiz-explain,.notice,.context-card,.flow-node,
+.learning-tile,.panel,.feature-card,.article-aside,.article-body,.qa-card,
+.review-card,.chapter,.tag,.analyst-engine-card){
+ background:#FFFFFF!important;color:#24374A!important;
+ border-color:#E5E9EE!important;box-shadow:none!important;
+}
+body.desk-mode .desk-summary{border:0!important;
+ border-block:1px solid #E0E5EC!important;border-radius:0!important;}
+body.desk-mode .desk-summary>div{border-color:#E5E9EE!important;}
+body.desk-mode .desk-summary span{color:#6B7B8A!important;}
+body.desk-mode .desk-summary strong{color:#24374A!important;}
+body.desk-mode .ops-filterbar{background:#F8FAFC!important;}
+body.desk-mode .queue-segments{border-color:#E0E5EC!important;}
+body.desk-mode .queue-segments button{color:#647588!important;}
+body.desk-mode .queue-segments button.selected,
+body.desk-mode .case-tabs a.active{color:#426686!important;border-color:#6483A3!important;}
+body.desk-mode .queue-segments b{
+ background:#F0F4F7!important;color:#546B81!important;
+ border:0!important;border-radius:10px!important;
+}
+.data-grid thead,body.desk-mode .data-grid thead{
+ background:#F6F8FA!important;color:#566B80!important;
+}
+.data-grid td,.data-grid th,.data-grid td strong,.data-grid td small,
+body.desk-mode .data-grid td,body.desk-mode .data-grid th,
+body.desk-mode .data-grid td strong,body.desk-mode .data-grid td small,
+body.desk-mode .well-head :is(h2,h3),body.desk-mode .ops-table-head h2,
+.case-summary-bar strong,.metric strong,.context-grid dd,
+.ops-mobile-card-account,.ops-mobile-card-footer strong{
+ color:#273A4E!important;border-color:#E5E9EE!important;
+}
+.data-grid td small,.metric span,.context-grid dt,.case-summary-bar span,
+.ops-table-head>span,.local-indicator,.well-head>span{color:#68798C!important;}
+.data-grid tbody tr:hover,.data-grid tr.clickable:hover{
+ background:#F5F8FB!important;
+}
+.rail .ops-rail-link,.rail .ops-rail-link.active,
+.rail .ops-rail-link:hover{color:#354B62!important;}
+.rail .ops-rail-link.active{
+ background:#F0F5F9!important;box-shadow:inset 2px 0 #91ABC3!important;
+}
+.rail .ops-rail-support button{
+ background:#FFFFFF!important;color:#263D54!important;border:1px solid #D8E0E8!important;
+}
+.field-control,input,textarea,select,select.field-control,
+textarea.field-control,.score-input input,
+body.desk-mode .console-main input,body.desk-mode .console-main textarea,
+body.desk-mode .console-main select{
+ background:#FFFFFF!important;color:#263D54!important;
+ border-color:#CCD6DF!important;caret-color:#263D54!important;
+}
+input::placeholder,textarea::placeholder{color:#8793A0!important;}
+.score-bar,.quiz-bar,.chapter,.queue-segments b,
+.tag.good,.ops-status.passed,.ops-status.active{background:#F1F5F8!important;}
+.score-bar span,.quiz-bar span,.flow-line,.bars>span:not(.debit),
+.analyst-meter i{background:#7592AD!important;}
+.ops-priority-1,.tag.bad,.ops-status.returned{background:#FBECEF!important;color:#9A3440!important;}
+.ops-priority-2{background:#FAF2E3!important;color:#87611D!important;}
+.ops-priority-3{background:#ECF2F7!important;color:#3B5C7B!important;}
+/* Founder page uses the same warm editorial white rather than tinted panels. */
+.founder-page,.founder-body,.founder-letter article,.founder-letter aside,
+.founder-signoff,.founder-bottomline,.founder-opening{
+ background:#FFFFFF!important;color:#24374A!important;
+ border-color:#E1E6EC!important;
+}
+.founder-page .founder-letter article h2,.founder-opening h1 em,
+.founder-chapter-no,.founder-read span,.founder-signature{
+ color:#496E96!important;text-shadow:none!important;
+}
+.founder-page .founder-letter blockquote{color:#496E96!important;
+ border-color:#BFCEDC!important;}
+/* Analyst chat: white reading surface and dark legible text. */
+.ag-launcher,.ag-drawer,.ag-drawer-header,.ag-avatar,
+.ag-conversation,.ag-chat,.analyst-welcome,.analyst-bubble,
+.ag-availability,.analyst-message .content,
+.ag-drawer .ag-context,.ag-drawer .ag-compose,
+.ag-drawer .ag-site-guide,.ag-drawer .ag-site-guide button,
+.ag-drawer .analyst-message,.ag-drawer .analyst-message.error,
+.ag-drawer .analyst-message.guide,.ag-drawer .ag-quick button,
+.ag-drawer .ag-composer-foot{
+ background:#FFFFFF!important;color:#24374A!important;
+ border-color:#E1E6EC!important;box-shadow:none!important;
+}
+.ag-drawer .ag-compose form{background:#FFFFFF!important;border-color:#CDD8E3!important;}
+.ag-drawer .ag-compose #analyst-send{
+ background:#263D54!important;color:#FFFFFF!important;
+}
+.ag-drawer .ag-conversation{background:#FFFFFF!important;}
+.ag-drawer .analyst-message.user,.ag-drawer .analyst-message.user .content{
+ background:#F1F5F8!important;color:#24374A!important;
+}
+.ag-drawer .analyst-message .who,
+.ag-drawer .ag-disclosure,.ag-drawer .ag-composer-foot,
+.ag-drawer .analyst-welcome p{color:#657689!important;}
+.ag-drawer .ag-site-guide button:hover,.ag-drawer .ag-quick button:hover{
+ background:#EEF3F7!important;color:#263D54!important;
+}
+@media(max-width:760px){
+ #view .resource-links a{gap:12px!important;padding:24px 0!important;}
+ #view .case-grid{grid-template-columns:1fr!important;gap:25px!important;}
+ #view .about-section{gap:30px!important;}
+ #view .ar-founder-art{width:230px;max-width:100%!important;}
+ .nav-shell.open .top-links{background:#FFFFFF!important;border:1px solid #E5E9EE!important;}
+}
