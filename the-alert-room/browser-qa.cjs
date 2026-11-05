@@ -45,11 +45,26 @@ fs.mkdirSync(OUT,{recursive:true});
     oldSkills:el.querySelectorAll('.skills li').length,
     width:el.getBoundingClientRect().width
   }));
-  assert.equal(why.bg,'rgb(17, 19, 34)','Founder rationale must use deep cinematic background, not boxed white section');
+  assert.equal(why.bg,'rgb(16, 19, 33)','Founder rationale must use deep cinematic background, not boxed white section');
   assert.equal(why.border,'0px','Founder rationale must have no framed border');
   assert.match(why.title,/An alert doesn't/);
   assert.match(why.why,/Why I created The Alert Room/i);
   assert.equal(why.oldSkills,0,'Old skills-tag section should be removed');
+  const trace=await page.locator('#about').evaluate(el=>({
+    oldOrbit:el.querySelectorAll('.ar4-orbit-outer,.ar4-purpose-core').length,
+    routes:el.querySelectorAll('.ar5-path-flow').length,
+    risk:el.querySelectorAll('.ar5-risk-flow').length,
+    packets:el.querySelectorAll('.ar5-packets animateMotion').length,
+    employerNames:/Green Dot|Guidehouse|IDBank|Santander/.test(el.innerText),
+    indicator:getComputedStyle(el.querySelector('.ar5-risk-flow')).animationName
+  }));
+  assert.equal(trace.oldOrbit,0,'Generic atom illustration must be replaced');
+  assert.equal(trace.employerNames,false,'Founder section must omit employer names');
+  assert.equal(trace.routes,3,'Transaction-flow paths should be visible');
+  assert.equal(trace.risk,1,'Suspicious route should be highlighted');
+  assert.ok(trace.packets>=4,'Native animated payment particles should be installed');
+  assert.ok(trace.indicator!=='none','Suspicious-route animation should run');
+
   assert.ok(Math.abs(why.width-1440)<2,'Founder rationale should be edge-to-edge');
   await page.locator('#about').screenshot({path:path.join(OUT,'20-why-desktop.jpg'),type:'jpeg',quality:86,animations:'disabled'});
   const whyMobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
@@ -61,6 +76,15 @@ fs.mkdirSync(OUT,{recursive:true});
   }));
   assert.ok(whySizes.content<=whySizes.screen+1,'Founder section must not cause mobile horizontal overflow');
   assert.ok(Math.abs(whySizes.section-whySizes.screen)<2,'Founder section must be full bleed on mobile');
+  const mobileTrace=await whyMobile.locator('#about').evaluate(el=>({
+    employerNames:/Green Dot|Guidehouse|IDBank|Santander/.test(el.innerText),
+    artWidth:el.querySelector('.ar5-trace-svg')?.getBoundingClientRect().width,
+    textWidth:el.querySelector('.ar4-founder-foot')?.getBoundingClientRect().width,
+  }));
+  assert.equal(mobileTrace.employerNames,false,'Mobile founder credit excludes employer names');
+  assert.ok(mobileTrace.artWidth>270,'Transaction-flow animation must be big enough on mobile');
+  assert.ok(mobileTrace.textWidth>270,'Founder credit should be legible on mobile');
+
   await whyMobile.locator('#about').screenshot({path:path.join(OUT,'21-why-mobile.jpg'),type:'jpeg',quality:85,animations:'disabled'});
   await whyMobile.close();
 
