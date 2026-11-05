@@ -24,8 +24,8 @@ fs.mkdirSync(OUT,{recursive:true});
     cta:getComputedStyle(el.querySelector('.ar-primary')).backgroundColor,
     title:el.querySelector('#home-title')?.textContent
   }));
-  assert.equal(brand.bg,'rgb(16, 16, 16)','Onyx must be hero background');
-  assert.equal(brand.cta,'rgb(124, 255, 196)','Mint must be used for the primary investigation CTA');
+  assert.equal(brand.bg,'rgb(255, 255, 255)','White must be the hero background');
+  assert.equal(brand.cta,'rgb(38, 61, 84)','Primary CTA must be restrained charcoal-blue, not neon');
   await page.locator('a[href="#home/about"]').first().click();
   await page.waitForURL(/#home\/about$/);
   assert.ok(await page.locator('#about').isVisible());
