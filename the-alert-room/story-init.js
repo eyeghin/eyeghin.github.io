@@ -9,7 +9,11 @@
     afterRender(){
       window.ARLiveMotion?.mount?.();
       const anchor=location.hash.split('/')[1];
-      if(!['about','contact','contact-details'].includes(anchor))return;
+      if(!['about','contact','contact-details'].includes(anchor)){
+        // A real Home navigation returns to the first full-screen cinematic scene.
+        if(!anchor || anchor==='home')requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'instant'}));
+        return;
+      }
       requestAnimationFrame(()=>{
         const el=document.getElementById(anchor);
         if(!el)return;
