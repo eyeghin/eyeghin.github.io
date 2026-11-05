@@ -414,3 +414,20 @@ body:has(#ar-motion-stage) .nav-shell.open .top-links a{color:#F8F8FF!important;
 @media(prefers-reduced-motion:reduce){
  #view #ar-motion-stage .ar6-ledger-scene{display:none!important;}
 }
+
+
+/* Eliminate inherited light mobile overlay from v3. It washed out the
+   final white headline and made the centered composition unreadable. */
+#view #ar-motion-stage .ar3-copy::before,
+#view #ar-motion-stage .ar3-copy::after{
+ content:none!important;display:none!important;
+ background:none!important;opacity:0!important;
+}
+#view #ar-motion-stage .ar3-copy{
+ isolation:auto!important;background:transparent!important;
+ box-shadow:none!important;
+}
+@media(max-width:760px){
+ #view #ar-motion-stage .ar3-deck{color:#D1D9F1!important;}
+ #view #ar-motion-stage .ar3-kicker{color:#CDD0FF!important;}
+}
