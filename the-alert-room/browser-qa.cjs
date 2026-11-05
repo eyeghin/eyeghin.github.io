@@ -10,12 +10,21 @@ fs.mkdirSync(OUT,{recursive:true});
  page.on('console',m=>{if(m.type()==='error')errors.push('CONSOLE: '+m.text())});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await page.waitForFunction(() => document.querySelector('.signal-movie')?.currentTime > 0.1);
+  await page.waitForFunction(() => document.querySelector('#authority-film')?.currentTime > 0.1);
   assert.equal(await page.locator('h1').count(),1);
-  assert.equal(await page.locator('.signal-hero button, .signal-hero video[controls]').count(),0);
-  await page.waitForSelector('.signal-hero.case-ready',{timeout:18000});
-  assert.match(await page.locator('#signal-title').innerText(),/Would you flag it/);
-  assert.equal(await page.locator('.signal-enter').getAttribute('href'),'#case/AR-3002');
+  assert.equal(await page.locator('#home-title').innerText(),'Free, evidence-led AML investigation training.');
+  assert.equal(await page.locator('.resource-links a').count(),3);
+  assert.equal(await page.locator('.case-grid article').count(),3);
+  assert.ok(await page.locator('#authority-film').getAttribute('poster'));
+  const h = await page.locator('#home-title').boundingBox(), v = await page.locator('#authority-film').boundingBox();
+  assert.ok(h.y+h.height < v.y,'Headline must sit above the moving video');
+  await page.locator('#film-toggle').click();
+  assert.ok(await page.locator('#authority-film').evaluate(v=>v.paused));
+  await page.locator('#film-toggle').click();
+  await page.getByRole('link',{name:'Meet the creator →'}).click();
+  await page.waitForURL(/#home\/about$/);
+  assert.ok(await page.locator('#about').isVisible());
+  await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:90,fullPage:false,animations:'disabled'});
   await page.locator('.skip').focus();await page.keyboard.press('Enter');
   assert.match(page.url(),/#home$/);assert.equal(await page.locator('#main').evaluate(el=>el===document.activeElement),true);
@@ -32,7 +41,7 @@ fs.mkdirSync(OUT,{recursive:true});
    ['analyst','#analyst-root .ag-chat',1],
    ['privacy','.wrap',1]
   ];
-  for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);if(await page.locator('.inner-hero').count()){const nav=await page.locator('.nav-shell').evaluate(el=>({bg:getComputedStyle(el).backgroundColor,fg:getComputedStyle(el).color}));assert.equal(nav.bg,'rgb(255, 255, 255)',route+': light navigation surface');assert.equal(nav.fg,'rgb(23, 36, 59)',route+': readable navigation ink');}console.log('ROUTE_OK',route,'elements',n);await page.screenshot({path:path.join(OUT,'route-'+route.replace(/[^a-z0-9-]/g,'-')+'-desktop.jpg'),type:'jpeg',quality:80,animations:'disabled'});}
+  for(const [route,selector,min] of pages){await page.goto(BASE+'#'+route,{waitUntil:'networkidle'});await page.waitForSelector(selector,{timeout:12000});const n=await page.locator(selector).count();assert.ok(n>=min,route+': expected '+min+', found '+n);if(await page.locator('.inner-hero').count()){const nav=await page.locator('.nav-shell').evaluate(el=>({bg:getComputedStyle(el).backgroundColor,fg:getComputedStyle(el).color}));assert.notEqual(nav.bg,nav.fg,route+': navigation foreground must differ from background');}console.log('ROUTE_OK',route,'elements',n);await page.screenshot({path:path.join(OUT,'route-'+route.replace(/[^a-z0-9-]/g,'-')+'-desktop.jpg'),type:'jpeg',quality:80,animations:'disabled'});}
   await page.goto(BASE+'#story',{waitUntil:'networkidle'});
   if(await page.locator('#analyst-drawer.is-open').count())await page.locator('#ag-close').click();
   assert.match(await page.locator('.founder-opening h1').innerText(),/Good judgment/);
@@ -178,7 +187,7 @@ fs.mkdirSync(OUT,{recursive:true});
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
   mobile.on('pageerror',e=>errors.push('MOBILE: '+e.message));
   await mobile.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await mobile.waitForSelector('#signal-title',{timeout:12000});
+  await mobile.waitForSelector('#home-title',{timeout:12000});
   
   await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
@@ -254,8 +263,10 @@ fs.mkdirSync(OUT,{recursive:true});
   const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
   await reduced.goto(BASE+'#home',{waitUntil:'networkidle'});
   assert.equal(await reduced.locator('.welcome-intro').count(),0,'Reduced motion skips the opening sequence');
-  assert.equal(await reduced.locator('#signal-title').evaluate(el=>getComputedStyle(el).animationName),'none');
-  assert.ok(await reduced.locator('.signal-movie').evaluate(v => v.paused && v.currentTime === 0));
+  assert.equal(await reduced.locator('#home-title').evaluate(el=>getComputedStyle(el).animationName),'none');
+  assert.ok(await reduced.locator('#authority-film').evaluate(v => v.paused && v.currentTime === 0));
+  assert.equal(await reduced.locator('#authority-film').getAttribute('src'),null,'Reduced motion must avoid downloading the video');
+  assert.ok(await reduced.locator('.film-fallback').isVisible());
   await reduced.screenshot({path:path.join(OUT,'15-home-reduced-motion-mobile.jpg'),type:'jpeg',quality:85,fullPage:false});
   await reduced.close();
   // Mocked transport checks prove client behavior; no live-provider inference claim.
