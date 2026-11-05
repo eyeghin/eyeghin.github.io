@@ -313,6 +313,15 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(Math.abs(mobileFinal.cx-mobileFinal.vw/2)<8,'Mobile settled headline must remain centered');
   assert.ok(mobileFinal.gap>=-3,'Mobile settled headline lines must not overlap');
   assert.ok(mobileFinal.right<=mobileFinal.vw-8,'Mobile title must not clip at the right edge');
+  const copyOverlay=await mobile.locator('.ar3-copy').evaluate(el=>({
+    beforeDisplay:getComputedStyle(el,'::before').display,
+    afterDisplay:getComputedStyle(el,'::after').display,
+    deck:getComputedStyle(el.querySelector('.ar3-deck')).color
+  }));
+  assert.equal(copyOverlay.beforeDisplay,'none','Remove inherited bright gradient over the midnight hero');
+  assert.equal(copyOverlay.afterDisplay,'none','Do not render ghost overlays behind centered hero');
+  assert.equal(copyOverlay.deck,'rgb(209, 217, 241)','Mobile copy should have deliberate high contrast');
+
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
   console.log('MOBILE_OVERFLOW',JSON.stringify(overflow));
