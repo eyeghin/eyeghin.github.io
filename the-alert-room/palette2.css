@@ -254,3 +254,22 @@ main.shell,.cards,.safety-note,.story-body,
   .hero-film video {filter:none!important;}
   #view :is(h1,h2),main.shell :is(h1,h2){text-shadow:none;}
 }
+
+/* Founder / About route: its older light editorial wrapper must also be Onyx. */
+.founder-page,.founder-body,.founder-page .founder-body,
+.founder-opening,.founder-opening-grid,.founder-page .founder-letter,
+.founder-page .founder-letter article,.founder-letter aside,
+.founder-signoff,.founder-bottomline {
+  background-color:#101010!important;
+  color:#F3F1FB!important;
+  border-color:#3A324A!important;
+}
+.founder-page .founder-letter article p,
+.founder-deck>p,.founder-author,.founder-author small,
+.founder-byline,.founder-bottomline,.founder-page .founder-letter aside {
+  color:#D4CEDE!important;
+}
+.founder-page .founder-letter blockquote,
+.founder-opening h1 em,.founder-chapter-no,.founder-read span,
+.founder-signature { color:#A891FF!important; }
+.founder-page .founder-letter article h2 { color:#4B00FF!important; }
