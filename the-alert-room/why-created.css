@@ -48,7 +48,10 @@
   letter-spacing:-.083em!important;
   text-wrap:balance;
 }
-#view>.about-section.ar4-purpose #about-title span{
+#view>.about-section.ar4-purpose #about-title .ar4-purpose-line{
+  color:#FAFAFF!important;
+}
+#view>.about-section.ar4-purpose #about-title .ar4-purpose-line span{
   color:#A6B0FF!important;
 }
 #view .ar4-purpose-line{display:block;}
