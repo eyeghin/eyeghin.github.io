@@ -66,7 +66,14 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(trace.indicator!=='none','Suspicious-route animation should run');
 
   assert.ok(Math.abs(why.width-1440)<2,'Founder rationale should be edge-to-edge');
-  await page.locator('#about').screenshot({path:path.join(OUT,'20-why-desktop.jpg'),type:'jpeg',quality:86,animations:'disabled'});
+  // Route content can remount briefly after #home/about navigation.
+  await page.waitForTimeout(750);
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      await page.locator('#about').screenshot({path:path.join(OUT,'20-why-desktop.jpg'),type:'jpeg',quality:86,animations:'disabled',timeout:20000});
+      break;
+    }catch(e){if(attempt===2)throw e;await page.waitForTimeout(500);}
+  }
   const whyMobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
   await whyMobile.goto(BASE+'#home/about',{waitUntil:'networkidle'});
   await whyMobile.waitForSelector('#about-title');
@@ -85,7 +92,13 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.ok(mobileTrace.artWidth>270,'Transaction-flow animation must be big enough on mobile');
   assert.ok(mobileTrace.textWidth>270,'Founder credit should be legible on mobile');
 
-  await whyMobile.locator('#about').screenshot({path:path.join(OUT,'21-why-mobile.jpg'),type:'jpeg',quality:85,animations:'disabled'});
+  await whyMobile.waitForTimeout(750);
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      await whyMobile.locator('#about').screenshot({path:path.join(OUT,'21-why-mobile.jpg'),type:'jpeg',quality:85,animations:'disabled',timeout:20000});
+      break;
+    }catch(e){if(attempt===2)throw e;await whyMobile.waitForTimeout(500);}
+  }
   await whyMobile.close();
 
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
