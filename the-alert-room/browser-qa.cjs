@@ -36,6 +36,34 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.locator('a[href="#home/about"]').first().click();
   await page.waitForURL(/#home\/about$/);
   assert.ok(await page.locator('#about').isVisible());
+
+  const why=await page.locator('#about').evaluate(el=>({
+    bg:getComputedStyle(el).backgroundColor,
+    border:getComputedStyle(el).borderTopWidth,
+    title:el.querySelector('#about-title')?.innerText,
+    why:el.querySelector('.ar4-kicker')?.innerText,
+    oldSkills:el.querySelectorAll('.skills li').length,
+    width:el.getBoundingClientRect().width
+  }));
+  assert.equal(why.bg,'rgb(17, 19, 34)','Founder rationale must use deep cinematic background, not boxed white section');
+  assert.equal(why.border,'0px','Founder rationale must have no framed border');
+  assert.match(why.title,/An alert doesn't/);
+  assert.match(why.why,/Why I created The Alert Room/);
+  assert.equal(why.oldSkills,0,'Old skills-tag section should be removed');
+  assert.ok(Math.abs(why.width-1440)<2,'Founder rationale should be edge-to-edge');
+  await page.locator('#about').screenshot({path:path.join(OUT,'20-why-desktop.jpg'),type:'jpeg',quality:86,animations:'disabled'});
+  const whyMobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+  await whyMobile.goto(BASE+'#home/about',{waitUntil:'networkidle'});
+  await whyMobile.waitForSelector('#about-title');
+  const whySizes=await whyMobile.evaluate(()=>({
+    content:document.documentElement.scrollWidth,screen:innerWidth,
+    section:document.querySelector('#about')?.getBoundingClientRect().width
+  }));
+  assert.ok(whySizes.content<=whySizes.screen+1,'Founder section must not cause mobile horizontal overflow');
+  assert.ok(Math.abs(whySizes.section-whySizes.screen)<2,'Founder section must be full bleed on mobile');
+  await whyMobile.locator('#about').screenshot({path:path.join(OUT,'21-why-mobile.jpg'),type:'jpeg',quality:85,animations:'disabled'});
+  await whyMobile.close();
+
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   await page.evaluate(()=>window.scrollTo(0,0));
   assert.equal(await page.evaluate(()=>Math.round(window.scrollY)),0,'Home must start at the full-screen cinematic opening');
