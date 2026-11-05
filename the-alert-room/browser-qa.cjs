@@ -268,11 +268,11 @@ fs.mkdirSync(OUT,{recursive:true});
   await unsupported.close();console.log('UNSUPPORTED_DEVICE_GUIDE_OK');
   const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
   await reduced.goto(BASE+'#home',{waitUntil:'networkidle'});
-  assert.equal(await reduced.locator('.welcome-intro').count(),0,'Reduced motion skips the opening sequence');
-  assert.equal(await reduced.locator('#home-title').evaluate(el=>getComputedStyle(el).animationName),'none');
-  assert.ok(await reduced.locator('#authority-film').evaluate(v => v.paused && v.currentTime === 0));
-  assert.equal(await reduced.locator('#authority-film').getAttribute('src'),null,'Reduced motion must avoid downloading the video');
-  assert.ok(await reduced.locator('.film-fallback').isVisible());
+  assert.equal(await reduced.locator('video').count(),0,'Native hero has no video even in reduced-motion mode');
+  assert.equal(await reduced.locator('#home-title .ar-word').first().evaluate(el=>getComputedStyle(el).animationName),'none');
+  assert.equal(await reduced.locator('#ar-motion-stage canvas').count(),1,'Reduced motion retains a static canvas network');
+  assert.ok(await reduced.locator('#home-title').isVisible(),'Reduced motion presents the title immediately');
+  assert.ok(await reduced.locator('.ar-primary').isVisible(),'Reduced motion presents the primary CTA immediately');
   await reduced.screenshot({path:path.join(OUT,'15-home-reduced-motion-mobile.jpg'),type:'jpeg',quality:85,fullPage:false});
   await reduced.close();
   // Mocked transport checks prove client behavior; no live-provider inference claim.
