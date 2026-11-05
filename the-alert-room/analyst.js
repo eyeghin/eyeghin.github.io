@@ -12,7 +12,7 @@ if(busy)el.insertAdjacentHTML('beforeend','<div class="analyst-pending" role="st
 const button=$('#analyst-send');if(button){button.textContent=busy?'■':'↑';button.setAttribute('aria-label',busy?'Stop generating':'Send to Analyst');}
 el.scrollTop=el.scrollHeight;}
 function context(){if(!attach)return '';const c=(window.AR_CASES||[]).find(c=>c.id===caseId);if(!c)return '';return JSON.stringify({id:c.id,customer:c.reference,sector:c.sector,expected:c.expected,trigger:c.trigger,transactions:c.transactions}).slice(0,6000)}
-async function ask(value){if(busy){controller?.abort();return}if(!value.trim())return;
+async function ask(value){if(busy){if(!endpoint){window.AR_FREE_AI?.stop?.();version++;busy=false;status('Generation stopped');render();return;}controller?.abort();return}if(!value.trim())return;
 if(!endpoint){
  const question=value.slice(0,3000),shared=context(),startVersion=version;
  history.push({role:'user',content:question});$('#analyst-input').value='';
@@ -51,7 +51,7 @@ if(requestVersion!==version)return;history.push({role:'assistant',content:data.a
 function setCaseContext(id){caseId=(window.AR_CASES||[]).some(c=>c.id===id)?id:'';attach=false;const label=$('#analyst-context-label'),check=$('#analyst-attach');if(label)label.hidden=!caseId;if(check)check.checked=false;const name=$('#analyst-case-id');if(name)name.textContent=caseId;}
 function clearConversation(){version++;controller?.abort();controller=null;busy=false;history=[];attach=false;const input=$('#analyst-input');if(input)input.value='';const check=$('#analyst-attach');if(check)check.checked=false;status(endpoint?'Ask a question':'Case Coach ready · Free local replies');render();}
 function mount(){const next=$('#analyst-root');if(!next||next===root)return;root=next;root.innerHTML=markup();setCaseContext(caseId);status(endpoint?'Ask a question':'Case Coach ready · Free local replies');render();}
-window.AlertAnalyst={setCaseContext,clearConversation,available:()=>Boolean(endpoint),isLoading:()=>busy};
+window.AlertAnalyst={setCaseContext,clearConversation,available:()=>Boolean(endpoint||window.AR_CASE_COACH),generativeAvailable:()=>Boolean(endpoint||window.AR_FREE_AI?.active?.()),isLoading:()=>busy};
 document.addEventListener('submit',e=>{if(e.target.id!=='analyst-chat-form')return;e.preventDefault();ask($('#analyst-input')?.value||'')});
 document.addEventListener('click',e=>{const topic=e.target.closest('[data-analyst-quick]');if(topic){$('#analyst-input').value=prompts[Number(topic.dataset.analystQuick)]||'';$('#analyst-input').focus();return}const guide=e.target.closest('[data-site-guide]');if(guide){const g=guides[Number(guide.dataset.siteGuide)];if(g){history.push({role:'guide',content:g[0]+' — '+g[1]});render();}return}if(e.target.closest('#analyst-clear'))clearConversation();});
 document.addEventListener('change',e=>{if(e.target.id==='analyst-attach')attach=e.target.checked});
