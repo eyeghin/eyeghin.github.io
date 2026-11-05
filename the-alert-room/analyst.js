@@ -13,7 +13,7 @@ const button=$('#analyst-send');if(button){button.textContent=busy?'■':'↑';b
 el.scrollTop=el.scrollHeight;}
 function context(){if(!attach)return '';const c=(window.AR_CASES||[]).find(c=>c.id===caseId);if(!c)return '';return JSON.stringify({id:c.id,customer:c.reference,sector:c.sector,expected:c.expected,trigger:c.trigger,transactions:c.transactions}).slice(0,6000)}
 async function ask(value){if(busy){controller?.abort();return}if(!value.trim())return;
-if(!endpoint){status('Live AI is unavailable. The practice guide below works immediately.');$('#analyst-input')?.focus();return;}
+if(!endpoint){history.push({role:'user',content:value.slice(0,3000)});history.push({role:'coach',content:window.AR_CASE_COACH?.respond(value,context())||'Case Coach is temporarily unavailable.'});$('#analyst-input').value='';status('Local Case Coach answered · No fees or remote API');render();return;}
 let url;try{url=new URL(endpoint,location.href);if(url.protocol!=='https:'&&url.origin!==location.origin)throw Error()}catch{status('Live chat is unavailable. Please try again later.');return;}
 const requestVersion=version;busy=true;controller=new AbortController();const active=controller;
 history.push({role:'user',content:value.slice(0,3000)});$('#analyst-input').value='';status('Generating a response…');render();
