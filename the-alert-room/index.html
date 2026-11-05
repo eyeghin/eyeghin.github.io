@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#B8D2FA">
 <meta name="application-name" content="The Alert Room">
 <meta name="apple-mobile-web-app-title" content="The Alert Room">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -32,7 +32,7 @@
 
 <script defer src="./story-init.js?v=20261104"></script>
 <script defer src="./frame.js?v=20261104"></script>
-<script defer src="./motion-hero.js?v=20261104-white"></script>
+<script defer src="./cinematic-revolut.js?v=20261105-1"></script>
 <script defer src="./analyst-config.js"></script>
 <script defer src="./analyst.js"></script>
 <script defer src="./floating-agent.js"></script>
@@ -41,9 +41,8 @@
 @media(max-width:760px){.authority-hero{padding-top:48px}.wrap{width:calc(100% - 36px)}.case-grid,.about-section{grid-template-columns:1fr}.about-section{gap:32px}.photo-placeholder{max-width:280px;width:100%}.hero-film figcaption{align-items:flex-start;flex-direction:column}.top-links{flex-wrap:wrap}.hero-actions{align-items:stretch;flex-direction:column}.primary-action{justify-content:space-between}.resource-section,.about-section,.case-preview,.contact-section{padding-block:48px}.ag-launcher{max-width:calc(100% - 36px);margin-inline:18px!important}.nav-cta{display:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.hero-film video{display:none}.hero-film .film-fallback{display:block}}
 </style>
-<link rel="stylesheet" href="./motion-hero.css?v=20261104c">
 <link rel="stylesheet" href="./light-redesign.css?v=20261104-4">
-<link rel="stylesheet" href="./light-hero.css?v=20261104-3">
+<link rel="stylesheet" href="./cinematic-revolut.css?v=20261105-1">
 </head>
 <body>
 <a href="#main" class="skip">Skip to main content</a>
@@ -59,25 +58,32 @@
  </div>
 </header>
 <main id="main" class="page"><div id="view">
-<section class="ar-hero" id="ar-motion-stage" aria-labelledby="home-title">
+<section class="ar-hero cx-fullscreen" id="ar-motion-stage" aria-labelledby="home-title">
+ <div class="cx-aura" aria-hidden="true"></div>
+ <div class="cx-sphere" aria-hidden="true"></div>
+ <div class="cx-lightbeam" aria-hidden="true"></div>
+ <div class="cx-ambient" aria-hidden="true"></div>
  <canvas id="ar-network" class="ar-network" aria-hidden="true"></canvas>
- <div class="ar-scanline" aria-hidden="true"></div>
- <div class="ar-hero-top" aria-hidden="true"><span><i class="ar-live-led"></i> THE ALERT ROOM / FINANCIAL CRIME LAB</span><span>01 / LIVE INVESTIGATION</span></div>
- <div class="ar-account ar-node-a" aria-hidden="true"><span class="ar-node-label">Origin account</span><span class="ar-node-id"><i></i> ACCT • 0481</span></div>
- <div class="ar-account ar-node-b" aria-hidden="true"><span class="ar-node-label">Outbound route</span><span class="ar-node-id"><i></i> ACCT • 7623</span></div>
- <div class="ar-account ar-node-c" aria-hidden="true"><span class="ar-node-label">Intermediary</span><span class="ar-node-id"><i></i> ACCT • 1094</span></div>
- <div class="ar-account ar-node-d" aria-hidden="true"><span class="ar-node-label">Destination</span><span class="ar-node-id"><i></i> ACCT • 3002</span></div>
- <div class="ar-risk-pill" aria-hidden="true">Unusual transfer pattern detected</div>
- <div class="ar-hero-middle">
-  <p class="ar-hero-kicker">EVIDENCE DOESN'T SPEAK. ANALYSTS DO.</p>
-  <h1 id="home-title" class="ar-hero-title"><span class="ar-word">THE</span><span class="ar-word">ALERT</span><span class="ar-word">ROOM.</span></h1>
-  <div class="ar-title-rule" aria-hidden="true"></div>
-  <p class="ar-hero-question"><span class="ar-question-small">A ROUTE JUST TURNED RED</span>WOULD YOU FLAG IT?</p>
-  <p class="ar-hero-brief">A fictional transaction. A real analytical decision. Follow the money, examine the evidence, and decide what happens next.</p>
-  <div class="ar-hero-actions"><a class="ar-primary" href="#workspace">Investigate this alert <span aria-hidden="true">↗</span></a><a class="ar-secondary" href="#learn">Explore the academy ↗</a></div>
+ <div class="cx-corner cx-corner-top" aria-hidden="true">
+   <span class="cx-status">FINANCIAL CRIME / INTERACTIVE LAB</span>
+   <span>TRANSACTION MONITORING &nbsp;/&nbsp; 001</span>
  </div>
- <div class="ar-token" aria-hidden="true"><div class="ar-token-inner"></div></div>
- <div class="ar-hero-bottom" aria-hidden="true"><span>FICTIONAL DATA / REAL ANALYST THINKING</span><span class="ar-scroll-note">SCROLL TO EXPLORE</span></div>
+ <div class="cx-alert-label" aria-hidden="true">UNUSUAL ACTIVITY DETECTED</div>
+ <div class="cx-alert-ripple" aria-hidden="true"></div>
+ <div class="ar-hero-middle">
+  <p class="ar-hero-kicker">THE ART OF SEEING WHAT OTHERS MISS.</p>
+  <h1 id="home-title" class="ar-hero-title">
+    <span class="cx-line"><span class="ar-word">THE</span><span class="ar-word">ALERT</span></span>
+    <span class="cx-line"><span class="ar-word">ROOM.</span></span>
+  </h1>
+  <p class="ar-hero-question"><span class="ar-question-small">A SIGNAL JUST CHANGED THE STORY</span>WOULD YOU FLAG IT?</p>
+  <p class="ar-hero-brief">Learn to investigate the evidence, trace the money, and make the call. Real analytical thinking. Fully fictional cases.</p>
+  <div class="ar-hero-actions"><a class="ar-primary" href="#workspace">Investigate this alert <span aria-hidden="true">↗</span></a><a class="ar-secondary" href="#learn">Discover the academy <span aria-hidden="true">↗</span></a></div>
+ </div>
+ <div class="cx-corner cx-corner-bottom" aria-hidden="true">
+   <span>BUILT FOR THE NEXT GENERATION OF ANALYSTS</span>
+   <span class="cx-bottom-right"><strong class="cx-index">01 / 04</strong><i class="cx-scroll-line"></i>SCROLL TO EXPLORE</span>
+ </div>
 </section>
 <section class="wrap resource-section" aria-labelledby="resources-title"><p class="eyebrow">Put the evidence to work</p><h2 id="resources-title">Three ways to practice.</h2>
 <nav class="resource-links" aria-label="Training resources">
