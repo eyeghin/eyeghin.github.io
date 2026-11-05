@@ -189,3 +189,10 @@
  .ar-hero-question,.ar-risk-pill{display:none!important;}
  .ar-token-inner{animation:none!important;}
 }
+
+/* Polished final composition: centered token between title and description. */
+#view .ar-hero .ar-token {top:54%;bottom:auto;}
+@media(max-width:700px){
+  #view .ar-hero .ar-token {top:43%;bottom:auto;}
+  #view .ar-hero .ar-account {display:none!important;}
+}
