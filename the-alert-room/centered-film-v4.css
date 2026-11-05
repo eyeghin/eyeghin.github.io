@@ -370,3 +370,47 @@ body:has(#ar-motion-stage) .nav-shell.open .top-links a{color:#F8F8FF!important;
  }
  #view #ar-motion-stage .ar3-art-svg{animation:none!important;}
 }
+
+
+/* Fictional transaction tracing — cinematic scene behind centered headline. */
+#view #ar-motion-stage .ar6-ledger-scene{
+ position:absolute!important;inset:0!important;z-index:3!important;
+ display:block!important;width:100%!important;height:100%!important;
+ pointer-events:none!important;opacity:.60!important;
+ overflow:hidden!important;mix-blend-mode:screen;
+}
+#view #ar-motion-stage .ar6-route-back{
+ stroke-width:1.45!important;opacity:.72;
+}
+#view #ar-motion-stage .ar6-route-flow path{
+ stroke:#A8B7FF;stroke-dasharray:5 19;stroke-dashoffset:0;
+ opacity:.67;animation:ar6Flow 2.55s linear infinite;
+ filter:drop-shadow(0 0 3px rgba(164,179,255,.45));
+}
+#view #ar-motion-stage .ar6-route-flow path:nth-child(2){animation-duration:3.3s;}
+#view #ar-motion-stage .ar6-route-flow path:nth-child(3){animation-duration:2.85s;}
+#view #ar-motion-stage .ar6-risk-line{
+ stroke-dasharray:9 19;stroke-dashoffset:0;
+ opacity:0;animation:ar6RiskRoute 2s 3s forwards,ar6Flow 1.5s linear infinite;
+ filter:drop-shadow(0 0 9px rgba(255,100,137,.65));
+}
+#view #ar-motion-stage .ar6-nodes circle{
+ fill:#BEC8FF;stroke:#ECF0FF;stroke-opacity:.52;stroke-width:3;
+ filter:drop-shadow(0 0 11px rgba(145,160,255,.61));
+}
+#view #ar-motion-stage .ar6-nodes .ar6-danger-node{
+ fill:#FF718E;stroke:#FFCBD4;
+ opacity:0;animation:ar6RiskNode 2.1s 3.1s forwards;
+}
+#view #ar-motion-stage .ar6-middle-risk{opacity:.26;transform-origin:500px 330px;animation:ar6Pulse 8s ease-in-out infinite;}
+@keyframes ar6Flow{to{stroke-dashoffset:-78;}}
+@keyframes ar6RiskRoute{from{opacity:0;}to{opacity:.94;}}
+@keyframes ar6RiskNode{0%{opacity:0;}18%{opacity:1;}45%{opacity:.32;}70%,100%{opacity:1;}}
+@keyframes ar6Pulse{0%,100%{transform:scale(.91);opacity:.17;}50%{transform:scale(1.1);opacity:.32;}}
+@media(max-width:760px){
+ #view #ar-motion-stage .ar6-ledger-scene{opacity:.47!important;}
+ #view #ar-motion-stage .ar6-route-flow path{stroke-width:2!important;}
+}
+@media(prefers-reduced-motion:reduce){
+ #view #ar-motion-stage .ar6-ledger-scene{display:none!important;}
+}
