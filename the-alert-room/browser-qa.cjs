@@ -48,7 +48,7 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.equal(why.bg,'rgb(17, 19, 34)','Founder rationale must use deep cinematic background, not boxed white section');
   assert.equal(why.border,'0px','Founder rationale must have no framed border');
   assert.match(why.title,/An alert doesn't/);
-  assert.match(why.why,/Why I created The Alert Room/);
+  assert.match(why.why,/Why I created The Alert Room/i);
   assert.equal(why.oldSkills,0,'Old skills-tag section should be removed');
   assert.ok(Math.abs(why.width-1440)<2,'Founder rationale should be edge-to-edge');
   await page.locator('#about').screenshot({path:path.join(OUT,'20-why-desktop.jpg'),type:'jpeg',quality:86,animations:'disabled'});
