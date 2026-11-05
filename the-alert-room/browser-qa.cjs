@@ -31,8 +31,30 @@ fs.mkdirSync(OUT,{recursive:true});
     bg:getComputedStyle(el).backgroundColor,
     cta:getComputedStyle(el.querySelector('.ar3-primary')).backgroundColor
   }));
-  assert.equal(brand.bg,'rgb(250, 250, 254)','New porcelain-white background');
-  assert.equal(brand.cta,'rgb(17, 18, 23)','New black CTA on white contrast');
+  assert.equal(brand.bg,'rgb(8, 10, 26)','Midnight stage must be visibly different from old white split layout');
+  assert.equal(brand.cta,'rgb(248, 248, 255)','Light CTA must have sufficient contrast against midnight stage');
+  assert.equal(await page.locator('#ar-motion-stage .ar6-ledger-scene').count(),1,'A real AML transfer diagram must animate behind the centered titles');
+  assert.equal(await page.locator('#ar-motion-stage .ar6-skip').count(),1,'Visitors can skip the cinematic intro');
+  assert.equal(await page.locator('.ar3-intro').getAttribute('aria-hidden'),null,'Skip button cannot be hidden from screen readers');
+  assert.doesNotMatch(await page.locator('.ar3-film-top').innerText(),/OPENING SCENE|ORIGINAL CINEMATIC/i);
+  await page.waitForTimeout(3100);
+  const introCenter=await page.locator('.ar3-film-title').evaluate(el=>{
+    const r=el.getBoundingClientRect();
+    const lines=[...el.querySelectorAll('span')].map(n=>n.getBoundingClientRect());
+    return {cx:r.x+r.width/2,viewport:innerWidth,gap:lines[1].top-lines[0].bottom};
+  });
+  assert.ok(Math.abs(introCenter.cx-introCenter.viewport/2)<12,'Film titles must be horizontally centered');
+  assert.ok(introCenter.gap>=-3,'Film title lines must not overlap');
+  await page.screenshot({path:path.join(OUT,'00-opening-desktop.jpg'),type:'jpeg',quality:85,fullPage:false,animations:'allow'});
+  await page.locator('.ar6-skip').click();
+  assert.equal(await page.locator('#ar-motion-stage').getAttribute('data-ar3-ready'),'true','Skip intro must reveal the homepage immediately');
+  assert.ok(await page.locator('#home-title').isVisible(),'Skip intro reveals the centered headline');
+  const finale=await page.locator('#home-title').evaluate(el=>{
+    const r=el.getBoundingClientRect();const spans=[...el.querySelectorAll('span')].map(n=>n.getBoundingClientRect());
+    return {cx:r.x+r.width/2,vw:innerWidth,gap:spans[1].top-spans[0].bottom};
+  });
+  assert.ok(Math.abs(finale.cx-finale.vw/2)<12,'Settled home title must also be centered');
+  assert.ok(finale.gap>=-3,'Settled home title must not collide');
   await page.locator('a[href="#home/about"]').first().click();
   await page.waitForURL(/#home\/about$/);
   assert.ok(await page.locator('#about').isVisible());
@@ -269,9 +291,28 @@ fs.mkdirSync(OUT,{recursive:true});
   mobile.on('pageerror',e=>errors.push('MOBILE: '+e.message));
   await mobile.goto(BASE+'#home',{waitUntil:'networkidle'});
   await mobile.waitForSelector('#home-title',{timeout:12000});
+  await mobile.waitForTimeout(2900);
+  const mobileIntro=await mobile.locator('.ar3-film-title').evaluate(el=>{
+    const r=el.getBoundingClientRect();
+    const lines=[...el.querySelectorAll('span')].map(n=>n.getBoundingClientRect());
+    return {cx:r.x+r.width/2,vw:innerWidth,gap:lines[1].top-lines[0].bottom,
+      lineWidth:lines[1].width};
+  });
+  assert.ok(Math.abs(mobileIntro.cx-mobileIntro.vw/2)<8,'Mobile film title must be centered');
+  assert.ok(mobileIntro.gap>=-3,'Mobile film lines must not overlap');
+  await mobile.screenshot({path:path.join(OUT,'00-opening-mobile.jpg'),type:'jpeg',quality:85,fullPage:false,animations:'allow'});
+
   
   await mobile.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await mobile.waitForFunction(()=>document.querySelector('#ar-motion-stage')?.dataset.ar3Ready==='true',{timeout:12000});
+  const mobileFinal=await mobile.locator('#home-title').evaluate(el=>{
+    const r=el.getBoundingClientRect();const spans=[...el.querySelectorAll('span')].map(n=>n.getBoundingClientRect());
+    return {cx:r.x+r.width/2,vw:innerWidth,gap:spans[1].top-spans[0].bottom,
+      right:spans[1].right};
+  });
+  assert.ok(Math.abs(mobileFinal.cx-mobileFinal.vw/2)<8,'Mobile settled headline must remain centered');
+  assert.ok(mobileFinal.gap>=-3,'Mobile settled headline lines must not overlap');
+  assert.ok(mobileFinal.right<=mobileFinal.vw-8,'Mobile title must not clip at the right edge');
   await mobile.screenshot({path:path.join(OUT,'05-home-mobile.jpg'),type:'jpeg',quality:70,fullPage:true,animations:'disabled'});
   const overflow=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:window.innerWidth}));
   console.log('MOBILE_OVERFLOW',JSON.stringify(overflow));
