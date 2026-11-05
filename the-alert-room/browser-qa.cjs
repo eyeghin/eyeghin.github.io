@@ -406,6 +406,27 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.match(await unsupported.locator('#analyst-messages').innerText(),/PRACTICE GUIDE \/ PREWRITTEN/);
   await unsupported.screenshot({path:path.join(OUT,'13-analyst-fallback-mobile.jpg'),type:'jpeg',quality:80,fullPage:false});
   await unsupported.close();console.log('UNSUPPORTED_DEVICE_GUIDE_OK');
+
+  // The optional real model is large; mock only its interface to prove
+  // the real user opt-in -> model-ready -> generation path, without a download.
+  const device=await browser.newPage({viewport:{width:390,height:844}});
+  device.on('pageerror',e=>errors.push('DEVICE: '+e.message));
+  await device.route('**/analyst-ondevice.js*',route=>route.fulfill({
+    contentType:'application/javascript',
+    body:"window.__modelReady=false;window.AR_FREE_AI={capable:async()=>true,load:async cb=>{cb('Model ready',100);window.__modelReady=true;},active:()=>window.__modelReady,generate:async()=> 'Simulated on-device language model generated this answer.',stop:()=>{}};"
+  }));
+  await device.goto(BASE+'#home',{waitUntil:'networkidle'});
+  await device.locator('#ag-launcher').click();
+  await device.waitForSelector('#analyst-load-local');
+  await device.locator('#analyst-load-local').click();
+  await device.waitForFunction(()=>document.querySelector('#analyst-load-local')?.textContent?.includes('ready'));
+  await device.locator('#analyst-input').fill('What evidence matters?');
+  await device.locator('#analyst-send').click();
+  await device.waitForSelector('.analyst-message.local');
+  assert.match(await device.locator('.analyst-message.local').last().innerText(),/Simulated on-device language model/);
+  assert.equal(await device.locator('#analyst-load-local').isDisabled(),true);
+  await device.close();console.log('ON_DEVICE_AI_WIRING_OK');
+
   const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
   await reduced.goto(BASE+'#home',{waitUntil:'networkidle'});
   assert.equal(await reduced.locator('video').count(),0,'Reduced-motion opening has no embedded video');
