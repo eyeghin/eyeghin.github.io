@@ -10,18 +10,23 @@ fs.mkdirSync(OUT,{recursive:true});
  page.on('console',m=>{if(m.type()==='error')errors.push('CONSOLE: '+m.text())});
  try{
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
-  await page.waitForFunction(() => document.querySelector('#authority-film')?.currentTime > 0.1);
+  await page.waitForFunction(() => document.querySelector('#ar-motion-stage')?.dataset.arMounted === 'true');
+  assert.equal(await page.locator('video').count(),0,'Native hero must not contain an embedded video player');
+  assert.equal(await page.locator('#ar-motion-stage canvas').count(),1,'Cinematic network must use a live canvas');
   assert.equal(await page.locator('h1').count(),1);
-  assert.equal(await page.locator('#home-title').innerText(),'Free, evidence-led AML investigation training.');
+  assert.equal((await page.locator('#home-title').innerText()).replace(/\s+/g,' ').trim(),'THE ALERT ROOM.');
   assert.equal(await page.locator('.resource-links a').count(),3);
   assert.equal(await page.locator('.case-grid article').count(),3);
-  assert.ok(await page.locator('#authority-film').getAttribute('poster'));
-  const h = await page.locator('#home-title').boundingBox(), v = await page.locator('#authority-film').boundingBox();
-  assert.ok(h.y+h.height < v.y,'Headline must sit above the moving video');
-  await page.locator('#film-toggle').click();
-  assert.ok(await page.locator('#authority-film').evaluate(v=>v.paused));
-  await page.locator('#film-toggle').click();
-  await page.getByRole('link',{name:'Meet the creator →'}).click();
+  const canvas=await page.locator('#ar-network').evaluate(el=>({w:el.width,h:el.height}));
+  assert.ok(canvas.w>300&&canvas.h>300,'Motion canvas should have a real viewport');
+  const brand=await page.locator('#ar-motion-stage').evaluate(el=>({
+    bg:getComputedStyle(el).backgroundColor,
+    cta:getComputedStyle(el.querySelector('.ar-primary')).backgroundColor,
+    title:el.querySelector('#home-title')?.textContent
+  }));
+  assert.equal(brand.bg,'rgb(16, 16, 16)','Onyx must be hero background');
+  assert.equal(brand.cta,'rgb(124, 255, 196)','Mint must be used for the primary investigation CTA');
+  await page.locator('a[href="#home/about"]').first().click();
   await page.waitForURL(/#home\/about$/);
   assert.ok(await page.locator('#about').isVisible());
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
@@ -47,7 +52,8 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.match(await page.locator('.founder-opening h1').innerText(),/Good judgment/);
   const founderContrast=await page.locator('.founder-letter article').evaluate(el=>{
    const lum=rgb=>{const c=rgb.match(/[\d.]+/g).slice(0,3).map(Number).map(x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4});return c[0]*.2126+c[1]*.7152+c[2]*.0722};
-   return (lum(getComputedStyle(document.querySelector('.founder-body')).backgroundColor)+.05)/(lum(getComputedStyle(el).color)+.05);
+   const bg=lum(getComputedStyle(document.querySelector('.founder-body')).backgroundColor), fg=lum(getComputedStyle(el).color);
+   return (Math.max(bg,fg)+.05)/(Math.min(bg,fg)+.05);
   });
   assert.ok(founderContrast>=4.5,'Founder letter must have readable text contrast: '+founderContrast);
   await page.screenshot({path:path.join(OUT,'17-founder-desktop.jpg'),type:'jpeg',quality:90});
