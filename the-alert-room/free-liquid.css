@@ -1,0 +1,62 @@
+/* Zero-cost GPU cinema enhancement.
+   Native WebGL with readable high-contrast typography and CSS fallback. */
+#view .ar-hero #ar-free-shader{
+ position:absolute;inset:0;display:block;width:100%;height:100%;
+ pointer-events:none;z-index:0;opacity:1;
+}
+#view .ar-hero[data-shader-status="ready"]::before{
+ background:#C9DAF9!important;animation:none!important;
+}
+#view .ar-hero[data-shader-status="ready"] .cx-sphere,
+#view .ar-hero[data-shader-status="ready"] .cx-aura,
+#view .ar-hero[data-shader-status="ready"] .cx-lightbeam{
+ display:none!important;
+}
+/* Clean expressive foreground, motion appears in the actual scene instead of cards. */
+#view .ar-hero .ar-network{
+ opacity:.53!important;mix-blend-mode:soft-light;
+}
+#view .ar-hero .ar-hero-middle{
+ text-wrap:balance;
+}
+#view .ar-hero .ar-hero-title{
+ text-shadow:none!important;
+}
+#view .ar-hero .ar-hero-kicker,
+#view .ar-hero .ar-question-small{
+ color:#1E3555!important;
+}
+#view .ar-hero .ar-hero-question{
+ color:#121B2C!important;
+}
+#view .ar-hero .ar-hero-brief{
+ color:#243850!important;
+}
+#view .ar-hero .cx-corner{
+ color:#223A59!important;
+}
+#view .ar-hero .ar-primary{
+ box-shadow:0 16px 35px rgba(20,35,74,.16)!important;
+}
+@media(max-width:760px){
+ #view .ar-hero .ar-network{opacity:.43!important;}
+ #view .ar-hero .ar-hero-title{letter-spacing:-.095em!important;}
+}
+@media(prefers-reduced-motion:reduce){
+ #view .ar-hero #ar-free-shader{display:none!important;}
+ #view .ar-hero .cx-aura,#view .ar-hero .cx-sphere{animation:none!important;}
+}
+/* An understated native page transition: no paid motion package or runtime. */
+@supports (animation-timeline:view()){
+ @media(prefers-reduced-motion:no-preference){
+ #view>.resource-section h2,#view>.case-preview h2,#view>.about-section h2{
+  animation:freeSectionReveal linear both;
+  animation-timeline:view();
+  animation-range:entry 0% entry 65%;
+ }
+ }
+}
+@keyframes freeSectionReveal{
+ from{opacity:.3;transform:translateY(27px);filter:blur(3px);}
+ to{opacity:1;transform:none;filter:none;}
+}
