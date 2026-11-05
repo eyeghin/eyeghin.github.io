@@ -30,6 +30,7 @@
 
 <script defer src="./data.js"></script>
 
+<script defer src="./story-init.js?v=20261104"></script>
 <script defer src="./frame.js?v=20261104"></script>
 <script defer src="./motion-hero.js?v=20261104"></script>
 <script defer src="./analyst-config.js"></script>
@@ -40,7 +41,7 @@
 @media(max-width:760px){.authority-hero{padding-top:48px}.wrap{width:calc(100% - 36px)}.case-grid,.about-section{grid-template-columns:1fr}.about-section{gap:32px}.photo-placeholder{max-width:280px;width:100%}.hero-film figcaption{align-items:flex-start;flex-direction:column}.top-links{flex-wrap:wrap}.hero-actions{align-items:stretch;flex-direction:column}.primary-action{justify-content:space-between}.resource-section,.about-section,.case-preview,.contact-section{padding-block:48px}.ag-launcher{max-width:calc(100% - 36px);margin-inline:18px!important}.nav-cta{display:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.hero-film video{display:none}.hero-film .film-fallback{display:block}}
 </style>
-<link rel="stylesheet" href="./palette2.css?v=20261104" data-theme="onyx-indigo-mint">
+<link rel="stylesheet" href="./palette2.css?v=20261104b" data-theme="onyx-indigo-mint">
 <link rel="stylesheet" href="./motion-hero.css?v=20261104" data-theme="native-cinematic-motion">
 </head>
 <body>
@@ -106,40 +107,6 @@
  <div id="analyst-root"></div>
 </aside>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-<script>(() => {
-'use strict';
-const initialHome = document.getElementById('view').innerHTML;
-window.ARStory = {
- home: () => initialHome,
- afterRender() {
-  const video = document.getElementById('authority-film');
-  if (!video) return;
-  const fallback = document.querySelector('.film-fallback');
-  const toggle = document.getElementById('film-toggle');
-  const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  function still() { video.pause(); video.hidden = true; fallback.hidden = false; toggle.hidden = true; }
-  function sync() {
-   if (!video.isConnected) { motion.removeEventListener('change', sync); return; }
-   if (motion.matches) { still(); return; }
-   fallback.hidden = true; video.hidden = false;
-   if (!video.getAttribute('src')) video.src = './assets/signal-flight.mp4';
-   video.muted = true;
-   video.play().then(() => { toggle.hidden = false; toggle.textContent = 'Pause video'; }).catch(still);
-  }
-  toggle.addEventListener('click', () => {
-   if (video.paused) video.play().then(() => { toggle.textContent = 'Pause video'; }).catch(still);
-   else { video.pause(); toggle.textContent = 'Play video'; }
-  });
-  video.addEventListener('error', still);
-  video.addEventListener('ended', () => { toggle.textContent = 'Replay video'; });
-  motion.addEventListener('change', sync);
-  sync();
-  const anchor = location.hash.split('/')[1];
-  if (['about','contact','contact-details'].includes(anchor)) requestAnimationFrame(() => {
-   const target = document.getElementById(anchor); if (target) { target.scrollIntoView(); target.tabIndex = -1; target.focus({preventScroll:true}); }
-  });
- }
-};
-})();</script>
+
 </body>
 </html>
