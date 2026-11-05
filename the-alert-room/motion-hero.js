@@ -107,4 +107,22 @@
     frame=requestAnimationFrame(draw);
   }
   window.ARLiveMotion={mount};
+  function focusAnchor(){
+    const anchor=location.hash.split('/')[1];
+    if(!['about','contact','contact-details'].includes(anchor))return;
+    requestAnimationFrame(()=>{const target=document.getElementById(anchor);if(!target)return;
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+      target.tabIndex=-1;target.focus({preventScroll:true});
+    });
+  }
+  function boot(){
+    mount();
+    const view=document.getElementById('view');
+    if(view)new MutationObserver(()=>{if(document.getElementById('ar-motion-stage'))mount();})
+      .observe(view,{childList:true});
+    window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#home/'))setTimeout(focusAnchor,120);});
+    if(location.hash.startsWith('#home/'))setTimeout(focusAnchor,120);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
 })();
