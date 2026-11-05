@@ -17,6 +17,18 @@ fs.mkdirSync(OUT,{recursive:true});
   assert.equal((await page.locator('#home-title').innerText()).replace(/\s+/g,' ').trim(),'THE ALERT ROOM.');
   assert.equal(await page.locator('.resource-links a').count(),3);
   assert.equal(await page.locator('.case-grid article').count(),3);
+
+  const heroMetrics=await page.locator('#ar-motion-stage').evaluate(el=>({
+    width:el.getBoundingClientRect().width,
+    height:el.getBoundingClientRect().height,
+    viewportWidth:innerWidth,viewportHeight:innerHeight
+  }));
+  assert.ok(Math.abs(heroMetrics.width-heroMetrics.viewportWidth)<2,'Cinematic scene must fill viewport width');
+  assert.ok(Math.abs(heroMetrics.height-heroMetrics.viewportHeight)<3,'Cinematic scene must fill viewport height');
+  assert.equal(await page.locator('#ar-motion-stage .ar-account').count(),0,'No floating account frames');
+  assert.equal(await page.locator('#ar-motion-stage .cx-sphere').count(),1,'3D abstract motion centerpiece');
+  assert.notEqual(await page.locator('#home-title .ar-word').first().evaluate(el=>getComputedStyle(el).animationName),
+     'none','Kinetic typography must animate by default');
   const canvas=await page.locator('#ar-network').evaluate(el=>({w:el.width,h:el.height}));
   assert.ok(canvas.w>300&&canvas.h>300,'Motion canvas should have a real viewport');
   const brand=await page.locator('#ar-motion-stage').evaluate(el=>({
@@ -24,8 +36,8 @@ fs.mkdirSync(OUT,{recursive:true});
     cta:getComputedStyle(el.querySelector('.ar-primary')).backgroundColor,
     title:el.querySelector('#home-title')?.textContent
   }));
-  assert.equal(brand.bg,'rgb(255, 255, 255)','White must be the hero background');
-  assert.equal(brand.cta,'rgb(38, 61, 84)','Primary CTA must be restrained charcoal-blue, not neon');
+  assert.equal(brand.bg,'rgb(186, 211, 250)','Full-screen cinematic stage must use light atmospheric blue');
+  assert.equal(brand.cta,'rgb(25, 28, 31)','Primary CTA must be nearly-black and high contrast');
   await page.locator('a[href="#home/about"]').first().click();
   await page.waitForURL(/#home\/about$/);
   assert.ok(await page.locator('#about').isVisible());
