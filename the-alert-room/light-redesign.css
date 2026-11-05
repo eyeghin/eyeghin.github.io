@@ -256,3 +256,31 @@ input::placeholder,textarea::placeholder{color:#8793A0!important;}
  #view .ar-founder-art{width:230px;max-width:100%!important;}
  .nav-shell.open .top-links{background:#FFFFFF!important;border:1px solid #E5E9EE!important;}
 }
+
+
+/* Final visual QA: SPA route-focus must not draw an empty frame around headings. */
+h1[tabindex="-1"]:focus,h2[tabindex="-1"]:focus,
+#home-title:focus,#home-title:focus-visible,
+#view .ar-hero-title:focus-visible,
+#main[tabindex="-1"]:focus {outline:none!important;box-shadow:none!important;}
+/* Founder area is editorial copy, not a generic avatar or framed illustration. */
+#view .ar-founder-statement{
+ display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+ min-height:340px;padding:0 20px 0 0;border:0!important;background:transparent!important;
+}
+#view .ar-founder-kicker{
+ display:block;color:#728498!important;font:700 10px/1.5 Inter,Arial,sans-serif;
+ letter-spacing:.18em;margin-bottom:26px;
+}
+#view .ar-founder-statement p{
+ color:#344B61!important;font:500 clamp(31px,3.2vw,51px)/1.18 Georgia,"Times New Roman",serif;
+ letter-spacing:-.043em;margin:0 0 29px;
+}
+#view .ar-founder-footer{
+ color:#6F7F8E;font:500 12px/1.6 Inter,Arial,sans-serif;
+ border-top:1px solid #DDE4EA;padding-top:17px;
+}
+@media(max-width:760px){
+ #view .ar-founder-statement{min-height:0;padding:5px 0 12px;}
+ #view .ar-founder-statement p{font-size:clamp(30px,8vw,42px);}
+}
