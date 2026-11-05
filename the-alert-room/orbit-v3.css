@@ -356,3 +356,56 @@ body.desk-mode .btn-primary:hover{background:#3F48EF!important;border-color:#3F4
  #view #ar-motion-stage .ar3-art-svg{animation:none!important;}
  .ar3-bottom,.ar3-art-ticket{animation:none!important;opacity:1!important;}
 }
+
+
+/* Visual-review corrections: guaranteed word spacing and an unobstructed mobile intro. */
+#view #ar-motion-stage .ar3-headline span:nth-child(2){
+  letter-spacing:-.066em!important;word-spacing:.12em!important;
+}
+@media(max-width:760px){
+ #view #ar-motion-stage .ar3-final{
+  justify-content:flex-end!important;
+  padding:95px 20px 86px!important;
+ }
+ #view #ar-motion-stage .ar3-copy{
+  isolation:isolate;max-width:500px!important;
+ }
+ #view #ar-motion-stage .ar3-copy::before{
+  content:"";position:absolute;z-index:-1;inset:-16px -20px;
+  background:linear-gradient(180deg,
+   rgba(250,250,254,.02) 0%,
+   rgba(250,250,254,.75) 12%,
+   rgba(250,250,254,.97) 40%,
+   rgba(250,250,254,.98) 85%,rgba(250,250,254,.7) 100%);
+  pointer-events:none;
+ }
+ #view #ar-motion-stage .ar3-artside{
+  top:7%!important;right:-18%!important;
+  width:81%!important;height:35%!important;
+  min-height:0!important;opacity:.88!important;
+ }
+ #view #ar-motion-stage .ar3-art-svg{
+  width:100%!important;min-width:0!important;
+  height:auto!important;max-height:340px!important;
+ }
+ #view #ar-motion-stage .ar3-headline{
+  font-size:clamp(48px,12.4vw,78px)!important;
+  letter-spacing:-.06em!important;
+ }
+ #view #ar-motion-stage .ar3-headline span:nth-child(2){
+  letter-spacing:-.06em!important;word-spacing:.12em!important;
+ }
+ #view #ar-motion-stage .ar3-deck{
+  color:#252D41!important;font-weight:500!important;
+  text-shadow:none!important;max-width:340px!important;
+ }
+}
+@media(max-width:400px){
+ #view #ar-motion-stage .ar3-final{padding-bottom:81px!important;}
+ #view #ar-motion-stage .ar3-artside{
+  right:-24%!important;top:8%!important;
+  width:87%!important;height:33%!important;
+ }
+ #view #ar-motion-stage .ar3-ledger{margin-top:22px!important;}
+ #view #ar-motion-stage .ar3-ledger strong{font-size:17px!important;}
+}
