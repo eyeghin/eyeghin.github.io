@@ -12,7 +12,7 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
   await page.waitForFunction(() => document.querySelector('#ar-motion-stage')?.dataset.arMounted === 'true');
   assert.equal(await page.locator('video').count(),0,'Native hero must not contain an embedded video player');
-  assert.equal(await page.locator('#ar-motion-stage canvas').count(),1,'Cinematic network must use a live canvas');
+  assert.equal(await page.locator('#ar-motion-stage canvas').count(),2,'Cinematic scene combines the native ledger canvas and a free shader canvas');
   assert.equal(await page.locator('h1').count(),1);
   assert.equal((await page.locator('#home-title').innerText()).replace(/\s+/g,' ').trim(),'THE ALERT ROOM.');
   assert.equal(await page.locator('.resource-links a').count(),3);
@@ -31,6 +31,9 @@ fs.mkdirSync(OUT,{recursive:true});
      'none','Kinetic typography must animate by default');
   const canvas=await page.locator('#ar-network').evaluate(el=>({w:el.width,h:el.height}));
   assert.ok(canvas.w>300&&canvas.h>300,'Motion canvas should have a real viewport');
+  const shaderState=await page.locator('#ar-motion-stage').getAttribute('data-shader-status');
+  assert.ok(['ready','fallback','unsupported'].includes(shaderState),'WebGL must be available or use its free CSS fallback');
+  assert.equal(await page.locator('#ar-free-shader').count(),1,'Self-hosted liquid shader canvas is installed');
   const brand=await page.locator('#ar-motion-stage').evaluate(el=>({
     bg:getComputedStyle(el).backgroundColor,
     cta:getComputedStyle(el.querySelector('.ar-primary')).backgroundColor,
@@ -282,8 +285,9 @@ fs.mkdirSync(OUT,{recursive:true});
   await reduced.goto(BASE+'#home',{waitUntil:'networkidle'});
   assert.equal(await reduced.locator('video').count(),0,'Native hero has no video even in reduced-motion mode');
   assert.equal(await reduced.locator('#home-title .ar-word').first().evaluate(el=>getComputedStyle(el).animationName),'none');
-  assert.equal(await reduced.locator('#ar-motion-stage canvas').count(),1,'Reduced motion retains a static canvas network');
+  assert.equal(await reduced.locator('#ar-motion-stage canvas').count(),2,'Reduced motion retains the static canvas and preserves free shader fallback');
   assert.ok(await reduced.locator('#home-title').isVisible(),'Reduced motion presents the title immediately');
+  assert.equal(await reduced.locator('#ar-motion-stage').getAttribute('data-shader-status'),'reduced-motion','Motion-sensitive visitors skip GPU animation');
   assert.ok(await reduced.locator('.ar-primary').isVisible(),'Reduced motion presents the primary CTA immediately');
   await reduced.screenshot({path:path.join(OUT,'15-home-reduced-motion-mobile.jpg'),type:'jpeg',quality:85,fullPage:false});
   await reduced.close();
