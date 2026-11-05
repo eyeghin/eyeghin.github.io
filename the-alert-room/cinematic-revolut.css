@@ -320,3 +320,22 @@ main.shell .page-hero :is(h1,h2),.founder-opening h1,.founder-letter h2{
  .ar-hero-brief,.ar-hero-actions{opacity:1!important;transform:none!important;filter:none!important;}
  .cx-alert-ripple,.cx-alert-label{display:none!important;}
 }
+
+/* Accessibility QA: the animated words must be immediately readable on
+   operating systems that request reduced motion. Match strongest selector. */
+@media(prefers-reduced-motion:reduce){
+  #view .ar-hero .ar-hero-title .ar-word{
+    animation:none!important;opacity:1!important;
+    filter:none!important;transform:none!important;
+  }
+  #view .ar-hero .ar-hero-kicker,
+  #view .ar-hero .ar-hero-question,
+  #view .ar-hero .ar-hero-brief,
+  #view .ar-hero .ar-hero-actions{
+    animation:none!important;opacity:1!important;
+    filter:none!important;transform:none!important;
+  }
+}
+@media(min-width:761px){
+  #view .ar-hero .cx-line:first-child{gap:clamp(34px,3.4vw,64px)!important;}
+}
