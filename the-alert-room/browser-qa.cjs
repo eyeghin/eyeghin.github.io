@@ -209,6 +209,16 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.waitForSelector('#analyst-context-label:not([hidden])',{timeout:10000});
   assert.match(await page.locator('#analyst-context-label').innerText(),/AR-3002/);
   assert.equal(await page.locator('#analyst-attach').isChecked(),false,'Case data must be opt-in');
+
+  await page.locator('#analyst-attach').check();
+  await page.locator('#analyst-input').fill('Summarize this fictional case evidence');
+  await page.locator('#analyst-send').click();
+  await page.waitForSelector('.analyst-message.coach');
+  const localFacts=await page.locator('.analyst-message.coach').last().innerText();
+  assert.match(localFacts,/ATTACHED FICTIONAL CASE · AR-3002/,'Local coach must use explicitly attached case');
+  assert.match(localFacts,/TX-\d{4,}/,'Local coach must cite real synthetic transaction records');
+  assert.match(localFacts,/Credits: \d+|Debits: \d+/,'Local coach must calculate totals from transactions');
+
   await page.locator('#ag-close').click();
   await page.goto(BASE+'#workspace',{waitUntil:'networkidle'});
   await page.waitForSelector('#queue-pager');
