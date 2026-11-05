@@ -1,0 +1,105 @@
+/* White motion studio: deliberate typography and flowing evidence, not a video tile. */
+#view .ar-hero{
+ background:#FFFFFF!important;color:#24374A!important;
+ border-bottom:1px solid #E5E9EE!important;min-height:min(780px,100svh);
+ height:max(660px,88svh);max-height:850px;overflow:hidden!important;
+}
+#view .ar-hero::before{
+ background:radial-gradient(ellipse 50% 50% at 51% 55%,#F4F7FA 0%,transparent 74%),
+ #FFFFFF!important;filter:none!important;
+}
+#view .ar-hero::after{
+ background:linear-gradient(to bottom,#FFFFFF90,transparent 22%,transparent 74%,#FFFFFF),
+ repeating-linear-gradient(90deg,transparent 0,transparent calc(14% - 1px),#DDE6EE31 14%)!important;
+}
+.ar-network{opacity:.42!important;filter:grayscale(.45) saturate(.5)!important;}
+.ar-scanline{display:none!important;}
+.ar-hero-top,.ar-hero-bottom{color:#738398!important;letter-spacing:.13em!important;font-weight:600!important;}
+.ar-live-led{background:#7591A9!important;box-shadow:none!important;}
+.ar-hero-middle{padding-bottom:130px!important;}
+.ar-hero-kicker{color:#6A7D91!important;letter-spacing:.26em!important;font-size:11px!important;margin-bottom:35px!important;}
+#view .ar-hero-title{
+ font:600 clamp(64px,10.7vw,162px)/.87 Georgia,"Times New Roman",serif!important;
+ color:#25384B!important;text-shadow:none!important;letter-spacing:-.072em!important;
+ gap:clamp(9px,1.6vw,24px)!important;
+}
+#view .ar-hero-title .ar-word{color:#25384B!important;
+ -webkit-text-stroke:0!important;text-shadow:none!important;}
+#view .ar-hero-title .ar-word:nth-child(3){color:#597795!important;}
+.ar-title-rule{background:linear-gradient(90deg,transparent,#A8B8C8,transparent)!important;
+ height:1px!important;margin-top:34px!important;}
+.ar-hero-question{color:#263D54!important;font:650 clamp(23px,3.2vw,42px)/1.16 Inter,Arial,sans-serif!important;
+ letter-spacing:-.055em!important;margin-top:24px!important;}
+.ar-question-small{color:#6E8194!important;font-size:10px!important;letter-spacing:.22em!important;}
+.ar-hero-brief{color:#54677B!important;max-width:530px!important;margin-top:16px!important;
+ font-size:clamp(13px,1.18vw,16px)!important;}
+.ar-hero-actions{margin-top:24px!important;}
+#view .ar-hero .ar-primary{
+ background:#263D54!important;color:#FFFFFF!important;border:1px solid #263D54!important;
+ box-shadow:none!important;padding:15px 24px!important;border-radius:3px!important;
+ font-size:13px!important;letter-spacing:.01em!important;
+}
+#view .ar-hero .ar-primary:hover{background:#405B75!important;color:#FFFFFF!important;
+ border-color:#405B75!important;box-shadow:none!important;}
+.ar-hero .ar-secondary{color:#526C85!important;border-color:#B4C6D5!important;}
+.ar-risk-pill{
+ background:#FFFFFF!important;color:#A03D49!important;border:0!important;
+ border-bottom:1px solid #D8A6AD!important;border-radius:0!important;
+ box-shadow:none!important;padding:9px 0!important;font-size:9px!important;
+ letter-spacing:.11em!important;top:15%!important;
+}
+.ar-risk-pill::before{background:#B54C56!important;box-shadow:none!important;}
+/* Absolutely no floating account frames / frosted UI blocks on the hero. */
+.ar-hero .ar-account,.ar-hero .ar-node-a,.ar-hero .ar-node-b,
+.ar-hero .ar-node-c,.ar-hero .ar-node-d{display:none!important;}
+/* Restrained token: metallic, not glowing. */
+#view .ar-hero .ar-token{
+ width:56px!important;height:56px!important;left:auto!important;
+ top:53%!important;right:clamp(24px,7vw,125px)!important;bottom:auto!important;
+ animation:arTokenEnter 1.2s 8.5s cubic-bezier(.2,1,.25,1) forwards!important;
+ transform:scale(.4);opacity:0;
+}
+.ar-token-inner{
+ background:radial-gradient(circle at 32% 30%,#DCE4EC,#8AA1B5 59%,#40586E)!important;
+ border:1px solid #6D849A!important;
+ box-shadow:inset 0 0 9px #FFFFFF55,0 8px 24px #24374A16!important;
+ animation:arSpin 10s 9.5s linear infinite!important;
+}
+.ar-token-inner:before{border-color:#C6D6E5!important;inset:7px!important;}
+.ar-token-inner:after{color:#F9FAFC!important;font-size:23px!important;text-shadow:none!important;}
+.ar-scroll-note:before{background:#AABACA!important;}
+/* Refine first fifteen seconds: animated, but not violent flashing. */
+@keyframes arSlam{
+  0%{opacity:0;transform:translateY(48px) scale(.98);filter:blur(7px)}
+  65%{opacity:1;transform:translateY(-4px) scale(1.005);filter:blur(0)}
+  100%{opacity:1;transform:none;filter:none}
+}
+@keyframes arRisk{
+  0%,9%{opacity:0;transform:translate(-50%,6px)}
+  20%,82%{opacity:1;transform:translate(-50%,0)}
+  96%,100%{opacity:0;transform:translate(-50%,-3px)}
+}
+@keyframes arTokenEnter{to{opacity:.85;transform:scale(1)}}
+@media(max-width:900px){
+  #view .ar-hero .ar-token{right:24px!important;top:74%!important;width:47px!important;height:47px!important}
+}
+@media(max-width:700px){
+  #view .ar-hero{min-height:690px;height:max(720px,90svh);max-height:none}
+  #view .ar-hero-title{font-size:clamp(54px,14vw,83px)!important;line-height:.94!important;gap:5px 14px!important;}
+  .ar-hero-middle{padding:95px 18px 100px!important;}
+  .ar-hero-kicker{font-size:9px!important;letter-spacing:.12em!important;margin-bottom:24px!important}
+  .ar-hero-question{font-size:clamp(22px,5.3vw,35px)!important;}
+  .ar-hero .ar-token{top:auto!important;bottom:76px!important;right:22px!important;width:38px!important;height:38px!important;}
+  .ar-token-inner:after{font-size:18px!important;}
+  .ar-hero-top,.ar-hero-bottom{font-size:8px!important;}
+  .ar-hero-top span:last-child{display:none!important;}
+  .ar-hero-bottom{bottom:19px!important;}
+}
+@media(prefers-reduced-motion:reduce){
+ #view .ar-hero .ar-token{animation:none!important;opacity:.85!important;transform:none!important;}
+ #view .ar-hero-title .ar-word{animation:none!important;opacity:1!important;filter:none!important;transform:none!important;}
+ .ar-title-rule{animation:none!important;width:min(460px,62vw)!important;}
+ .ar-hero-question{animation:none!important;opacity:1!important;transform:none!important;}
+ .ar-hero-brief,.ar-hero-actions,.ar-hero-kicker{animation:none!important;opacity:1!important;}
+ .ar-token-inner{animation:none!important;}
+}
