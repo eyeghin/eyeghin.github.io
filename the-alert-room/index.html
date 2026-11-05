@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#B8D2FA">
+<meta name="theme-color" content="#FAFAFE">
 <meta name="application-name" content="The Alert Room">
 <meta name="apple-mobile-web-app-title" content="The Alert Room">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -32,8 +32,9 @@
 
 <script defer src="./story-init.js?v=20261105-free2"></script>
 <script defer src="./frame.js?v=20261104"></script>
-<script defer src="./cinematic-revolut.js?v=20261105-1"></script>
-<script defer src="./free-liquid-shader.js?v=20261105-free1"></script>
+<script defer src="./orbit-v3.js?v=20261105-1"></script>
+
+
 <script defer src="./analyst-config.js"></script>
 <script defer src="./analyst.js"></script>
 <script defer src="./floating-agent.js"></script>
@@ -45,6 +46,7 @@
 <link rel="stylesheet" href="./light-redesign.css?v=20261104-4">
 <link rel="stylesheet" href="./cinematic-revolut.css?v=20261105-2">
 <link rel="stylesheet" href="./free-liquid.css?v=20261105-free1">
+<link rel="stylesheet" href="./orbit-v3.css?v=20261105-1">
 </head>
 <body>
 <a href="#main" class="skip">Skip to main content</a>
@@ -60,33 +62,35 @@
  </div>
 </header>
 <main id="main" class="page"><div id="view">
-<section class="ar-hero cx-fullscreen" id="ar-motion-stage" aria-labelledby="home-title">
- <canvas id="ar-free-shader" class="ar-free-shader" aria-hidden="true"></canvas>
- <div class="cx-aura" aria-hidden="true"></div>
- <div class="cx-sphere" aria-hidden="true"></div>
- <div class="cx-lightbeam" aria-hidden="true"></div>
- <div class="cx-ambient" aria-hidden="true"></div>
- <canvas id="ar-network" class="ar-network" aria-hidden="true"></canvas>
- <div class="cx-corner cx-corner-top" aria-hidden="true">
-   <span class="cx-status">FINANCIAL CRIME / INTERACTIVE LAB</span>
-   <span>TRANSACTION MONITORING &nbsp;/&nbsp; 001</span>
- </div>
- <div class="cx-alert-label" aria-hidden="true">UNUSUAL ACTIVITY DETECTED</div>
- <div class="cx-alert-ripple" aria-hidden="true"></div>
- <div class="ar-hero-middle">
-  <p class="ar-hero-kicker">THE ART OF SEEING WHAT OTHERS MISS.</p>
-  <h1 id="home-title" class="ar-hero-title">
-    <span class="cx-line"><span class="ar-word">THE</span><span class="ar-word">ALERT</span></span>
-    <span class="cx-line"><span class="ar-word">ROOM.</span></span>
-  </h1>
-  <p class="ar-hero-question"><span class="ar-question-small">A SIGNAL JUST CHANGED THE STORY</span>WOULD YOU FLAG IT?</p>
-  <p class="ar-hero-brief">Learn to investigate the evidence, trace the money, and make the call. Real analytical thinking. Fully fictional cases.</p>
-  <div class="ar-hero-actions"><a class="ar-primary" href="#workspace">Investigate this alert <span aria-hidden="true">↗</span></a><a class="ar-secondary" href="#learn">Discover the academy <span aria-hidden="true">↗</span></a></div>
- </div>
- <div class="cx-corner cx-corner-bottom" aria-hidden="true">
-   <span>BUILT FOR THE NEXT GENERATION OF ANALYSTS</span>
-   <span class="cx-bottom-right"><strong class="cx-index">01 / 04</strong><i class="cx-scroll-line"></i>SCROLL TO EXPLORE</span>
- </div>
+<section class="ar-hero ar3-stage" id="ar-motion-stage" aria-labelledby="home-title">
+<div class="ar3-intro" aria-hidden="true"><div class="ar3-film-grid"></div><div class="ar3-film-top"><span>THE ALERT ROOM / OPENING SCENE</span><span>FINANCIAL CRIME LAB — 2026</span></div><div class="ar3-film-signal"></div><div class="ar3-film-title"><span>FOLLOW</span><span>THE MONEY.</span></div><div class="ar3-film-subtitle">EVERY TRANSACTION LEAVES A TRACE.</div><div class="ar3-film-danger">UNUSUAL TRANSACTION ROUTE DETECTED</div><div class="ar3-film-bottom"><span>AN INVESTIGATION BEGINS</span><span>AN ORIGINAL CINEMATIC INTRO</span></div></div>
+<div class="ar3-final">
+<div class="ar3-copy"><p class="ar3-kicker">NOT JUST AN AML COURSE. AN ANALYST'S WORLD.</p><h1 id="home-title" class="ar3-headline"><span>FOLLOW</span><span>THE MONEY.</span></h1><p class="ar3-deck">A transaction looks ordinary—until you see the pattern. Investigate fictional accounts, piece together the evidence, and make the call.</p>
+<div class="ar3-actions"><a class="ar3-primary" href="#workspace">Start investigating <span aria-hidden="true">↗</span></a><a class="ar3-secondary" href="#learn">Explore the academy <span aria-hidden="true">↗</span></a></div>
+<div class="ar3-ledger" aria-label="Practice features"><span><strong>40</strong>Synthetic alerts</span><span><strong>100%</strong>Hands-on decisions</span><span><strong>QA</strong>Case feedback</span></div></div>
+<div class="ar3-artside" aria-hidden="true"><div class="ar3-art-back"></div>
+<svg class="ar3-art-svg" viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" role="presentation">
+<defs>
+<radialGradient id="a3-halo"><stop stop-color="#8D8CFF" stop-opacity=".3"/><stop offset="1" stop-color="#E6EBFF" stop-opacity="0"/></radialGradient>
+<linearGradient id="a3-metal" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#191B5C"/><stop offset=".18" stop-color="#626CF6"/><stop offset=".3" stop-color="#F7F9FF"/><stop offset=".43" stop-color="#6363C8"/><stop offset=".58" stop-color="#17186B"/><stop offset=".72" stop-color="#CBCBFF"/><stop offset=".87" stop-color="#3134BB"/><stop offset="1" stop-color="#B2ADFF"/></linearGradient>
+<linearGradient id="a3-mirror"><stop stop-color="#EEF3FF"/><stop offset=".25" stop-color="#6D86F8"/><stop offset=".5" stop-color="#111E63"/><stop offset=".76" stop-color="#F3F4FF"/><stop offset="1" stop-color="#3E36A2"/></linearGradient>
+<radialGradient id="a3-core"><stop stop-color="#F9FBFF"/><stop offset=".4" stop-color="#9E9CFF"/><stop offset="1" stop-color="#202878"/></radialGradient>
+</defs>
+<circle cx="320" cy="320" r="300" fill="url(#a3-halo)"/>
+<g class="ar3-ring"><ellipse cx="320" cy="320" rx="284" ry="139" transform="rotate(-36 320 320)" fill="none" stroke="#6563DE" stroke-width="2" opacity=".52"/><ellipse cx="320" cy="320" rx="262" ry="120" transform="rotate(35 320 320)" fill="none" stroke="#7F80FF" stroke-width="2" stroke-dasharray="8 10" opacity=".45"/></g>
+<g class="ar3-ring ar3-ring-reverse"><ellipse cx="320" cy="320" rx="213" ry="268" transform="rotate(28 320 320)" fill="none" stroke="#ACAEFF" stroke-width="2" opacity=".55"/></g>
+<g class="ar3-sculpture">
+<path d="M321 69C456 50 551 164 551 293C551 440 450 553 310 563C179 570 88 479 84 340C78 198 176 93 321 69Z" fill="url(#a3-metal)" stroke="#DBE0FF" stroke-width="4"/>
+<path d="M285 94C195 139 151 225 163 314C176 408 249 458 318 451C388 443 434 382 427 299C423 241 382 192 330 184C284 176 260 213 270 264C276 306 317 336 357 327C324 347 289 340 263 318C216 278 207 226 228 171C242 134 263 112 285 94Z" fill="url(#a3-mirror)"/>
+<path d="M351 149C443 151 493 208 489 307C487 401 411 489 320 499C232 503 155 425 156 338C169 400 229 463 310 470C393 474 463 408 451 319C447 235 417 177 351 149Z" fill="#F7F9FF" opacity=".54"/>
+<ellipse cx="338" cy="299" rx="76" ry="90" fill="url(#a3-core)"/><ellipse cx="340" cy="289" rx="49" ry="62" fill="#FFFFFF" opacity=".34"/>
+<path d="M193 185C226 140 278 109 335 102" stroke="#FFFFFF" stroke-width="8" fill="none" opacity=".75" stroke-linecap="round"/>
+</g>
+<g class="ar3-satellite"><circle cx="555" cy="206" r="9" fill="#4546F3" stroke="#F4F5FF" stroke-width="5"/><circle cx="130" cy="460" r="5" fill="#7474EC" stroke="#FFF" stroke-width="3"/></g>
+</svg>
+<div class="ar3-art-ticket"><i class="ar3-art-ticket-dot"></i><span>SIGNAL DETECTED<strong>Review required →</strong></span></div>
+</div></div>
+<div class="ar3-bottom" aria-hidden="true"><span>FINANCIAL CRIME INVESTIGATION, REIMAGINED.</span><span><strong>01 / 04</strong><i class="ar3-bottom-line"></i>SCROLL TO EXPLORE</span></div>
 </section>
 <section class="wrap resource-section" aria-labelledby="resources-title"><p class="eyebrow">Put the evidence to work</p><h2 id="resources-title">Three ways to practice.</h2>
 <nav class="resource-links" aria-label="Training resources">
