@@ -1,0 +1,256 @@
+/* THE ALERT ROOM — PALETTE 2 / unified production theme / 2026-11-04
+   Onyx is the entire site's foundation; Indigo is the brand; Mint belongs
+   exclusively to the primary "Investigate this alert" CTA.
+   Load LAST so it also overrides historical page-level styles. */
+:root {
+  color-scheme: dark;
+  --onyx:#101010; --indigo:#4B00FF; --tropical-mint:#7CFFC4;
+  --surface-1:#18171D; --surface-2:#211D2B; --edge:#3A324A;
+  --copy:#F3F1FB; --subcopy:#C4BECE;
+  --ink:var(--copy)!important; --paper:var(--onyx)!important;
+  --white:var(--surface-1)!important; --muted:var(--subcopy)!important;
+  --line:var(--edge)!important; --signal:var(--indigo)!important;
+  --surface:var(--surface-1)!important; --nav:var(--onyx)!important;
+  --navy:var(--onyx)!important; --ivory:var(--copy)!important;
+  --bg:var(--onyx)!important; --bg2:var(--surface-1)!important;
+  --card:var(--surface-1)!important; --card2:var(--surface-2)!important;
+  --mint:var(--indigo)!important; --mint2:var(--indigo)!important;
+  --blue:var(--indigo)!important; --blue-dark:var(--indigo)!important;
+  --ag-ink:var(--copy)!important; --ag-paper:var(--surface-1)!important;
+  --ag-accent:var(--indigo)!important; --ag-line:var(--edge)!important;
+}
+html { background:#101010; }
+html,body,body.desk-mode,body.route-analyst,
+#main,#view,.page,.desk-mode,.desk-main,.desk-content,
+.room-home,.room-home section,.authority-hero,.resource-section,
+.about-section,.contact-section,.case-preview,
+.inner-hero,.founder-hero,.story-page,.analyst-page,
+main.shell,main.wrap,.learning-page,.qa-page,.course-page,
+.quiz-page,.ops-main,.ops-shell,.console-layout {
+  background-color:#101010!important;
+  color:#F3F1FB!important;
+}
+body { background:#101010!important; color:#F3F1FB!important; }
+body::before { background:none!important; }
+::selection { background:#4B00FF55!important; color:white!important; }
+a:focus-visible,button:focus-visible,input:focus-visible,
+textarea:focus-visible,select:focus-visible {
+  outline:2px solid #9872FF!important;outline-offset:4px;
+}
+/* Type: headings and brand marks are Electric Indigo, body text stays readable. */
+#view :is(h1,h2,h3,h4), main.shell :is(h1,h2,h3,h4),
+.page-hero .h2,.authority-hero h1,.resource-section h2,
+.case-preview h2,.about-section h2,.contact-section h2,
+.founder-letter h2,.case-doc h2,.ops-case-header h1,
+.brand,.brand-word,.brand-strong,.brand-dot,.brand-symbol,
+.nav-shell .brand,.site-header .brand,
+.ag-drawer-header h2,.ag-avatar {
+  color:#4B00FF!important;
+}
+#view :is(h1,h2),main.shell :is(h1,h2),
+.brand-word { text-shadow:0 0 25px rgba(75,0,255,.38),0 0 1px rgba(200,179,255,.68); }
+#view p,#view li,#view dt,#view dd,#view .body-copy,
+#main .hero-value,#main .portfolio-note,
+main.shell p,main.shell li,.case-preview p,
+.resource-links p,.about-section p,.contact-section p,
+.footer p,.footer small,.footer-bottom {
+  color:#D4CEDE;
+}
+.eyebrow,.micro,.micro-label,.section-kicker,.console-kicker,
+.console-top p,.desk-pagehead p,.ops-disclaimer,
+.private-note,.inline-note,.note-text,.footer-summary,
+.footnote,.form-help,.local-indicator,
+.announcement,.ag-drawer-header p {
+  color:#C4BECE!important;
+}
+/* Onyx navigation & section boundaries, not accidental white/navy slabs. */
+.nav-shell,.desk-mode .nav-shell,body:has(.inner-hero) .nav-shell,
+body:has(.founder-hero) .nav-shell,.site-header,
+.nav-shell.open .top-links,.desk-mode .nav-shell.open .top-links,
+.footer,.hero-film,.case-preview,.contact-section,.rail,
+.ops-rail,.ops-sidebar {
+  background:#101010!important;color:#F3F1FB!important;
+  border-color:#30263E!important;
+}
+.nav-shell { box-shadow:0 10px 40px rgba(0,0,0,.25); }
+.nav-shell .top-links a,.site-header nav a,.site-back,.footer a,
+.resource-links a,.text-action {
+  color:#EDEAF5!important;
+}
+.nav-shell .top-links a:hover,.nav-shell .top-links a.active,
+.site-header nav a:hover,.footer a:hover,
+.resource-links a:hover h3,.text-action:hover {
+  color:#A891FF!important;
+}
+.top-links a.active::after,.queue-segments button.selected::after,
+.case-tabs a.active::after {background:#4B00FF!important;}
+.nav-cta,.desk-mode .nav-cta,.nav-launch,.connect-button,
+.btn,.btn-primary,.btn-stroke,.btn-dark,
+.button,.button-primary,.button-outline,
+.hero-film button,.ops-case-next,.ag-close,.queue-pagination button {
+  background:#211D2B!important;
+  color:#F3F1FB!important;
+  border:1px solid #4B00FF!important;
+  box-shadow:none!important;
+}
+.nav-cta:hover,.nav-launch:hover,.btn:hover,.btn-primary:hover,
+.button:hover,.button-primary:hover,.button-outline:hover,
+.connect-button:hover,.ops-case-next:hover {
+  background:#4B00FF!important;color:white!important;
+  border-color:#4B00FF!important;
+}
+.btn-primary,.button-primary {background:#4B00FF!important;color:white!important;}
+/* Exactly one mint CTA: the homepage's main investigation entry. */
+#main .authority-hero .hero-actions>a.primary-action[href="#workspace"] {
+  background:#7CFFC4!important;color:#101010!important;
+  border:1px solid #7CFFC4!important;
+  box-shadow:0 9px 36px rgba(124,255,196,.12)!important;
+  text-shadow:none!important;font-weight:800;
+}
+#main .authority-hero .hero-actions>a.primary-action[href="#workspace"]:hover {
+  background:#7CFFC4!important;color:#101010!important;
+  box-shadow:0 14px 40px rgba(124,255,196,.22)!important;
+  transform:translateY(-2px);
+}
+#main .authority-hero .hero-actions>a.primary-action[href="#workspace"]:focus-visible {
+  outline-color:#C6FFEB!important;
+}
+/* Dark elevated surfaces across the academy, queue, casework, quizzes and QA. */
+:is(.well,.case-summary-bar,.metric-strip,.assignment-panel,.sideblock,
+.quiz-card,.quiz-choice,.quiz-explain,.qa-finding,.qa-card,.context-card,
+.flow-node,.notice,.tag,.chapter,.insight,.ops-mobile-card,
+.analyst-engine-card,.analyst-controls,.panel,.feature-card,
+.learning-tile,.course-tile,.card,.case-card,.resource-card,
+.article-aside,.article-body,.founder-letter article,.founder-letter aside,
+.score-input input,.field-control,.case-doc .well,.review-card) {
+  background:#18171D!important;
+  color:#F3F1FB!important;
+  border-color:#3A324A!important;
+}
+:is(.well,.case-summary-bar,.metric-strip,.assignment-panel,.sideblock,
+.quiz-card,.quiz-choice,.qa-finding,.ops-mobile-card,.panel,.feature-card,
+.learning-tile,.case-card,.resource-card) {
+  box-shadow:0 12px 36px rgba(0,0,0,.15);
+}
+:is(.data-grid thead,.data-grid tbody tr:hover,.queue-pagination,
+.quiz-choice:hover,.quiz-choice.selected,.queue-segments button.selected,
+.tag.good,.ops-status.passed,.ops-status.new,.ops-status.active,
+.quality-note,.audit-event,.score-bar,.chapter,.quiz-bar,
+.rail .ops-rail-link.active) {
+  background:#211D2B!important;
+  border-color:#3A324A!important;
+}
+:is(.desk-pagehead,.ops-case-header,.case-doc,.workspace-container,
+.review-panel,.article-body,.inner-hero,.qa-list,.quiz-options) {
+  color:#F3F1FB!important;
+}
+.data-grid th,.data-grid td,.data-grid td small,.data-grid td strong,
+.context-grid dt,.context-grid dd,.metric span,.metric strong,
+.case-summary-bar span,.case-summary-bar strong,.assignment-panel dt,
+.assignment-panel dd,.well-head>span,.ops-table-head>span,
+.quiz-explain,.article-body>p,.article-aside p,
+.qa-finding p,.qa-finding strong,.qa-score,
+.rail .ops-rail-link,.flow-node span,
+.ops-mobile-card p,.ops-mobile-card-account,
+.ops-mobile-card-footer strong,.case-breadcrumb,
+.review-clock-label,.review-clock-label time,
+.queue-pagination,.table-foot,.checkline,.case-tabs a,
+.form-help,.notice b,.notice {
+  color:#E4DEEF!important;
+}
+.data-grid th,.ops-table-head>span,.context-grid dt,
+.table-foot,.case-breadcrumb,.ops-mobile-card-head,
+.review-clock-label,.ops-filterbar label>span {
+  color:#BEB5CC!important;
+}
+.data-grid td,.data-grid th,.data-grid tbody tr,
+.context-grid dd,.resource-links a,.case-grid article,
+.case-tabs,.ops-case-steps,.quiz-choice,.well,.panel,
+.feature-card,.flow-node,.metric-strip {
+  border-color:#3A324A!important;
+}
+.data-grid tbody tr:hover {background-color:#231D2D!important;}
+.queue-segments button,.queue-segments b,.case-tabs a,
+.ops-case-next,.flow-visual .eyebrow,
+.checkline .mark,.ops-filterbar .field-control {
+  border-color:#4B00FF!important;
+}
+.queue-segments button.selected,.case-tabs a.active,
+.ops-open-case,.ops-rail-link.active,.resource-links a:hover>span,
+.tile-bottom,.feature-link {color:#A891FF!important;}
+.rail .ops-rail-link.active {border-left-color:#4B00FF!important;}
+.flow-line,.bars>span:not(.debit),.score-bar span,.quiz-bar span,
+.analyst-meter i,.cinema-progress i {
+  background:#4B00FF!important;
+}
+.field-control,select.field-control,textarea.field-control,
+input,textarea,select,.ag-chat input,.ag-chat textarea,
+.ag-composer textarea,.score-input input,
+.analyst-controls select,.ops-filterbar input {
+  background:#18171D!important;
+  color:#F3F1FB!important;
+  border-color:#3A324A!important;
+  caret-color:#A891FF;
+}
+input::placeholder,textarea::placeholder {color:#9F98B0!important;opacity:1;}
+/* Semantic alert red remains a data status, not a new decorative theme. */
+.ops-priority-1,.tag.bad,.ops-status.returned,.alert-severity-high {
+  color:#FFA8AA!important;background:#482025!important;
+}
+.ops-priority-2 {color:#F1C98B!important;background:#3B3022!important;}
+.ops-priority-3 {color:#CFC5FF!important;background:#2A2242!important;}
+.toast,dialog,.ag-drawer {
+  background:#18171D!important;color:#F3F1FB!important;
+  border-color:#3A324A!important;
+}
+dialog::backdrop {background:rgba(0,0,0,.74)!important;}
+/* Floating Analyst: same site, no white chat card or mint accents. */
+.ag-launcher,.ag-drawer,.ag-drawer-header,.ag-avatar,.ag-close,
+.ag-conversation,.ag-chat,.analyst-welcome,.analyst-bubble,
+.ag-quick button,.ag-availability,.analyst-message .content {
+  background:#18171D!important;color:#F3F1FB!important;
+  border-color:#3A324A!important;
+}
+.ag-launcher,.ag-avatar,.ag-drawer-header h2,.analyst-welcome-mark,
+.analyst-welcome h2 {color:#4B00FF!important;}
+.ag-drawer-header {border-bottom:1px solid #3A324A!important;}
+.analyst-message.user .analyst-bubble,
+.analyst-message.user .content {background:#2A2140!important;}
+.ag-quick button:hover {background:#4B00FF!important;color:#fff!important;}
+.ag-drawer .ag-composer button,.ag-chat button[type="submit"] {
+  color:#fff!important;background:#4B00FF!important;
+  border:1px solid #4B00FF!important;
+}
+/* Keep the 16:9 investigation film integrated with the new identity. */
+.hero-film {border:1px solid #35284B!important;background:#101010!important;}
+.hero-film video,.hero-film .film-fallback {
+  background:#101010;filter:saturate(.82) hue-rotate(19deg) brightness(.9);
+}
+.hero-film figcaption {background:#18171D!important;color:#C4BECE!important;}
+.photo-placeholder,.skills li,.connect-button,.resource-links a {
+  border-color:#3A324A!important;
+}
+.skip {background:#4B00FF!important;color:white!important;}
+/* Independent story and resources pages use legacy styles underneath. */
+.site-header,.site-header .nav-wrap,.page-hero,.shell,
+main.shell,.cards,.safety-note,.story-body,
+.story-content,.story-sidebar {
+  background-color:#101010!important;color:#F3F1FB!important;
+}
+.safety-note {border-color:#3A324A!important;color:#C4BECE!important;}
+.panel,.feature-card {background:#18171D!important;}
+.brand-symbol,.brand-symbol span,.brand-symbol span::after {
+  border-color:#4B00FF!important;
+}
+.brand-symbol span::after {background:#4B00FF!important;}
+/* Responsive rules preserve the existing layouts and focus states. */
+@media(max-width:760px){
+  .nav-shell.open .top-links,.desk-mode .nav-shell.open .top-links {
+    background:#18171D!important;border:1px solid #3A324A!important;
+  }
+  .hero-film figcaption {gap:12px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-film video {filter:none!important;}
+  #view :is(h1,h2),main.shell :is(h1,h2){text-shadow:none;}
+}
