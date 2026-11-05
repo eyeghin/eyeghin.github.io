@@ -376,3 +376,23 @@ body.desk-mode .console-main select {
 }
 .ag-drawer .ag-site-guide button:hover {background:#291B50!important;}
 .ag-drawer .ag-quick button:hover {background:#291B50!important;color:#fff!important;}
+
+
+/* Queue summary and small status badges were the last remaining white surfaces. */
+body.desk-mode .desk-summary {
+ background:#18171D!important;border:1px solid #3A324A!important;
+ box-shadow:0 16px 38px rgba(0,0,0,.17)!important;
+}
+body.desk-mode .desk-summary>div{border-color:#3A324A!important;}
+body.desk-mode .desk-summary span{color:#C4BECE!important;}
+body.desk-mode .desk-summary strong{color:#F3F1FB!important;}
+body.desk-mode .queue-segments b{
+ background:#291F3C!important;color:#C9B8FF!important;
+ border:1px solid #3A324A!important;
+}
+body.desk-mode .queue-segments button.selected b{
+ background:#312057!important;color:#E3D9FF!important;
+}
+body.desk-mode .ops-table-head h2,body.desk-mode .ops-table-head h3{
+ color:#BEABFF!important;
+}
