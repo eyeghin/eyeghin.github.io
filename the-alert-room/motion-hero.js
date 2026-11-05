@@ -1,7 +1,7 @@
 /* The Alert Room / live illustrated transaction network. Native canvas, never video. */
 (function(){
   'use strict';
-  const duration=15000, ink='#4B00FF', pale='#A78AFF', risk='#E5484D';
+  const duration=15000, ink='#7592AC', pale='#A9BDCE', risk='#B54C56';
   function mount(){
     const stage=document.getElementById('ar-motion-stage');
     if(!stage||stage.dataset.arMounted==='true')return;
@@ -56,7 +56,7 @@
         const red=j===7 && t>7300&&t<12400;
         curve(a,b,bend,(A,B,C)=>{
           ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.quadraticCurveTo(C.x,C.y,B.x,B.y);
-          ctx.strokeStyle=red?'rgba(229,72,77,.75)':'rgba(108,73,220,.26)';
+          ctx.strokeStyle=red?'rgba(181,76,86,.8)':'rgba(118,145,170,.22)';
           ctx.lineWidth=red?2.4:1.15;ctx.globalAlpha=drawProgress*settle*margin;
           ctx.setLineDash([4,7]);ctx.lineDashOffset=-(t*.020+j*17);
           ctx.shadowColor=red?risk:ink;ctx.shadowBlur=red?24:4;
@@ -75,10 +75,10 @@
         const isRed=j===8&&t>7500&&t<12000;
         ctx.globalAlpha=appeared*settle*(narrow?.44:.86);
         ctx.shadowBlur=isRed?24:18;ctx.shadowColor=isRed?risk:ink;
-        ctx.fillStyle=isRed?risk:'#9C81FF';
+        ctx.fillStyle=isRed?risk:'#91ABC2';
         ctx.beginPath();ctx.arc(p.x,p.y,isRed?4.8:2.8,0,Math.PI*2);ctx.fill();
         ctx.shadowBlur=0;
-        ctx.strokeStyle=isRed?'rgba(229,72,77,.55)':'rgba(106,60,255,.35)';
+        ctx.strokeStyle=isRed?'rgba(181,76,86,.5)':'rgba(118,145,170,.26)';
         ctx.lineWidth=1;
         ctx.beginPath();ctx.arc(p.x,p.y,8+Math.sin(t*.003+j)*2,0,Math.PI*2);ctx.stroke();
       }
