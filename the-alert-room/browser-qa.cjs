@@ -45,6 +45,8 @@ fs.mkdirSync(OUT,{recursive:true});
   await page.waitForURL(/#home\/about$/);
   assert.ok(await page.locator('#about').isVisible());
   await page.goto(BASE+'#home',{waitUntil:'networkidle'});
+  await page.evaluate(()=>window.scrollTo(0,0));
+  assert.equal(await page.evaluate(()=>Math.round(window.scrollY)),0,'Home must start at the full-screen cinematic opening');
   await page.screenshot({path:path.join(OUT,'01-home-desktop.jpg'),type:'jpeg',quality:90,fullPage:false,animations:'disabled'});
   await page.locator('.skip').focus();await page.keyboard.press('Enter');
   assert.match(page.url(),/#home$/);assert.equal(await page.locator('#main').evaluate(el=>el===document.activeElement),true);
