@@ -273,3 +273,106 @@ main.shell,.cards,.safety-note,.story-body,
 .founder-opening h1 em,.founder-chapter-no,.founder-read span,
 .founder-signature { color:#A891FF!important; }
 .founder-page .founder-letter article h2 { color:#4B00FF!important; }
+
+
+/* Production dark-surface correction: operational console must never be light. */
+body.desk-mode .console,
+body.desk-mode .console-main,
+body.desk-mode .ops-view,
+body.desk-mode .ops-case,
+body.desk-mode .desk-pagehead,
+body.desk-mode .console-top,
+body.desk-mode .ops-case-head,
+body.desk-mode .ops-case-stephead,
+body.desk-mode .ops-case-actions,
+body.desk-mode .queue-view,
+body.desk-mode .qa-list {
+ background-color:#101010!important;color:#F3F1FB!important;
+}
+body.desk-mode .ops-filterbar,
+body.desk-mode .ops-table-frame,
+body.desk-mode .table-foot,
+body.desk-mode .queue-pagination,
+body.desk-mode .case-doc,
+body.desk-mode .well-head {
+ background-color:#18171D!important;color:#D6D0E3!important;
+ border-color:#3A324A!important;
+}
+body.desk-mode .data-grid thead,
+body.desk-mode .data-grid tbody tr:hover,
+body.desk-mode .data-grid tr.clickable:hover {
+ background:#211D2B!important;color:#F3F1FB!important;
+}
+body.desk-mode .data-grid td,body.desk-mode .data-grid th,
+body.desk-mode .data-grid td strong,body.desk-mode .data-grid td small {
+ color:#E4DEEF!important;border-color:#3A324A!important;
+}
+body.desk-mode .ops-filterbar label>span,
+body.desk-mode .queue-segments button,
+body.desk-mode .queue-segments b,
+body.desk-mode .well-head>span,
+body.desk-mode .ops-table-head>span,
+body.desk-mode .ops-disclaimer {
+ color:#C6BDD5!important;
+}
+body.desk-mode .queue-segments,
+body.desk-mode .ops-table-frame,
+body.desk-mode .case-summary-bar,
+body.desk-mode .case-summary-bar>div,
+body.desk-mode .well-head,
+body.desk-mode .case-tabs {
+ border-color:#3A324A!important;
+}
+body.desk-mode .queue-segments button.selected,
+body.desk-mode .case-tabs a.active{color:#BEABFF!important;border-color:#4B00FF!important;}
+body.desk-mode .well-head h2,body.desk-mode .well-head h3,
+body.desk-mode .well-head h4 {
+ color:#BEABFF!important;
+}
+body.desk-mode .well p,
+body.desk-mode .well li,
+body.desk-mode .sideblock p,
+body.desk-mode .ops-case-header p,
+body.desk-mode .ops-case-stephead p,
+body.desk-mode .qa-list p,
+body.desk-mode .qa-list li,
+body.desk-mode .console-main p,
+body.desk-mode .console-main li {
+ color:#D6D0E3!important;
+}
+body.desk-mode .console-main input,
+body.desk-mode .console-main textarea,
+body.desk-mode .console-main select {
+ background:#18171D!important;color:#F3F1FB!important;border-color:#4B00FF!important;
+}
+/* Analyst drawer must not hide white regions below its dark header. */
+.ag-drawer .ag-context,
+.ag-drawer .ag-compose,
+.ag-drawer .ag-site-guide,
+.ag-drawer .ag-site-guide button,
+.ag-drawer .analyst-message,
+.ag-drawer .analyst-message.error,
+.ag-drawer .analyst-message.guide,
+.ag-drawer .ag-quick button,
+.ag-drawer .ag-composer-foot,
+.ag-drawer .ag-conversation {
+ background:#18171D!important;color:#E4DEEF!important;border-color:#3A324A!important;
+}
+.ag-drawer .ag-context label,
+.ag-drawer .ag-context input,
+.ag-drawer .ag-compose textarea,
+.ag-drawer .ag-composer-foot,
+.ag-drawer .ag-composer-foot button,
+.ag-drawer .ag-disclosure,
+.ag-drawer .ag-site-guide summary,
+.ag-drawer .analyst-message .content,
+.ag-drawer .analyst-message .who,
+.ag-drawer .analyst-welcome p {
+ color:#D6D0E3!important;
+}
+.ag-drawer .ag-compose form {background:#18171D!important;border-color:#4B00FF!important;}
+.ag-drawer .ag-compose #analyst-send {
+ color:white!important;background:#4B00FF!important;
+}
+.ag-drawer .ag-site-guide button:hover {background:#291B50!important;}
+.ag-drawer .ag-quick button:hover {background:#291B50!important;color:#fff!important;}
